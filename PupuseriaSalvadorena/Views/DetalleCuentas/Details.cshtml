@@ -1,0 +1,36 @@
+﻿@model PupuseriaSalvadorena.Models.DetalleCuenta
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>DetalleCuenta</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Pago)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Pago)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FechaIngreso)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FechaIngreso)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IdCuentaPagar)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IdCuentaPagar)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.IdDetallesCuenta">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

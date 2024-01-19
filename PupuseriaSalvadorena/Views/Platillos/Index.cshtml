@@ -1,0 +1,47 @@
+﻿@model IEnumerable<PupuseriaSalvadorena.Models.Platillo>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.NombrePlatillo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CostoProduccion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PrecioVenta)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.NombrePlatillo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CostoProduccion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PrecioVenta)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.IdPlatillo">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.IdPlatillo">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.IdPlatillo">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

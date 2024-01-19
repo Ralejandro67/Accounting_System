@@ -1,0 +1,28 @@
+﻿@model PupuseriaSalvadorena.Models.Impuesto
+
+<form id="impuestoForm" asp-action="Create" asp-controller="Impuestos" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="NombreImpuesto" class="control-label"></label>
+        <input asp-for="NombreImpuesto" class="form-control" />
+        <span asp-validation-for="NombreImpuesto" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Tasa" class="control-label"></label>
+        <input asp-for="Tasa" class="form-control" />
+        <span asp-validation-for="Tasa" class="text-danger"></span>
+    </div>
+    <div class="form-group form-check">
+        <label class="form-check-label">
+            <input class="form-check-input" asp-for="Estado" /> @Html.DisplayNameFor(model => model.Estado)
+        </label>
+    </div>
+    <div class="form-group">
+        <label asp-for="Descripcion" class="control-label"></label>
+        <input asp-for="Descripcion" class="form-control" />
+        <span asp-validation-for="Descripcion" class="text-danger"></span>
+    </div>
+    <div class="form-group text-right">
+        <button type="button" id="submitCreateForm" class="btn btn-primary">Agregar</button>
+    </div>
+</form>

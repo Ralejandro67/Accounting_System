@@ -1,0 +1,36 @@
+﻿@model PupuseriaSalvadorena.Models.Platillo
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Platillo</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.NombrePlatillo)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.NombrePlatillo)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.CostoProduccion)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.CostoProduccion)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.PrecioVenta)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.PrecioVenta)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.IdPlatillo">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

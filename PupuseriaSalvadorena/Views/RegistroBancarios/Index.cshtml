@@ -1,0 +1,65 @@
+﻿@model IEnumerable<PupuseriaSalvadorena.Models.RegistroBancario>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<div class="container mt-4 text-right">
+    <button type="button" class="btn btn-primary mt-3" id="AddEstado">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2" />
+        </svg>
+        Transaccion
+    </button>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.EstadoBancario)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FechaRegistro)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NumeroCuenta)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Observaciones)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CedulaJuridica)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.EstadoBancario)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaRegistro)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NumeroCuenta)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Observaciones)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CedulaJuridica)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.IdRegistroBancario">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.IdRegistroBancario">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.IdRegistroBancario">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -1,0 +1,77 @@
+﻿@model IEnumerable<PupuseriaSalvadorena.Models.FacturaVenta>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.CedulaJuridica)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Consecutivo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Clave)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FechaFactura)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SubTotal)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalVenta)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdTipoPago)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdTipoFactura)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CedulaJuridica)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Consecutivo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Clave)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaFactura)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SubTotal)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalVenta)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdTipoPago)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdTipoFactura)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.IdFacturaVenta">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.IdFacturaVenta">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.IdFacturaVenta">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

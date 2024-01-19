@@ -1,0 +1,59 @@
+﻿@model IEnumerable<PupuseriaSalvadorena.Models.CuentaPagar>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FechaCreacion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FechaVencimiento)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalPagado)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdFacturaCompra)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdProveedor)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaCreacion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaVencimiento)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalPagado)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdFacturaCompra)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdProveedor)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.IdCuentaPagar">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.IdCuentaPagar">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.IdCuentaPagar">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

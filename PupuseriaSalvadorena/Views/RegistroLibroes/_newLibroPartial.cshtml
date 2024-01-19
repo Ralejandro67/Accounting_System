@@ -1,0 +1,24 @@
+﻿@model PupuseriaSalvadorena.Models.RegistroLibro
+
+@{
+    Model.FechaRegistro = Model.FechaRegistro == default ? DateTime.Now : Model.FechaRegistro;
+    Model.MontoTotal = Model.MontoTotal == default ? 0m : Model.MontoTotal;
+}
+
+<form id="LibroForm" asp-action="Create" asp-controller="RegistroLibroes" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <input asp-for="FechaRegistro" class="form-control" type="hidden" />
+    </div>
+    <div class="form-group">
+        <input asp-for="MontoTotal" class="form-control" type="hidden" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Descripcion" class="control-label"></label>
+        <input asp-for="Descripcion" class="form-control" />
+        <span asp-validation-for="Descripcion" class="text-danger"></span>
+    </div>
+    <div class="form-group text-right">
+        <button type="button" id="submitLibroForm" class="btn btn-primary">Agregar</button>
+    </div>
+</form>
