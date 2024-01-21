@@ -15,7 +15,7 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             _context = context;
         }
 
-        public async Task CrearFacturaVenta(int CedulaJuridica, int Consecutivo, int Clave, DateTime FechaFactura, decimal SubTotal, decimal TotalVenta, int IdTipoPago, int IdTipoFactura)
+        public async Task CrearFacturaVenta(long CedulaJuridica, int Consecutivo, int Clave, DateTime FechaFactura, decimal SubTotal, decimal TotalVenta, int IdTipoPago, int IdTipoFactura)
         {
             var CedulaJuridicaParam = new SqlParameter("@CedulaJuridica", CedulaJuridica);
             var ConsecutivoParam = new SqlParameter("@Consecutivo", Consecutivo);

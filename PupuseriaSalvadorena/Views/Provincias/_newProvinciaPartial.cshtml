@@ -1,0 +1,13 @@
+﻿@model PupuseriaSalvadorena.Models.Provincia
+
+<form id="provinciaForm" asp-action="Create" asp-controller="Provincias" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="NombreProvincia" class="control-label"></label>
+        <input asp-for="NombreProvincia" class="form-control" />
+        <span asp-validation-for="NombreProvincia" class="text-danger"></span>
+    </div>
+    <div class="form-group text-right">
+        <button type="button" id="submitProvinciaForm" class="btn btn-primary">Agregar</button>
+    </div>
+</form>

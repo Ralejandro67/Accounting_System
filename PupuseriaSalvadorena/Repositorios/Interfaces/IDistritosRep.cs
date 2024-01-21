@@ -4,7 +4,7 @@ namespace PupuseriaSalvadorena.Repositorios.Interfaces
 {
     public interface IDistritosRep
     {
-        Task CrearDistrito(string nombre, int canton);
+        Task CrearDistrito(string NombreDistrito, int IdCanton);
         Task ActualizarDistrito(int IdDistrito, string NombreDistrito, int IdCanton);
         Task EliminarDistrito(int IdDistrito);
         Task<List<Distrito>> MostrarDistritos();

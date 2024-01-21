@@ -14,10 +14,12 @@ namespace PupuseriaSalvadorena.Controllers
     public class DireccionesController : Controller
     {
         private readonly IDireccionesRep _direccionesRep;
+        private readonly IDistritosRep _distritosRep;
 
-        public DireccionesController(IDireccionesRep context)
+        public DireccionesController(IDireccionesRep context, IDistritosRep distritosRep)
         {
             _direccionesRep = context;
+            _distritosRep = distritosRep;
         }
 
         // GET: Direcciones
@@ -45,9 +47,11 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // GET: Direcciones/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var distritos = await _distritosRep.MostrarDistritos();
+            ViewBag.Direcciones = new SelectList(distritos, "IdDistrito", "NombreDistrito");
+            return PartialView("_newDireccionPartial", new Direccion());
         }
 
         // POST: Direcciones/Create
@@ -60,9 +64,9 @@ namespace PupuseriaSalvadorena.Controllers
             if (ModelState.IsValid)
             {
                 await _direccionesRep.CrearDireccion(direccion.Estado, direccion.Detalles, direccion.IdDistrito);
-                return RedirectToAction(nameof(Index));
+                return Json(new { success = true, message = "Direccion agregada correctamente." });
             }
-            return View(direccion);
+            return Json(new { success = false, message = "Error al agregar la direccion." });
         }
 
         // GET: Direcciones/Edit/5

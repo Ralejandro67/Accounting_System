@@ -60,9 +60,9 @@ namespace PupuseriaSalvadorena.Controllers
             if (ModelState.IsValid)
             {
                 await _telefonosRep.CrearTelefono(telefonos.Telefono, telefonos.Estado);
-                return RedirectToAction(nameof(Index));
+                return Json(new { success = true, message = "Telefono agregado correctamente." });
             }
-            return View(telefonos);
+            return Json(new { success = false, message = "Error al agregar el telefono." });
         }
 
         // GET: Telefonos/Edit/5

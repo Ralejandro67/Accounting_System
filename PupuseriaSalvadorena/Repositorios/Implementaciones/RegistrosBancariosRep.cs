@@ -15,24 +15,26 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             _context = context;
         }
 
-        public async Task CrearRegistroBancario(string EstadoBancario, DateTime FechaRegistro, int NumeroCuenta, string Observaciones, int CedulaJuridica)
+        public async Task CrearRegistroBancario(byte[] EstadoBancario, DateTime FechaRegistro, decimal SaldoInicial, int NumeroCuenta, string Observaciones, long CedulaJuridica)
         {
             var EstadoBancarioParam = new SqlParameter("@EstadoBancario", EstadoBancario);
             var FechaRegistroParam = new SqlParameter("@FechaRegistro", FechaRegistro);
+            var SaldoInicialParam = new SqlParameter("@SaldoInicial", SaldoInicial);
             var NumeroCuentaParam = new SqlParameter("@NumeroCuenta", NumeroCuenta);
             var ObservacionesParam = new SqlParameter("@Observaciones", Observaciones);
             var CedulaJuridicaParam = new SqlParameter("@CedulaJuridica", CedulaJuridica);
-            await _context.Database.ExecuteSqlRawAsync("CrearRegistroBancario @EstadoBancario, @FechaRegistro, @NumeroCuenta, @Observaciones, @CedulaJuridica", EstadoBancarioParam, FechaRegistroParam, NumeroCuentaParam, ObservacionesParam, CedulaJuridicaParam);
+            await _context.Database.ExecuteSqlRawAsync("CrearRegistroBancario @EstadoBancario, @FechaRegistro, @SaldoInicial, @NumeroCuenta, @Observaciones, @CedulaJuridica", EstadoBancarioParam, FechaRegistroParam, SaldoInicialParam, NumeroCuentaParam, ObservacionesParam, CedulaJuridicaParam);
         }
 
-        public async Task ActualizarRegistroBancario(string IdRegistro, string EstadoBancario, DateTime FechaRegistro, int NumeroCuenta, string Observaciones)
+        public async Task ActualizarRegistroBancario(string IdRegistro, byte[] EstadoBancario, DateTime FechaRegistro, decimal SaldoInicial, int NumeroCuenta, string Observaciones)
         {
             var IdRegistroParam = new SqlParameter("@IdRegistro", IdRegistro);
             var EstadoBancarioParam = new SqlParameter("@EstadoBancario", EstadoBancario);
             var FechaRegistroParam = new SqlParameter("@FechaRegistro", FechaRegistro);
+            var SaldoInicialParam = new SqlParameter("@SaldoInicial", SaldoInicial);
             var NumeroCuentaParam = new SqlParameter("@NumeroCuenta", NumeroCuenta);
             var ObservacionesParam = new SqlParameter("@Observaciones", Observaciones);
-            await _context.Database.ExecuteSqlRawAsync("ActualizarRegistroBancario @IdRegistro, @EstadoBancario, @FechaRegistro, @NumeroCuenta, @Observaciones", IdRegistroParam, EstadoBancarioParam, FechaRegistroParam, NumeroCuentaParam, ObservacionesParam);
+            await _context.Database.ExecuteSqlRawAsync("ActualizarRegistroBancario @IdRegistro, @EstadoBancario, @FechaRegistro, @SaldoInicial, @NumeroCuenta, @Observaciones", IdRegistroParam, EstadoBancarioParam, FechaRegistroParam, SaldoInicialParam, NumeroCuentaParam, ObservacionesParam);
         }
 
         public async Task EliminarRegistroBancario(string IdRegistro)

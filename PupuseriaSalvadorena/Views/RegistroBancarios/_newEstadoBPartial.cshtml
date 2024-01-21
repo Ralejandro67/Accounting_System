@@ -1,0 +1,44 @@
+﻿@model PupuseriaSalvadorena.Models.RegistroBancario
+
+@{
+    Model.FechaRegistro = Model.FechaRegistro == default ? DateTime.Now : Model.FechaRegistro;
+}
+
+<form id="estadoBacForm" asp-action="Create" asp-controller="RegistroBancarios" method="post" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="ArchivoEstado" class="control-label"></label>
+        <input asp-for="ArchivoEstado" type="file" class="form-control" />
+        <span asp-validation-for="ArchivoEstado" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="FechaRegistro" class="control-label"></label>
+        <input asp-for="FechaRegistro" class="form-control" type="date" />
+        <span asp-validation-for="FechaRegistro" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="SaldoInicial" class="control-label"></label>
+        <input asp-for="SaldoInicial" class="form-control" />
+        <span asp-validation-for="SaldoInicial" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="NumeroCuenta" class="control-label"></label>
+        <input asp-for="NumeroCuenta" class="form-control" />
+        <span asp-validation-for="NumeroCuenta" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Observaciones" class="control-label"></label>
+        <input asp-for="Observaciones" class="form-control" />
+        <span asp-validation-for="Observaciones" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="CedulaJuridica" class="control-label"></label>
+        <select asp-for="CedulaJuridica" asp-items="@ViewBag.Negocio" class="form-control">
+            <option value="">Seleccione un impuesto</option>
+        </select>
+        <span asp-validation-for="CedulaJuridica" class="text-danger"></span>
+    </div>
+    <div class="form-group text-right">
+        <button type="button" id="submitEstadoBacForm" class="btn btn-primary">Agregar</button>
+    </div>
+</form>

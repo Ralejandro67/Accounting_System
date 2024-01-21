@@ -14,10 +14,12 @@ namespace PupuseriaSalvadorena.Controllers
     public class RegistroBancariosController : Controller
     {
         private readonly IRegistrosBancariosRep _registrosBancariosRep;
+        private readonly INegociosRep _negociosRep;
 
-        public RegistroBancariosController(IRegistrosBancariosRep context)
+        public RegistroBancariosController(IRegistrosBancariosRep context, INegociosRep negociosRep)
         {
             _registrosBancariosRep = context;
+            _negociosRep = negociosRep;
         }
 
         // GET: RegistroBancarios
@@ -45,24 +47,49 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // GET: RegistroBancarios/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var negocios = await _negociosRep.MostrarNegocio();
+            ViewBag.Negocio = new SelectList(negocios, "CedulaJuridica", "NombreEmpresa");
+            return PartialView("_newEstadoBPartial", new RegistroBancario());
         }
 
         // POST: RegistroBancarios/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdRegistroBancario,EstadoBancario,FechaRegistro,NumeroCuenta,Observaciones,CedulaJuridica")] RegistroBancario registroBancario)
+        public async Task<IActionResult> Create([Bind("IdRegistroBancario,FechaRegistro,SaldoInicial,NumeroCuenta,Observaciones,CedulaJuridica,ArchivoEstado")] RegistroBancario registroBancario, IFormFile ArchivoEstado)
         {
             if (ModelState.IsValid)
             {
-                await _registrosBancariosRep.CrearRegistroBancario(registroBancario.EstadoBancario, registroBancario.FechaRegistro, registroBancario.NumeroCuenta, registroBancario.Observaciones, registroBancario.CedulaJuridica);
-                return RedirectToAction(nameof(Index));
+                if (ArchivoEstado != null && ArchivoEstado.Length > 0)
+                {
+                    try
+                    {
+                        using (var memoryStream = new MemoryStream())
+                        {
+                            await ArchivoEstado.CopyToAsync(memoryStream);
+                            registroBancario.EstadoBancario = memoryStream.ToArray();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        ModelState.AddModelError("ArchivoEstado", $"Ocurrió un problema al cargar el archivo: {ex.Message}");
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError("ArchivoEstado", "Es necesario proporcionar un archivo del Estado Bancario.");
+                }
+
+                if (!ModelState.Values.Any(v => v.Errors.Count > 0))
+                {
+                    await _registrosBancariosRep.CrearRegistroBancario(registroBancario.EstadoBancario, registroBancario.FechaRegistro, registroBancario.SaldoInicial, registroBancario.NumeroCuenta, registroBancario.Observaciones, registroBancario.CedulaJuridica);
+                    return Json(new { success = true, message = "Estado Bancario agregado correctamente." });
+                }
             }
-            return View(registroBancario);
+
+            var errorList = ModelState.Values.SelectMany(v => v.Errors.Select(b => b.ErrorMessage)).ToList();
+            return Json(new { success = false, message = "Error al agregar el estado bancario.", errors = ModelState.Values.SelectMany(v => v.Errors.Select(b => b.ErrorMessage)) });
         }
 
         // GET: RegistroBancarios/Edit/5
@@ -82,20 +109,18 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // POST: RegistroBancarios/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("IdRegistroBancario,EstadoBancario,FechaRegistro,NumeroCuenta,Observaciones,CedulaJuridica")] RegistroBancario registroBancario)
+        public async Task<IActionResult> Edit(string id, [Bind("IdRegistroBancario,EstadoBancario,FechaRegistro,SaldoInicial,NumeroCuenta,Observaciones,CedulaJuridica,ArchivoEstado")] RegistroBancario registroBancario)
         {
-            if (id != registroBancario.IdRegistroBancario)
+            if (id != registroBancario.IdRegistro)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
-                await _registrosBancariosRep.ActualizarRegistroBancario(registroBancario.IdRegistroBancario, registroBancario.EstadoBancario, registroBancario.FechaRegistro, registroBancario.NumeroCuenta, registroBancario.Observaciones);
+                await _registrosBancariosRep.ActualizarRegistroBancario(registroBancario.IdRegistro, registroBancario.EstadoBancario, registroBancario.FechaRegistro, registroBancario.SaldoInicial, registroBancario.NumeroCuenta, registroBancario.Observaciones);
                 return RedirectToAction(nameof(Index));
             }
             return View(registroBancario);
@@ -125,6 +150,18 @@ namespace PupuseriaSalvadorena.Controllers
         {
             await _registrosBancariosRep.EliminarRegistroBancario(id);
             return RedirectToAction(nameof(Index));
+        }
+
+        // Descargar archivo
+        public async Task<IActionResult> DescargaEstadoBac(string id)
+        {
+            var registroBancario = await _registrosBancariosRep.ConsultarRegistrosBancarios(id);
+            if (registroBancario != null && registroBancario.EstadoBancario != null)
+            {
+                return File(registroBancario.EstadoBancario, "application/pdf", "EstadoBancario.pdf");
+            }
+
+            return NotFound();
         }
     }
 }

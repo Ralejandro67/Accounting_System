@@ -15,11 +15,11 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             _context = context;
         }
 
-        public async Task CrearDistrito(string nombre, int canton)
+        public async Task CrearDistrito(string NombreDistrito, int IdCanton)
         {
-            var nombreParam = new SqlParameter("@NombreDistrito", nombre);
-            var cantonParam = new SqlParameter("@IdCanton", canton);
-            await _context.Database.ExecuteSqlRawAsync("CrearCanton @NombreDistrito, @IdCanton", nombreParam, cantonParam);
+            var nombreParam = new SqlParameter("@NombreDistrito", NombreDistrito);
+            var cantonParam = new SqlParameter("@IdCanton", IdCanton);
+            await _context.Database.ExecuteSqlRawAsync("CrearDistrito @NombreDistrito, @IdCanton", nombreParam, cantonParam);
         }
 
         public async Task ActualizarDistrito(int IdDistrito, string NombreDistrito, int IdCanton)

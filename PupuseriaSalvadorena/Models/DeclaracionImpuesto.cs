@@ -8,7 +8,7 @@ namespace PupuseriaSalvadorena.Models
         public string? IdDeclaracionImpuesto { get; set; }
 
         [Required(ErrorMessage = "La cedula jurídica es obligatoria")]
-        public int CedulaJuridica { get; set; }
+        public long CedulaJuridica { get; set; }
 
         [Required(ErrorMessage = "La fecha de inicio de la declaración es obligatorio")]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]

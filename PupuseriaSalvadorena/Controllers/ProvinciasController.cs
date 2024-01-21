@@ -60,9 +60,9 @@ namespace PupuseriaSalvadorena.Controllers
             if (ModelState.IsValid)
             {
                 await _provinciasRep.CrearProvincia(provincia.NombreProvincia);
-                return RedirectToAction(nameof(Index));
+                return Json(new { success = true, message = "Provincia agregada correctamente." });
             }
-            return View(provincia);
+            return Json(new { success = false, message = "Error al agregar la provincia." });
         }
 
         // GET: Provincias/Edit/5

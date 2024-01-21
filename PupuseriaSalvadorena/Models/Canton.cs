@@ -13,5 +13,7 @@ namespace PupuseriaSalvadorena.Models
 
         [Required(ErrorMessage = "La provincia es obligatoria")]
         public int IdProvincia { get; set; }
+
+        public string? NombreProvincia { get; set; }
     }
 }

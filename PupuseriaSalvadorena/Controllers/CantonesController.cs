@@ -14,10 +14,12 @@ namespace PupuseriaSalvadorena.Controllers
     public class CantonesController : Controller
     {
         private readonly ICantonesRep _cantonesRep;
+        private readonly IProvinciasRep _provinciasRep;
 
-        public CantonesController(ICantonesRep cantonesRep)
+        public CantonesController(ICantonesRep cantonesRep, IProvinciasRep provinciasRep)
         {
             _cantonesRep = cantonesRep;
+            _provinciasRep = provinciasRep;
         }
 
         // GET: Cantones
@@ -45,9 +47,11 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // GET: Cantones/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var provincias = await _provinciasRep.MostrarProvincias();
+            ViewBag.Provincias = new SelectList(provincias, "IdProvincia", "NombreProvincia");
+            return PartialView("_newCantonPartial", new Canton());
         }
 
         // POST: Cantones/Create
@@ -58,9 +62,9 @@ namespace PupuseriaSalvadorena.Controllers
             if (ModelState.IsValid)
             {
                 await _cantonesRep.CrearCanton(canton.NombreCanton, canton.IdProvincia);
-                return RedirectToAction(nameof(Index));
+                return Json(new { success = true, message = "Canton agregado correctamente." });
             }
-            return View(canton);
+            return Json(new { success = false, message = "Error al agregar el canton." });
         }
 
         // GET: Cantones/Edit/5

@@ -8,7 +8,7 @@ namespace PupuseriaSalvadorena.Models
         public int IdFacturaVenta { get; set; }
 
         [Required(ErrorMessage = "La cedula jurídica es obligatoria")]
-        public int CedulaJuridica { get; set; }
+        public long CedulaJuridica { get; set; }
 
         [Required(ErrorMessage = "El consecutivo de la factura es obligatorio")]
         public int Consecutivo { get; set; }

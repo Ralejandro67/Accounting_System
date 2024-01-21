@@ -15,7 +15,7 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             _context = context;
         }
 
-        public async Task CrearDeclaracionTax(int CedulaJuridica, DateTime FechaInicio, DateTime FechaFinal, decimal MontoTotalIngresos, decimal MontoTotalEgresos, decimal MontoTotalImpuestos, string Observaciones)
+        public async Task CrearDeclaracionTax(long CedulaJuridica, DateTime FechaInicio, DateTime FechaFinal, decimal MontoTotalIngresos, decimal MontoTotalEgresos, decimal MontoTotalImpuestos, string Observaciones)
         {
             var CedulaJuridicaParam = new SqlParameter("@CedulaJuridica", CedulaJuridica);
             var FechaInicioParam = new SqlParameter("@FechaInicio", FechaInicio);

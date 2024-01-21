@@ -14,10 +14,12 @@ namespace PupuseriaSalvadorena.Controllers
     public class DistritosController : Controller
     {
         private readonly IDistritosRep _distritosRep;
+        private readonly ICantonesRep _cantonesRep;
 
-        public DistritosController(IDistritosRep context)
+        public DistritosController(IDistritosRep context, ICantonesRep cantonesRep)
         {
             _distritosRep = context;
+            _cantonesRep = cantonesRep;
         }
 
         // GET: Distritos
@@ -45,9 +47,11 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // GET: Distritos/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var cantones = await _cantonesRep.MostrarCantones();
+            ViewBag.Distritos = new SelectList(cantones, "IdCanton", "NombreCanton");
+            return PartialView("_newDistritoPartial", new Distrito());
         }
 
         // POST: Distritos/Create
@@ -58,9 +62,9 @@ namespace PupuseriaSalvadorena.Controllers
             if (ModelState.IsValid)
             {
                 await _distritosRep.CrearDistrito(distrito.NombreDistrito, distrito.IdCanton);
-                return RedirectToAction(nameof(Index));
+                return Json(new { success = true, message = "Distrito agregado correctamente." });
             }
-            return View(distrito);
+            return Json(new { success = false, message = "Error al agregar el distrito." });
         }
 
         // GET: Distritos/Edit/5

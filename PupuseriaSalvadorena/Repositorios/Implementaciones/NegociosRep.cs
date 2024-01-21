@@ -15,7 +15,7 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             _context = context;
         }
 
-        public async Task CrearNegocio(int CedulaJuridica, string NombreEmpresa, int IdDireccion, int IdTelefono)
+        public async Task CrearNegocio(long CedulaJuridica, string NombreEmpresa, int IdDireccion, int IdTelefono)
         {
             var CedulaJuridicaParam = new SqlParameter("@CedulaJuridica", CedulaJuridica);
             var NombreEmpresaParam = new SqlParameter("@NombreEmpresa", NombreEmpresa);
@@ -24,14 +24,14 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             await _context.Database.ExecuteSqlRawAsync("CrearNegocio @CedulaJuridica, @NombreEmpresa, @IdDireccion, @IdTelefono", CedulaJuridicaParam, NombreEmpresaParam, IdDireccionParam, IdTelefonoParam);
         }
 
-        public async Task ActualizarNegocio(int CedulaJuridica, string NombreEmpresa)
+        public async Task ActualizarNegocio(long CedulaJuridica, string NombreEmpresa)
         {
             var CedulaJuridicaParam = new SqlParameter("@CedulaJuridica", CedulaJuridica);
             var NombreEmpresaParam = new SqlParameter("@NombreEmpresa", NombreEmpresa);
             await _context.Database.ExecuteSqlRawAsync("ActualizarNegocio @CedulaJuridica, @NombreEmpresa", CedulaJuridicaParam, NombreEmpresaParam);
         }
 
-        public async Task EliminarNegocio(int CedulaJuridica)
+        public async Task EliminarNegocio(long CedulaJuridica)
         {
             var CedulaJuridicaParam = new SqlParameter("@CedulaJuridica", CedulaJuridica);
             await _context.Database.ExecuteSqlRawAsync("EliminarNegocio @CedulaJuridica", CedulaJuridicaParam);
@@ -45,7 +45,7 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             return negocios;
         }
 
-        public async Task<Negocio> ConsultarNegocio(int CedulaJuridica)
+        public async Task<Negocio> ConsultarNegocio(long CedulaJuridica)
         {
             var CedulaJuridicaParam = new SqlParameter("@CedulaJuridica", CedulaJuridica);
             var negocio = await _context.Negocio

@@ -16,5 +16,7 @@ namespace PupuseriaSalvadorena.Models
         [Required(ErrorMessage = "El distrito es obligatorio")]
         public int IdDistrito { get; set; }
 
+        public string? NombreDistrito { get; set; }
+
     }
 }

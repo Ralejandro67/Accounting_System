@@ -14,10 +14,14 @@ namespace PupuseriaSalvadorena.Controllers
     public class NegociosController : Controller
     {
         private readonly INegociosRep _negociosRep;
+        private readonly IDireccionesRep _direccionesRep;
+        private readonly ITelefonosRep _telefonosRep;
 
-        public NegociosController(INegociosRep context)
+        public NegociosController(INegociosRep context, IDireccionesRep direccionesRep, ITelefonosRep telefonosRep)
         {
             _negociosRep = context;
+            _direccionesRep = direccionesRep;
+            _telefonosRep = telefonosRep;
         }
 
         // GET: Negocios
@@ -45,9 +49,14 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // GET: Negocios/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var direcciones = await _direccionesRep.MostrarDirecciones();
+            var telefonos = await _telefonosRep.MostrarTelefonos();
+
+            ViewBag.Direccion = new SelectList(direcciones, "IdDireccion", "IdDireccion");
+            ViewBag.Telefono = new SelectList(telefonos, "IdTelefono", "Telefono");
+            return PartialView("_newNegocioPartial", new Negocio());
         }
 
         // POST: Negocios/Create
@@ -58,13 +67,13 @@ namespace PupuseriaSalvadorena.Controllers
             if (ModelState.IsValid)
             {
                 await _negociosRep.CrearNegocio(negocio.CedulaJuridica, negocio.NombreEmpresa, negocio.IdDireccion, negocio.IdTelefono);
-                return RedirectToAction(nameof(Index));
+                return Json(new { success = true, message = "Negocio agregado correctamente." });
             }
-            return View(negocio);
+            return Json(new { success = false, message = "Error al agregar el negocio." });
         }
 
         // GET: Negocios/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(long? id)
         {
             if (id == null)
             {
@@ -82,7 +91,7 @@ namespace PupuseriaSalvadorena.Controllers
         // POST: Negocios/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CedulaJuridica,NombreEmpresa,IdDireccion,IdTelefono")] Negocio negocio)
+        public async Task<IActionResult> Edit(long id, [Bind("CedulaJuridica,NombreEmpresa,IdDireccion,IdTelefono")] Negocio negocio)
         {
             if (id != negocio.CedulaJuridica)
             {
@@ -98,7 +107,7 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // GET: Negocios/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(long? id)
         {
             if (id == null)
             {

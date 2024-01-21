@@ -96,5 +96,15 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
                 return (int)IdTransaccion.Value;
             }
         }
+
+        public async Task<List<DetalleTransaccion>> ConsultarTransacciones(string IdRegistroLibros)
+        {
+            var IdRegistroLibrosParam = new SqlParameter("@IdRegistroLibros", IdRegistroLibros);
+            var resultado = await _context.DetalleTransaccion
+                                          .FromSqlRaw("EXEC ConsultarTransacciones @IdRegistroLibros", IdRegistroLibrosParam)
+                                          .ToListAsync();
+
+            return resultado;
+        }
     }
 }

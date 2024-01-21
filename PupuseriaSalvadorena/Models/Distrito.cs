@@ -13,5 +13,7 @@ namespace PupuseriaSalvadorena.Models
 
         [Required(ErrorMessage = "El cantón es obligatorio")]
         public int IdCanton { get; set; }
+
+        public string? NombreCanton { get; set; }
     }
 }
