@@ -19,10 +19,11 @@ namespace PupuseriaSalvadorena.Models
         [RegularExpression(@"^[0-9]+(\.[0-9]{1,2})?$", ErrorMessage = "El monto pagado no es válido")]
         public decimal TotalPagado { get; set; }
 
-        [Required(ErrorMessage = "La factura asociada es obligatoria")]
         public string? IdFacturaCompra { get; set; }
 
         [Required(ErrorMessage = "El proveedor es obligatorio")]
         public string? IdProveedor { get; set; }
+
+        public string? Proveedor { get; set; }
     }
 }

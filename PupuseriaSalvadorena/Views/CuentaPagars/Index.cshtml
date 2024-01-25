@@ -4,11 +4,20 @@
     ViewData["Title"] = "Index";
 }
 
+@section Scripts {
+    <script src="~/js/cuentapagar.js" asp-append-version="true"></script>
+}
+
 <h1>Index</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<div class="container mt-4 text-right">
+    <button type="button" class="btn btn-primary mt-3" id="AddCuentaPagar">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2" />
+        </svg>
+    </button>
+</div>
+
 <table class="table">
     <thead>
         <tr>
@@ -57,3 +66,20 @@
 }
     </tbody>
 </table>
+
+
+<div class="modal fade" id="newCuentaPagarModal" tabindex="-1" role="dialog" aria-labelledby="newCuentaPagarModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="newCuentaPagarModalLabel">Nueva Cuenta por Pagar</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @Html.Partial("_newCuentaPagarPartial", new PupuseriaSalvadorena.Models.CuentaPagar())
+            </div>
+        </div>
+    </div>
+</div>

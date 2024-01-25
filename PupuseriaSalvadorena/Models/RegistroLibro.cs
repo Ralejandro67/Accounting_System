@@ -15,5 +15,8 @@ namespace PupuseriaSalvadorena.Models
         public decimal MontoTotal { get; set; }
 
         public string? Descripcion { get; set; }
+
+        [Required(ErrorMessage = "El estado de conciliacion es obligatorio")]
+        public bool Conciliado { get; set; }
     }
 }

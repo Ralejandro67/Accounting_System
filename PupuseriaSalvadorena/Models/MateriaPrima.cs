@@ -13,5 +13,7 @@ namespace PupuseriaSalvadorena.Models
 
         [Required(ErrorMessage = "El proveedor de la materia prima es obligatorio")]
         public string? IdProveedor { get; set; }
+
+        public string? Proveedor { get; set; }
     }
 }

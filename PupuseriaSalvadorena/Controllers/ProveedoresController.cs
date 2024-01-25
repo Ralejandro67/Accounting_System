@@ -51,8 +51,6 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // POST: Proveedores/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdProveedor,NombreProveedor,ApellidoProveedor,Telefono")] Proveedor proveedor)
@@ -60,9 +58,9 @@ namespace PupuseriaSalvadorena.Controllers
             if (ModelState.IsValid)
             {
                 await _proveedorRep.CrearProveedor(proveedor.NombreProveedor, proveedor.ApellidoProveedor, proveedor.Telefono);
-                return RedirectToAction(nameof(Index));
+                return Json(new { success = true, message = "Proveedor agregado correctamente." });
             }
-            return View(proveedor);
+            return Json(new { success = false, message = "Error al agregar el proveedor." });
         }
 
         // GET: Proveedores/Edit/5

@@ -39,7 +39,7 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
         public async Task<List<MateriaPrima>> MostrarMateriaPrima()
         {
             var materiasPrimas = await _context.MateriaPrima
-                                        .FromSqlRaw("EXEC MostrarMateriaPrima")
+                                        .FromSqlRaw("EXEC MostrarMateriasPrimas")
                                         .ToListAsync();
             return materiasPrimas;
         }

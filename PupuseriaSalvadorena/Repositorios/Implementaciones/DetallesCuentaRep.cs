@@ -40,7 +40,7 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
         public async Task<List<DetalleCuenta>> MostrarDetallesCuenta()
         {
             var detallesCuenta = await _context.DetalleCuenta
-                                        .FromSqlRaw("EXEC MostrarDetallesCuenta")
+                                        .FromSqlRaw("EXEC MostrarDetallesCuentas")
                                         .ToListAsync();
             return detallesCuenta;
         }

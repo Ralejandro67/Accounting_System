@@ -8,8 +8,6 @@ namespace PupuseriaSalvadorena.Models
         [Key]
         public string? IdRegistro { get; set; }
 
-        public byte[]? EstadoBancario { get; set; }
-
         [Required(ErrorMessage = "La fecha de registro es obligatoria")]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime FechaRegistro { get; set; }
@@ -28,9 +26,5 @@ namespace PupuseriaSalvadorena.Models
         public long CedulaJuridica { get; set; }
 
         public string? NombreEmpresa { get; set; }
-
-        [NotMapped]
-        [Required(ErrorMessage = "El estado bancario es obligatorio")]
-        public IFormFile ArchivoEstado { get; set; }
     }
 }

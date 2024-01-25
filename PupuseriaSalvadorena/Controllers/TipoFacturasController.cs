@@ -51,8 +51,6 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // POST: TipoFacturas/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdTipoFactura,NombreFactura,Estado")] TipoFactura tipoFactura)
@@ -60,9 +58,9 @@ namespace PupuseriaSalvadorena.Controllers
             if (ModelState.IsValid)
             {
                 await _tipoFacturaRep.CrearTipoFactura(tipoFactura.NombreFactura, tipoFactura.Estado);
-                return RedirectToAction(nameof(Index));
+                return Json(new { success = true, message = "Tipo de factura agregado correctamente." });
             }
-            return View(tipoFactura);
+            return Json(new { success = false, message = "Error al agregar el tipo de factura." });
         }
 
         // GET: TipoFacturas/Edit/5
@@ -82,8 +80,6 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // POST: TipoFacturas/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("IdTipoFactura,NombreFactura,Estado")] TipoFactura tipoFactura)

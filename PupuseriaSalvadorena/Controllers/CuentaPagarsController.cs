@@ -14,10 +14,14 @@ namespace PupuseriaSalvadorena.Controllers
     public class CuentaPagarsController : Controller
     {
         private readonly ICuentaPagarRep _cuentaPagarRep;
+        private readonly IProveedorRep _proveedorRep;
+        private readonly IFacturaCompraRep _facturaCompraRep;
 
-        public CuentaPagarsController(ICuentaPagarRep context)
+        public CuentaPagarsController(ICuentaPagarRep context, IProveedorRep proveedorRep, IFacturaCompraRep facturaCompraRep)
         {
             _cuentaPagarRep = context;
+            _proveedorRep = proveedorRep;
+            _facturaCompraRep = facturaCompraRep;
         }
 
         // GET: CuentaPagars
@@ -45,14 +49,17 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // GET: CuentaPagars/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var proveedores = await _proveedorRep.MostrarProveedores();
+            var facturaCompras = await _facturaCompraRep.MostrarFacturasCompras();
+
+            ViewBag.Proveedores = new SelectList(proveedores, "IdProveedor", "NombreProveedor");
+            ViewBag.FacturaCompras = new SelectList(facturaCompras, "IdFacturaCompra", "IdFacturaCompra");
+            return PartialView("_newCuentaPagarPartial", new CuentaPagar());
         }
 
         // POST: CuentaPagars/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdCuentaPagar,FechaCreacion,FechaVencimiento,TotalPagado,IdFacturaCompra,IdProveedor")] CuentaPagar cuentaPagar)
@@ -60,9 +67,9 @@ namespace PupuseriaSalvadorena.Controllers
             if (ModelState.IsValid)
             {
                 await _cuentaPagarRep.CrearCuentaPagar(cuentaPagar.FechaCreacion, cuentaPagar.FechaVencimiento, cuentaPagar.TotalPagado, cuentaPagar.IdFacturaCompra, cuentaPagar.IdProveedor);
-                return RedirectToAction(nameof(Index));
+                return Json(new { success = true, message = "Cuenta por pagar agregada correctamente." });
             }
-            return View(cuentaPagar);
+            return Json(new { success = false, message = "Error al agregar la cuenta por pagar." });
         }
 
         // GET: CuentaPagars/Edit/5
@@ -82,8 +89,6 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // POST: CuentaPagars/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("IdCuentaPagar,FechaCreacion,FechaVencimiento,TotalPagado,IdFacturaCompra,IdProveedor")] CuentaPagar cuentaPagar)

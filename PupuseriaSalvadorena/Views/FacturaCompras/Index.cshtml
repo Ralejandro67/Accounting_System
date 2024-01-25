@@ -1,34 +1,43 @@
 ﻿@model IEnumerable<PupuseriaSalvadorena.Models.FacturaCompra>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Facturas de Compra";
 }
 
-<h1>Index</h1>
+@section Scripts {
+    <script src="~/js/facturacompra.js" asp-append-version="true"></script>
+}
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<h1>Facturas de Compra</h1>
+
+<div class="container mt-4 text-right">
+    <button type="button" class="btn btn-primary mt-3" id="AddFacturaC">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2" />
+        </svg>
+    </button>
+</div>
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.FacturaCom)
+                Archivo
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FechaFactura)
+                Producto
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.TotalCompra)
+                Fecha
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DetallesCompra)
+                Valor
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IdTipoPago)
+                Pago
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IdTipoFactura)
+                Observaciones
             </th>
             <th></th>
         </tr>
@@ -37,7 +46,10 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.FacturaCom)
+                <a asp-action="DescargarFactura" asp-route-IdFacturaCompra="@item.IdFacturaCompra">Descargar</a>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NombreMateriaPrima)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.FechaFactura)
@@ -46,13 +58,10 @@
                 @Html.DisplayFor(modelItem => item.TotalCompra)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.NombrePago)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.DetallesCompra)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdTipoPago)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdTipoFactura)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.IdFacturaCompra">Edit</a> |
@@ -63,3 +72,19 @@
 }
     </tbody>
 </table>
+
+<div class="modal fade" id="newFacturaCModal" tabindex="-1" role="dialog" aria-labelledby="newFacturaCModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="newFacturaCModalLabel">Nueva Compra</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @Html.Partial("_newFacturaCPartial", new PupuseriaSalvadorena.Models.FacturaCompra())
+            </div>
+        </div>
+    </div>
+</div>

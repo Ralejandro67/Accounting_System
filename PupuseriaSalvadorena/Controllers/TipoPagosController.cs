@@ -51,8 +51,6 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // POST: TipoPagos/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdTipoPago,NombrePago,Estado")] TipoPago tipoPago)
@@ -60,7 +58,7 @@ namespace PupuseriaSalvadorena.Controllers
             if (ModelState.IsValid)
             {
                 await _tipoPagoRep.CrearTipoPago(tipoPago.NombrePago, tipoPago.Estado);
-                return RedirectToAction(nameof(Index));
+                return Json(new { success = true, message = "Tipo de factura agregado correctamente." });
             }
             return View(tipoPago);
         }

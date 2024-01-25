@@ -16,7 +16,7 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             _context = context;
         }
 
-        public async Task CrearDetalleTransaccion(string IdRegistroLibros, string DescripcionTransaccion, int Cantidad, decimal Monto, DateTime FechaRegistro, int IdTipo, string IdImpuesto, bool Recurrencia, DateTime FechaRecurrencia, string Frecuencia)
+        public async Task CrearDetalleTransaccion(string IdRegistroLibros, string DescripcionTransaccion, int Cantidad, decimal Monto, DateTime FechaRegistro, int IdTipo, string IdImpuesto, bool Recurrencia, DateTime FechaRecurrencia, string Frecuencia, bool Conciliado)
         {
             var IdRegistroLibrosParam = new SqlParameter("@IdRegistroLibros", IdRegistroLibros);
             var DescripcionTransaccionParam = new SqlParameter("@DescripcionTransaccion", DescripcionTransaccion);
@@ -28,10 +28,11 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             var RecurrenciaParam = new SqlParameter("@Recurrencia", Recurrencia);
             var FechaRecurrenciaParam = new SqlParameter("@FechaRecurrencia", FechaRecurrencia);
             var FrecuenciaParam = new SqlParameter("@Frecuencia", Frecuencia);
-            await _context.Database.ExecuteSqlRawAsync("CrearDetallesTransac @IdRegistroLibros, @DescripcionTransaccion, @Cantidad, @Monto, @FechaTrans, @IdTipo, @IdImpuesto, @Recurrencia, @FechaRecurrencia, @Frecuencia", IdRegistroLibrosParam, DescripcionTransaccionParam, CantidadParam, MontoParam, FechaRegistroParam, IdTipoParam, IdImpuestoParam, RecurrenciaParam, FechaRecurrenciaParam, FrecuenciaParam);
+            var ConciliadoParam = new SqlParameter("@Conciliado", Conciliado);
+            await _context.Database.ExecuteSqlRawAsync("CrearDetallesTransac @IdRegistroLibros, @DescripcionTransaccion, @Cantidad, @Monto, @FechaTrans, @IdTipo, @IdImpuesto, @Recurrencia, @FechaRecurrencia, @Frecuencia, @Conciliado", IdRegistroLibrosParam, DescripcionTransaccionParam, CantidadParam, MontoParam, FechaRegistroParam, IdTipoParam, IdImpuestoParam, RecurrenciaParam, FechaRecurrenciaParam, FrecuenciaParam, ConciliadoParam);
         }
 
-        public async Task ActualizarDetalleTransaccion(int IdTransaccion, string DescripcionTransaccion, int Cantidad, decimal Monto, int IdTipo, string IdImpuesto)
+        public async Task ActualizarDetalleTransaccion(int IdTransaccion, string DescripcionTransaccion, int Cantidad, decimal Monto, int IdTipo, string IdImpuesto, bool Conciliado)
         {
             var IdTransaccionParam = new SqlParameter("@IdTransaccion", IdTransaccion);
             var DescripcionTransaccionParam = new SqlParameter("@DescripcionTransaccion", DescripcionTransaccion);
@@ -39,7 +40,8 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             var MontoParam = new SqlParameter("@Monto", Monto);
             var IdTipoParam = new SqlParameter("@IdTipo", IdTipo);
             var IdImpuestoParam = new SqlParameter("@IdImpuesto", IdImpuesto);
-            await _context.Database.ExecuteSqlRawAsync("ActualizarDetallesTransac @IdTransaccion, @DescripcionTransaccion, @Cantidad, @Monto, @IdTipo, @IdImpuesto", IdTransaccionParam, DescripcionTransaccionParam, CantidadParam, MontoParam, IdTipoParam, IdImpuestoParam);
+            var ConciliadoParam = new SqlParameter("@Conciliado", Conciliado);
+            await _context.Database.ExecuteSqlRawAsync("ActualizarDetallesTransac @IdTransaccion, @DescripcionTransaccion, @Cantidad, @Monto, @IdTipo, @IdImpuesto, @Conciliado", IdTransaccionParam, DescripcionTransaccionParam, CantidadParam, MontoParam, IdTipoParam, IdImpuestoParam, ConciliadoParam);
         }
 
         public async Task EliminarDetallesTransaccion(int IdTransaccion)
@@ -66,7 +68,7 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             return resultado.FirstOrDefault();
         }
 
-        public async Task<int> CrearTransaccionRecurrente(string IdRegistroLibros, string DescripcionTransaccion, int Cantidad, decimal Monto, DateTime FechaRegistro, int IdTipo, string IdImpuesto, bool Recurrencia, DateTime FechaRecurrencia, string Frecuencia)
+        public async Task<int> CrearTransaccionRecurrente(string IdRegistroLibros, string DescripcionTransaccion, int Cantidad, decimal Monto, DateTime FechaRegistro, int IdTipo, string IdImpuesto, bool Recurrencia, DateTime FechaRecurrencia, string Frecuencia, bool Conciliado)
         {
             using (var command = _context.Database.GetDbConnection().CreateCommand())
             {
@@ -83,6 +85,7 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
                 command.Parameters.Add(new SqlParameter("@Recurrencia", Recurrencia));
                 command.Parameters.Add(new SqlParameter("@FechaRecurrencia", FechaRecurrencia));
                 command.Parameters.Add(new SqlParameter("@Frecuencia", Frecuencia));
+                command.Parameters.Add(new SqlParameter("@Conciliado", Conciliado));
 
                 var IdTransaccion = new SqlParameter("@IdTransaccion", SqlDbType.Int)
                 {

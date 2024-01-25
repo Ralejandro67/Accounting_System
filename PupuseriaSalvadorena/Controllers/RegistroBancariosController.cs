@@ -57,38 +57,14 @@ namespace PupuseriaSalvadorena.Controllers
         // POST: RegistroBancarios/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdRegistroBancario,FechaRegistro,SaldoInicial,NumeroCuenta,Observaciones,CedulaJuridica,ArchivoEstado")] RegistroBancario registroBancario, IFormFile ArchivoEstado)
+        public async Task<IActionResult> Create([Bind("IdRegistroBancario,FechaRegistro,SaldoInicial,NumeroCuenta,Observaciones,CedulaJuridica")] RegistroBancario registroBancario)
         {
             if (ModelState.IsValid)
             {
-                if (ArchivoEstado != null && ArchivoEstado.Length > 0)
-                {
-                    try
-                    {
-                        using (var memoryStream = new MemoryStream())
-                        {
-                            await ArchivoEstado.CopyToAsync(memoryStream);
-                            registroBancario.EstadoBancario = memoryStream.ToArray();
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        ModelState.AddModelError("ArchivoEstado", $"Ocurrió un problema al cargar el archivo: {ex.Message}");
-                    }
-                }
-                else
-                {
-                    ModelState.AddModelError("ArchivoEstado", "Es necesario proporcionar un archivo del Estado Bancario.");
-                }
+                await _registrosBancariosRep.CrearRegistroBancario(registroBancario.FechaRegistro, registroBancario.SaldoInicial, registroBancario.NumeroCuenta, registroBancario.Observaciones, registroBancario.CedulaJuridica);
+                return Json(new { success = true, message = "Estado Bancario agregado correctamente."});
 
-                if (!ModelState.Values.Any(v => v.Errors.Count > 0))
-                {
-                    await _registrosBancariosRep.CrearRegistroBancario(registroBancario.EstadoBancario, registroBancario.FechaRegistro, registroBancario.SaldoInicial, registroBancario.NumeroCuenta, registroBancario.Observaciones, registroBancario.CedulaJuridica);
-                    return Json(new { success = true, message = "Estado Bancario agregado correctamente." });
-                }
             }
-
-            var errorList = ModelState.Values.SelectMany(v => v.Errors.Select(b => b.ErrorMessage)).ToList();
             return Json(new { success = false, message = "Error al agregar el estado bancario.", errors = ModelState.Values.SelectMany(v => v.Errors.Select(b => b.ErrorMessage)) });
         }
 
@@ -120,7 +96,7 @@ namespace PupuseriaSalvadorena.Controllers
 
             if (ModelState.IsValid)
             {
-                await _registrosBancariosRep.ActualizarRegistroBancario(registroBancario.IdRegistro, registroBancario.EstadoBancario, registroBancario.FechaRegistro, registroBancario.SaldoInicial, registroBancario.NumeroCuenta, registroBancario.Observaciones);
+                await _registrosBancariosRep.ActualizarRegistroBancario(registroBancario.IdRegistro, registroBancario.FechaRegistro, registroBancario.SaldoInicial, registroBancario.NumeroCuenta, registroBancario.Observaciones);
                 return RedirectToAction(nameof(Index));
             }
             return View(registroBancario);
@@ -150,18 +126,6 @@ namespace PupuseriaSalvadorena.Controllers
         {
             await _registrosBancariosRep.EliminarRegistroBancario(id);
             return RedirectToAction(nameof(Index));
-        }
-
-        // Descargar archivo
-        public async Task<IActionResult> DescargaEstadoBac(string id)
-        {
-            var registroBancario = await _registrosBancariosRep.ConsultarRegistrosBancarios(id);
-            if (registroBancario != null && registroBancario.EstadoBancario != null)
-            {
-                return File(registroBancario.EstadoBancario, "application/pdf", "EstadoBancario.pdf");
-            }
-
-            return NotFound();
         }
     }
 }

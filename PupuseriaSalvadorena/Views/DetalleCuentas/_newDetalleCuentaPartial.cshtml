@@ -1,0 +1,25 @@
+﻿@model PupuseriaSalvadorena.Models.DetalleCuenta
+
+<form id="DetalleCuentaForm" asp-action="Create" asp-controller="DetalleCuentas" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="Pago" class="control-label"></label>
+        <input asp-for="Pago" class="form-control" />
+        <span asp-validation-for="Pago" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="FechaIngreso" class="control-label"></label>
+        <input asp-for="FechaIngreso" class="form-control" type="date" />
+        <span asp-validation-for="FechaIngreso" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="IdCuentaPagar" class="control-label"></label>
+        <select asp-for="IdCuentaPagar" asp-items="@ViewBag.CuentasPagar" class="form-control">
+            <option value="">Seleccione un impuesto</option>
+        </select>
+        <span asp-validation-for="IdCuentaPagar" class="text-danger"></span>
+    </div>
+    <div class="form-group text-right">
+        <button type="button" id="submitDetalleCuenta" class="btn btn-primary">Agregar</button>
+    </div>
+</form>

@@ -14,10 +14,12 @@ namespace PupuseriaSalvadorena.Controllers
     public class MateriaPrimasController : Controller
     {
         private readonly IMateriaPrimaRep _materiaPrimaRep; 
+        private readonly IProveedorRep _proveedorRep;
 
-        public MateriaPrimasController(IMateriaPrimaRep context)
+        public MateriaPrimasController(IMateriaPrimaRep context, IProveedorRep proveedorRep)
         {
             _materiaPrimaRep = context;
+            _proveedorRep = proveedorRep;
         }
 
         // GET: MateriaPrimas
@@ -45,14 +47,14 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // GET: MateriaPrimas/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var proveedores = await _proveedorRep.MostrarProveedores();
+            ViewBag.Proveedores = new SelectList(proveedores, "IdProveedor", "NombreProveedor");
+            return PartialView("_newMateriaPrimaPartial", new MateriaPrima());
         }
 
         // POST: MateriaPrimas/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdMateriaPrima,NombreMateriaPrima,IdProveedor")] MateriaPrima materiaPrima)
@@ -60,9 +62,9 @@ namespace PupuseriaSalvadorena.Controllers
             if (ModelState.IsValid)
             {
                 await _materiaPrimaRep.CrearMateriaPrima(materiaPrima.NombreMateriaPrima, materiaPrima.IdProveedor);
-                return RedirectToAction(nameof(Index));
+                return Json(new { success = true, message = "Materia Prima agregada correctamente." });
             }
-            return View(materiaPrima);
+            return Json(new { success = false, message = "Error al agregar la materia prima." });
         }
 
         // GET: MateriaPrimas/Edit/5

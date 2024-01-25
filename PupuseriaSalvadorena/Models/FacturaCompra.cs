@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PupuseriaSalvadorena.Models
 {
@@ -7,8 +8,7 @@ namespace PupuseriaSalvadorena.Models
         [Key]
         public string? IdFacturaCompra { get; set; }
 
-        [Required(ErrorMessage = "La factura de compra es obligatoria")]
-        public string? FacturaCom { get; set; }
+        public byte[]? FacturaCom { get; set; }
 
         [Required(ErrorMessage = "La fecha de la factura de compra es obligatoria")]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
@@ -25,5 +25,19 @@ namespace PupuseriaSalvadorena.Models
 
         [Required(ErrorMessage = "El tipo de factura es obligatorio")]
         public int IdTipoFactura { get; set; }
+
+        public int IdMateriaPrima { get; set; }
+
+        public string? NombreMateriaPrima { get; set; }
+
+        public string? NombrePago { get; set; }
+
+        public string? NombreFactura { get; set; }
+
+        [NotMapped]
+        public IFormFile? FacturaDoc { get; set; }
+
+        [NotMapped]
+        public bool Activo { get; set; }
     }
 }

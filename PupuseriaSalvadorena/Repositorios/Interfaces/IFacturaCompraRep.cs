@@ -4,10 +4,11 @@ namespace PupuseriaSalvadorena.Repositorios.Interfaces
 {
     public interface IFacturaCompraRep
     {
-        Task CrearFacturaCompra(string FacturaCompra, DateTime FechaFactura, decimal TotalCompra, string DetallesCompra, int IdTipoPago, int IdTipoFactura);
-        Task ActualizarFacturaCompra(string IdFacturaCompra, string FacturaCompra, DateTime FechaFactura, decimal TotalCompra, string DetallesCompra, int IdTipoPago, int IdTipoFactura);
+        Task CrearFacturaCompra(byte[] FacturaCom, DateTime FechaFactura, decimal TotalCompra, string DetallesCompra, int IdTipoPago, int IdTipoFactura, int IdMateriaPrima);
+        Task ActualizarFacturaCompra(string IdFacturaCompra, byte[] FacturaCom, DateTime FechaFactura, decimal TotalCompra, string DetallesCompra, int IdTipoPago, int IdTipoFactura, int IdMateriaPrima);
         Task EliminarFacturaCompra(string IdFacturaCompra);
         Task<List<FacturaCompra>> MostrarFacturasCompras();
         Task<FacturaCompra> ConsultarFacturasCompras(string IdFacturaCompra);
+        Task<string> CrearFacturaId(byte[] FacturaCom, DateTime FechaFactura, decimal TotalCompra, string DetallesCompra, int IdTipoPago, int IdTipoFactura, int IdMateriaPrima);
     }
 }

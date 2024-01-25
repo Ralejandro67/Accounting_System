@@ -36,5 +36,8 @@ namespace PupuseriaSalvadorena.Models
         public DateTime FechaRecurrencia { get; set; }
 
         public string Frecuencia { get; set; }
+
+        [Required(ErrorMessage = "El estado de conciliacion es obligatorio")]
+        public bool Conciliado { get; set; }
     }
 }

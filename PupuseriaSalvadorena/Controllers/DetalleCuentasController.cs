@@ -14,10 +14,12 @@ namespace PupuseriaSalvadorena.Controllers
     public class DetalleCuentasController : Controller
     {
         private readonly IDetallesCuentaRep _detallesCuentaRep;
+        private readonly ICuentaPagarRep _cuentasPagarRep;
 
-        public DetalleCuentasController(IDetallesCuentaRep context)
+        public DetalleCuentasController(IDetallesCuentaRep context, ICuentaPagarRep cuentasPagarRep)
         {
             _detallesCuentaRep = context;
+            _cuentasPagarRep = cuentasPagarRep;
         }
 
         // GET: DetalleCuentas
@@ -45,14 +47,14 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // GET: DetalleCuentas/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var cuentasPagar = await _cuentasPagarRep.MostrarCuentasPagar();
+            ViewBag.CuentasPagar = new SelectList(cuentasPagar, "IdCuentaPagar", "IdCuentaPagar");
+            return PartialView("_newDetalleCuentaPartial", new DetalleCuenta());
         }
 
         // POST: DetalleCuentas/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdDetallesCuenta,Pago,FechaIngreso,IdCuentaPagar")] DetalleCuenta detalleCuenta)
@@ -60,9 +62,9 @@ namespace PupuseriaSalvadorena.Controllers
             if (ModelState.IsValid)
             {
                 await _detallesCuentaRep.CrearDetallesCuenta(detalleCuenta.Pago, detalleCuenta.FechaIngreso, detalleCuenta.IdCuentaPagar);
-                return RedirectToAction(nameof(Index));
+                return Json(new { success = true, message = "Pago agregado correctamente." });
             }
-            return View(detalleCuenta);
+            return Json(new { success = false, message = "Error al agregar la factura de compra." });
         }
 
         // GET: DetalleCuentas/Edit/5

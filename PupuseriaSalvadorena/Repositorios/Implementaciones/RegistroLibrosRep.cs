@@ -16,20 +16,22 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             _context = context;
         }
 
-        public async Task CrearRegistroLibros(DateTime FechaRegistro, decimal MontoTotal, string Descripcion)
+        public async Task CrearRegistroLibros(DateTime FechaRegistro, decimal MontoTotal, string Descripcion, bool Conciliado)
         {
             var FechaRegistroParam = new SqlParameter("@FechaRegistro", FechaRegistro);
             var MontoTotalParam = new SqlParameter("@MontoTotal", MontoTotal);
             var DescripcionParam = new SqlParameter("@Descripcion", Descripcion);
-            await _context.Database.ExecuteSqlRawAsync("CrearRegistroLibros @FechaRegistro, @MontoTotal, @Descripcion", FechaRegistroParam, MontoTotalParam, DescripcionParam);
+            var ConciliadoParam = new SqlParameter("@Conciliado", Conciliado);
+            await _context.Database.ExecuteSqlRawAsync("CrearRegistroLibros @FechaRegistro, @MontoTotal, @Descripcion, @Conciliado", FechaRegistroParam, MontoTotalParam, DescripcionParam, ConciliadoParam);
         }
 
-        public async Task ActualizarRegistroLibros(string IdRegistroLibros, decimal MontoTotal, string Descripcion)
+        public async Task ActualizarRegistroLibros(string IdRegistroLibros, decimal MontoTotal, string Descripcion, bool Conciliado)
         {
             var IdRegistroLibrosParam = new SqlParameter("@IdRegistroLibros", IdRegistroLibros);
             var MontoTotalParam = new SqlParameter("@MontoTotal", MontoTotal);
             var DescripcionParam = new SqlParameter("@Descripcion", Descripcion);
-            await _context.Database.ExecuteSqlRawAsync("ActualizarRegistroLibros @IdRegistroLibros, @MontoTotal, @Descripcion", IdRegistroLibrosParam, MontoTotalParam, DescripcionParam);
+            var ConciliadoParam = new SqlParameter("@Conciliado", Conciliado);
+            await _context.Database.ExecuteSqlRawAsync("ActualizarRegistroLibros @IdRegistroLibros, @MontoTotal, @Descripcion, @Conciliado", IdRegistroLibrosParam, MontoTotalParam, DescripcionParam, ConciliadoParam);
         }
 
         public async Task EliminarRegistroLibros(string IdRegistroLibros)

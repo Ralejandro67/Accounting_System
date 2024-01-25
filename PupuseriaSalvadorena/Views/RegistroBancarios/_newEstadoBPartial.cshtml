@@ -4,13 +4,8 @@
     Model.FechaRegistro = Model.FechaRegistro == default ? DateTime.Now : Model.FechaRegistro;
 }
 
-<form id="estadoBacForm" asp-action="Create" asp-controller="RegistroBancarios" method="post" enctype="multipart/form-data">
+<form id="estadoBacForm" asp-action="Create" asp-controller="RegistroBancarios" method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="form-group">
-        <label asp-for="ArchivoEstado" class="control-label"></label>
-        <input asp-for="ArchivoEstado" type="file" class="form-control" />
-        <span asp-validation-for="ArchivoEstado" class="text-danger"></span>
-    </div>
     <div class="form-group">
         <label asp-for="FechaRegistro" class="control-label"></label>
         <input asp-for="FechaRegistro" class="form-control" type="date" />

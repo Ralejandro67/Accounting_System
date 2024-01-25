@@ -54,7 +54,7 @@ namespace PupuseriaSalvadorena.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _registroLibroRep.CrearRegistroLibros(registroLibro.FechaRegistro, registroLibro.MontoTotal, registroLibro.Descripcion);
+                await _registroLibroRep.CrearRegistroLibros(registroLibro.FechaRegistro, registroLibro.MontoTotal, registroLibro.Descripcion, registroLibro.Conciliado);
                 return Json(new { success = true, message = "Libro agregado correctamente." });
             }
             return Json(new { success = false, message = "Error al agregar el libro." });
@@ -88,7 +88,7 @@ namespace PupuseriaSalvadorena.Controllers
 
             if (ModelState.IsValid)
             {
-                await _registroLibroRep.ActualizarRegistroLibros(registroLibro.IdRegistroLibros, registroLibro.MontoTotal, registroLibro.Descripcion);
+                await _registroLibroRep.ActualizarRegistroLibros(registroLibro.IdRegistroLibros, registroLibro.MontoTotal, registroLibro.Descripcion, registroLibro.Conciliado);
                 return Json(new { success = true, message = "Libro actualizado correctamente." });
             }
             return Json(new { success = false, message = "Datos inválidos." });
@@ -131,8 +131,9 @@ namespace PupuseriaSalvadorena.Controllers
             DateTime FechaResgistro = DateTime.Now;
             string Mes = FechaResgistro.ToString("MMMM");
             string Libro = "Libro " + Mes;
+            bool conciliado = false;
 
-            _registroLibroRep.CrearRegistroLibros(FechaResgistro, 0, Libro);
+            _registroLibroRep.CrearRegistroLibros(FechaResgistro, 0, Libro, false);
         }
     }
 }

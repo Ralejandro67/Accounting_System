@@ -69,13 +69,13 @@ namespace PupuseriaSalvadorena.Controllers
         // POST: DetallesTransacciones/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdRegistroLibros,IdTransaccion,DescripcionTransaccion,Cantidad,Monto,FechaTrans,IdTipo,IdImpuesto,NombreImpuesto,TipoTransac,Recurrencia,FechaRecurrencia,Frecuencia")] DetalleTransaccion detalleTransaccion)
+        public async Task<IActionResult> Create([Bind("IdRegistroLibros,IdTransaccion,DescripcionTransaccion,Cantidad,Monto,FechaTrans,IdTipo,IdImpuesto,NombreImpuesto,TipoTransac,Recurrencia,FechaRecurrencia,Frecuencia,Conciliado")] DetalleTransaccion detalleTransaccion)
         {
             if (ModelState.IsValid)
             {
                 if (detalleTransaccion.Recurrencia)
                 {
-                    var idTransaccion =  await _detallesTransacRep.CrearTransaccionRecurrente(detalleTransaccion.IdRegistroLibros, detalleTransaccion.DescripcionTransaccion, detalleTransaccion.Cantidad, detalleTransaccion.Monto, detalleTransaccion.FechaTrans, detalleTransaccion.IdTipo, detalleTransaccion.IdImpuesto, detalleTransaccion.Recurrencia, detalleTransaccion.FechaRecurrencia, detalleTransaccion.Frecuencia);
+                    var idTransaccion =  await _detallesTransacRep.CrearTransaccionRecurrente(detalleTransaccion.IdRegistroLibros, detalleTransaccion.DescripcionTransaccion, detalleTransaccion.Cantidad, detalleTransaccion.Monto, detalleTransaccion.FechaTrans, detalleTransaccion.IdTipo, detalleTransaccion.IdImpuesto, detalleTransaccion.Recurrencia, detalleTransaccion.FechaRecurrencia, detalleTransaccion.Frecuencia, detalleTransaccion.Conciliado);
                     var cronExpression = FrecuenciaACron(detalleTransaccion.Frecuencia);
 
                     RecurringJob.AddOrUpdate($"transaccion_{idTransaccion}",
@@ -86,7 +86,7 @@ namespace PupuseriaSalvadorena.Controllers
                 }
                 else
                 {
-                    await _detallesTransacRep.CrearDetalleTransaccion(detalleTransaccion.IdRegistroLibros, detalleTransaccion.DescripcionTransaccion, detalleTransaccion.Cantidad, detalleTransaccion.Monto, detalleTransaccion.FechaTrans, detalleTransaccion.IdTipo, detalleTransaccion.IdImpuesto, detalleTransaccion.Recurrencia, detalleTransaccion.FechaRecurrencia, detalleTransaccion.Frecuencia);
+                    await _detallesTransacRep.CrearDetalleTransaccion(detalleTransaccion.IdRegistroLibros, detalleTransaccion.DescripcionTransaccion, detalleTransaccion.Cantidad, detalleTransaccion.Monto, detalleTransaccion.FechaTrans, detalleTransaccion.IdTipo, detalleTransaccion.IdImpuesto, detalleTransaccion.Recurrencia, detalleTransaccion.FechaRecurrencia, detalleTransaccion.Frecuencia, detalleTransaccion.Conciliado);
                     return Json(new { success = true, message = "Transaccion agregada correctamente." });
                 }
             }
@@ -127,7 +127,7 @@ namespace PupuseriaSalvadorena.Controllers
 
             if (ModelState.IsValid)
             {
-                await _detallesTransacRep.ActualizarDetalleTransaccion(detalleTransaccion.IdTransaccion, detalleTransaccion.DescripcionTransaccion, detalleTransaccion.Cantidad, detalleTransaccion.Monto, detalleTransaccion.IdTipo, detalleTransaccion.IdImpuesto);
+                await _detallesTransacRep.ActualizarDetalleTransaccion(detalleTransaccion.IdTransaccion, detalleTransaccion.DescripcionTransaccion, detalleTransaccion.Cantidad, detalleTransaccion.Monto, detalleTransaccion.IdTipo, detalleTransaccion.IdImpuesto, detalleTransaccion.Conciliado);
                 return Json(new { success = true, message = "Transaccion actualizada correctamente." });
             }
             return Json(new { success = false, message = "Datos inválidos." });
@@ -209,7 +209,8 @@ namespace PupuseriaSalvadorena.Controllers
                     TransaccionOriginal.IdImpuesto,
                     TransaccionOriginal.Recurrencia,
                     TransaccionOriginal.FechaRecurrencia,
-                    TransaccionOriginal.Frecuencia
+                    TransaccionOriginal.Frecuencia,
+                    TransaccionOriginal.Conciliado
                 );
             }
         }
