@@ -9,5 +9,6 @@ namespace PupuseriaSalvadorena.Repositorios.Interfaces
         Task EliminarDetallesCuenta(string IdDetallesCuenta);
         Task<List<DetalleCuenta>> MostrarDetallesCuenta();
         Task<DetalleCuenta> ConsultarDetallesCuentas(string IdDetallesCuenta);
+        Task<List<DetalleCuenta>> ConsultarCuentaDetalles(string IdCuentaPagar);
     }
 }

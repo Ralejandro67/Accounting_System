@@ -1,56 +1,53 @@
-﻿// Agregar Factura Compra
-document.getElementById("AddDetalleCuenta").addEventListener("click", function () {
-    $.ajax({
-        url: '/DetalleCuentas/Create',
-        type: 'GET',
-        success: function (result) {
-            $('#newDetalleCuentaModal .modal-body').html(result);
-            $('#newDetalleCuentaModal').modal('show');
-        },
-        error: function (error) {
-            console.error("Error al cargar la vista parcial", error);
-        }
-    });
-});
+﻿// Realizar Pago
+document.querySelectorAll('.add-Pago').forEach(button => {
+    button.addEventListener('click', function () {
+        var IdCuentaPagar = this.getAttribute('data-idCuenta');
+        fetch(`/DetalleCuentas/Create/${IdCuentaPagar}`)
+            .then(response => response.text())
+            .then(html => {
+                document.querySelector('#newDetalleCuentaModal .modal-body').innerHTML = html;
+                $('#newDetalleCuentaModal').modal('show');
+                document.querySelector('#newDetalleCuentaModal #DetalleCuentaForm').addEventListener('submit', function (e) {
+                    e.preventDefault();
 
-document.addEventListener('click', function (e) {
-    if (e.target && e.target.id === 'submitDetalleCuenta') {
-        var formData = new FormData(document.getElementById('DetalleCuentaForm'));
+                    var formData = new FormData(this);
 
-        fetch('/DetalleCuentas/Create', {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'RequestVerificationToken': document.getElementsByName('__RequestVerificationToken')[0].value
-            }
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    $('#newDetalleCuentaModal').modal('hide');
-                    Swal.fire({
-                        title: '¡Éxito!',
-                        text: data.message,
-                        icon: 'success'
-                    }).then((result) => {
-                        if (result.isConfirmed || result.isDismissed) {
-                            window.location.reload();
+                    fetch(`/DetalleCuentas/Create`, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'RequestVerificationToken': document.getElementsByName('__RequestVerificationToken')[0].value
                         }
-                    });
-                } else {
-                    Swal.fire({
-                        title: 'Error',
-                        text: data.message,
-                        icon: 'error'
-                    });
-                }
-            })
-            .catch(error => {
-                Swal.fire({
-                    title: 'Error',
-                    text: 'Hubo un problema con la solicitud.',
-                    icon: 'error'
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            $('#newDetalleCuentaModal').modal('hide');
+                            if (data.success) {
+                                Swal.fire({
+                                    title: '¡Éxito!',
+                                    text: data.message,
+                                    icon: 'success'
+                                }).then(() => {
+                                    window.location.reload();
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: 'Error',
+                                    text: data.message,
+                                    icon: 'error'
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            $('#newDetalleCuentaModal').modal('hide');
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Hubo un problema con la solicitud.',
+                                icon: 'error'
+                            });
+                        });
                 });
-            });
-    }
+            })
+            .catch(error => console.error('Error:', error));
+    });
 });

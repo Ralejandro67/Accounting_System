@@ -1,36 +1,116 @@
-﻿@model PupuseriaSalvadorena.Models.DetalleCuenta
+﻿@model IEnumerable<PupuseriaSalvadorena.Models.DetalleCuenta>
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Index";
 }
 
-<h1>Details</h1>
+@section Scripts {
+    <script src="~/js/detallecuenta.js" asp-append-version="true"></script>
+}
 
-<div>
-    <h4>DetalleCuenta</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Pago)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Pago)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FechaIngreso)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FechaIngreso)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IdCuentaPagar)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdCuentaPagar)
-        </dd>
-    </dl>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center">
+        <h1 class="mb-0">
+            <img src="~/images/facturacompra.png" alt="Icono Factura de Compra" style="height: 60px;" />
+            Cuenta por Pagar
+        </h1>
+        <button type="button" class="btn btn-primary nav-link-icon add-Pago" id="AddDetalleCuenta" data-idCuenta="@ViewBag.IdCuentaPagar">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2" />
+            </svg> Realizar Pago
+        </button>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.IdDetallesCuenta">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+<div class="container mt-4">
+    Registro de las compras de materia prima para la elaboracion de los platillos.
+</div>
+<div class="card-body card-body-custom">
+    <div class="row no-gutters">
+        <div class="col text-center item" style="background-color: @(ViewBag.VencimientoExpirado ? "#FFE1E1" : "#CAF7E3")">
+            <div class="item-value">Fecha de Vencimiento</div>
+            <div class="text-note">@ViewBag.FechaVencimiento</div>
+        </div>
+        <div class="col text-center item">
+            <div class="item-value">Total</div>
+            <div class="text-note">₡@ViewBag.Total</div>
+        </div>
+        <div class="col text-center item">
+            <div class="item-value">Pagado</div>
+            <div class="text-note">₡@ViewBag.Pago</div>
+        </div>
+        <div class="col text-center item" style="background-color: @(ViewBag.PorPagarEsCero ? "#CAF7E3" : "#FFE1E1")">
+            <div class="item-value">A Pagar</div>
+            <div class="text-note">₡@ViewBag.PorPagar</div>
+        </div>
+    </div>
+</div>
+<div class="card-body table-body-custom">
+    @if (Model.Count() > 0)
+    {
+        <table class="table table-hover mt-4">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.IdDetallesCuenta)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Pago)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.FechaIngreso)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.IdCuentaPagar)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.IdDetallesCuenta)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Pago)
+                        </td>
+                        <td>
+                            @item.FechaIngreso.ToString("dd/MM/yyyy")
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.IdCuentaPagar)
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.IdDetallesCuenta">Edit</a> |
+                            <a asp-action="Details" asp-route-id="@item.IdDetallesCuenta">Details</a> |
+                            <a asp-action="Delete" asp-route-id="@item.IdDetallesCuenta">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="d-flex mt-4" style="width: 500vh;">
+            <h5>No se ha realizado ningun pago.</h5>
+        </div>
+    }
+</div>
+
+<div class="modal fade" id="newDetalleCuentaModal" tabindex="-1" role="dialog" aria-labelledby="newDetalleCuentaModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="newDetalleCuentaModalLabel">Nueva Cuenta por Pagar</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @Html.Partial("_newDetalleCuentaPartial", new PupuseriaSalvadorena.Models.DetalleCuenta())
+            </div>
+        </div>
+    </div>
 </div>

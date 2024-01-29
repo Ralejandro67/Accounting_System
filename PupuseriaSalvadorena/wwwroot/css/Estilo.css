@@ -1,0 +1,279 @@
+﻿#AddFacturaC {
+    background-color: #0DBCB5;
+    border-radius: 0.5rem;
+    border-color: #0DBCB5;
+    border-radius: 0.5rem;
+}
+
+#AddFacturaC:hover {
+    background-color: #72DDD9;
+    border-color: #72DDD9;
+}
+
+.modal-header {
+    background-color: #0DBCB5;
+    color: white;
+}
+
+#submitFacturaC {
+    background-color: #0DBCB5;
+    border-radius: 0.5rem;
+    border-color: #0DBCB5;
+}
+
+#submitFacturaC:hover {
+    background-color: #72DDD9;
+    border-color: #72DDD9;
+}
+
+#CampoArea {
+    resize: none;
+}
+
+.theme-switch {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    width: 9em;
+    color: black;
+    background-color: white;
+    padding: 0.5em;
+    transition: .4s;
+    z-index: 1;
+    border-radius: 0.2rem;
+    border: 1px solid #D8D9DA;
+}
+
+.name::before {
+    color: black;
+    content: "Pagado";
+    margin-right: 2em;
+    transition: .2s ease-in-out;
+}
+
+.name::after {
+    color: black;
+    content: "Por Pagar";
+    margin-right: 1.7em;
+    transition: .2s ease-in-out;
+    display: none;
+}
+
+.theme-switch .slider {
+    position: absolute;
+    background-color: #F0F0F0;
+    margin-left: 6.2em;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+}
+
+.theme-switch:hover {
+    color: white;
+    cursor: pointer;
+    background-color: #72DDD9;
+}
+
+.theme-switch:hover .name::before {
+    color: white;
+}
+
+.theme-switch:hover .name::after {
+    color: white;
+}
+
+.theme-switch input[type=checkbox]:checked + .slider {
+    transform: rotate(360deg);
+    box-shadow: none;
+    border: 3.5px solid #D8D9DA;
+    background-color: #0DBCB5;
+}
+
+.theme-switch input[type=checkbox]:checked ~ .name::before {
+    display: none;
+}
+
+.theme-switch input[type=checkbox]:checked ~ .name::after {
+    display: block;
+}
+
+.theme-switch input[type=checkbox] {
+    position: absolute;
+    visibility: hidden;
+}
+
+.slider {
+    transition: 300ms ease;
+}
+
+.link-icon svg {
+    margin-bottom: 0.5em;
+    margin-right: 0.5em;
+}
+
+#BtnEditar {
+    color: black;
+    background-color: #F5F7F8;
+    border-radius: 0.5rem;
+    border-color: #F5F7F8;
+    padding: 0.5rem;
+    padding-top: 0.2rem;
+}
+
+#BtnEditar:hover {
+    background-color: #0DBCB5;
+    border-color: #0DBCB5;
+    color: white;
+}
+
+#BtnEliminar {
+    color: black;
+    background-color: #F5F7F8;
+    border-radius: 0.5rem;
+    border-color: #F5F7F8;
+    padding: 0.5rem;
+    padding-top: 0.2rem;
+}
+
+#BtnEliminar:hover {
+    background-color: #0DBCB5;
+    border-color: #0DBCB5;
+    color: white;
+}
+
+#BtnPagar {
+    color: black;
+    background-color: #F5F7F8;
+    border-radius: 0.5rem;
+    border-color: #F5F7F8;
+    padding: 0.5rem;
+    padding-top: 0.2rem;
+}
+
+#BtnPagar:hover {
+    background-color: #0DBCB5;
+    border-color: #0DBCB5;
+    color: white;
+}
+
+#BtnImprimir {
+    color: black;
+    background-color: #F5F7F8;
+    border-radius: 0.5rem;
+    border-color: #F5F7F8;
+    padding: 0.5rem;
+    padding-top: 0.2rem;
+}
+
+#BtnImprimir:hover {
+    background-color: #0DBCB5;
+    border-color: #0DBCB5;
+    color: white;
+}
+
+#BtnDetalles {
+    color: black;
+    background-color: #F5F7F8;
+    border-radius: 0.5rem;
+    border-color: #F5F7F8;
+    padding: 0.5rem;
+    padding-top: 0.2rem;
+}
+
+#BtnDetalles:hover {
+    background-color: #0DBCB5;
+    border-color: #0DBCB5;
+    color: white;
+}
+
+#AddCuentaPagar {
+    background-color: #0DBCB5;
+    border-radius: 0.5rem;
+    border-color: #0DBCB5;
+}
+
+#AddCuentaPagar:hover {
+    background-color: #72DDD9;
+    border-color: #72DDD9;
+}
+
+#AddDetalleCuenta {
+    background-color: #0DBCB5;
+    border-radius: 0.5rem;
+    border-color: #0DBCB5;
+    color: white;
+}
+
+#AddDetalleCuenta:hover {
+    background-color: #72DDD9;
+    border-color: #72DDD9;
+}
+
+/* Campos Card */
+/* ----------------------------------- */
+.card-body-custom {
+    background-color: #ffffff;
+    border: 1px solid #ddd !important;
+    border-radius: 0.5rem;
+    padding: 0 !important;
+    margin-top: 1.25rem !important;
+    margin-bottom: 1.25rem !important;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    box-shadow: 2px 2px 10px 0 rgba(0, 0, 0, 0.25);
+}
+
+.table-body-custom {
+    background-color: #ffffff;
+    border: 1px solid #ddd !important;
+    border-radius: 0.5rem;
+    padding: 0 !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    margin-top: 1.25rem !important;
+    margin-bottom: 1.25rem !important;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    box-shadow: 2px 2px 10px 0 rgba(0, 0, 0, 0.25);
+}
+
+
+.row.no-gutters {
+    display: flex;
+    flex-grow: 1;
+    width: 100%; 
+}
+
+.item {
+    text-align: center;
+    border-right: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex-grow: 1;
+    padding-top: 1.25rem !important;
+    padding-bottom: 1.25rem !important;
+}
+
+.item:first-child {
+    border-top-left-radius: 0.5rem;
+    border-bottom-left-radius: 0.5rem;
+}
+
+
+.item:last-child {
+    border-top-right-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+    border-right: 0;
+}
+
+.text-note {
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 0.25rem;
+}
+/* ----------------------------------- */

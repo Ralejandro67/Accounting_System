@@ -11,7 +11,6 @@ namespace PupuseriaSalvadorena.Models
         public byte[]? FacturaCom { get; set; }
 
         [Required(ErrorMessage = "La fecha de la factura de compra es obligatoria")]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime FechaFactura { get; set; }
 
         [Required(ErrorMessage = "El monto de la factura de compra es obligatorio")]
@@ -33,6 +32,19 @@ namespace PupuseriaSalvadorena.Models
         public string? NombrePago { get; set; }
 
         public string? NombreFactura { get; set; }
+
+        [NotMapped]
+        public string? IdProveedor { get; set; }
+
+        [NotMapped]
+        public DateTime FechaVencimiento { get; set; }
+
+        [NotMapped]
+        [RegularExpression(@"^[0-9]+(\.[0-9]+)?$", ErrorMessage = "El peso de la materia prima solo puede contener números")]
+        public decimal Peso { get; set; }
+
+        [NotMapped]
+        public int Cantidad { get; set; }
 
         [NotMapped]
         public IFormFile? FacturaDoc { get; set; }

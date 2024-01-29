@@ -1,0 +1,22 @@
+﻿@model IEnumerable<PupuseriaSalvadorena.Models.AlertaCuentaPagar>
+
+@if (Model != null && Model.Any())
+{
+    var notificaciones = Model.ToList();
+
+    for (int i = 0; i < notificaciones.Count; i++)
+    {
+        <a class="dropdown-item" href="@Url.Action("Details", "AlertasCuentaPagar", new { id = notificaciones[i].IdAlerta })">
+            @notificaciones[i].Mensaje
+            <small class="text-muted">@notificaciones[i].FechaMensaje.ToShortDateString()</small>
+        </a>
+        @if (i < notificaciones.Count - 1)
+        {
+            <hr class="hr-notificaciones" />
+        }
+    }
+}
+else
+{
+    <div class="dropdown-item">No hay notificaciones nuevas.</div>
+}

@@ -18,19 +18,30 @@ namespace PupuseriaSalvadorena.Controllers
         private readonly IMateriaPrimaRep _materiaPrimaRep;
         private readonly ITipoPagoRep _tipoPagoRep;
         private readonly ITipoFacturaRep _tipoFacturaRep;
+        private readonly IProveedorRep _proveedorRep;
+        private readonly ICuentaPagarRep _cuentaPagarRep;
+        private readonly IDetallesTransacRep _detallesTransacRep;
+        private readonly IHistorialCompraRep _historialCompraRep;
 
-        public FacturaComprasController(IFacturaCompraRep context, IMateriaPrimaRep materiaPrimaRep, ITipoPagoRep tipoPagoRep, ITipoFacturaRep tipoFacturaRep)
+        public FacturaComprasController(IFacturaCompraRep context, IMateriaPrimaRep materiaPrimaRep, ITipoPagoRep tipoPagoRep, ITipoFacturaRep tipoFacturaRep, IProveedorRep proveedorRep, ICuentaPagarRep cuentaPagarRep, IDetallesTransacRep detallesTransacRep, IHistorialCompraRep historialCompraRep)
         {
             _facturaCompraRep = context;
             _materiaPrimaRep = materiaPrimaRep;
             _tipoPagoRep = tipoPagoRep;
             _tipoFacturaRep = tipoFacturaRep;
+            _proveedorRep = proveedorRep;
+            _cuentaPagarRep = cuentaPagarRep;
+            _detallesTransacRep = detallesTransacRep;
+            _historialCompraRep = historialCompraRep;
         }
 
         // GET: FacturaCompras
         public async Task<IActionResult> Index()
         {
             var facturaCompras = await _facturaCompraRep.MostrarFacturasCompras();
+            var proveedores = await _proveedorRep.MostrarProveedores();
+            ViewBag.Proveedores = new SelectList(proveedores, "IdProveedor", "ProveedorCompleto");
+
             return View(facturaCompras);
         }
 
@@ -57,17 +68,19 @@ namespace PupuseriaSalvadorena.Controllers
             var materiasPrimas = await _materiaPrimaRep.MostrarMateriaPrima();
             var tipoPagos = await _tipoPagoRep.MostrarTipoPagos();
             var tipoFacturas = await _tipoFacturaRep.MostrarTipoFacturas();
+            var proveedores = await _proveedorRep.MostrarProveedores();
 
             ViewBag.MateriasPrimas = new SelectList(materiasPrimas, "IdMateriaPrima", "NombreMateriaPrima");
             ViewBag.TipoPagos = new SelectList(tipoPagos, "IdTipoPago", "NombrePago");
             ViewBag.TipoFacturas = new SelectList(tipoFacturas, "IdTipoFactura", "NombreFactura");
+            ViewBag.Proveedores = new SelectList(proveedores, "IdProveedor", "ProveedorCompleto");
             return PartialView("_newFacturaCPartial", new FacturaCompra());
         }
 
         // POST: FacturaCompras/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdFacturaCompra,FacturaCom,FechaFactura,TotalCompra,DetallesCompra,IdTipoPago,IdTipoFactura,IdMateriaPrima,FacturaDoc,Activo")] FacturaCompra facturaCompra, IFormFile facturaDoc)
+        public async Task<IActionResult> Create([Bind("IdFacturaCompra,FacturaCom,FechaFactura,TotalCompra,DetallesCompra,IdTipoPago,IdTipoFactura,IdMateriaPrima,FacturaDoc,Activo,IdProveedor,FechaVencimiento,Peso,Cantidad")] FacturaCompra facturaCompra, IFormFile facturaDoc)
         {
             if (ModelState.IsValid)
             {
@@ -80,14 +93,25 @@ namespace PupuseriaSalvadorena.Controllers
                     }
                 }
 
+                var IdLibro = await _detallesTransacRep.ObtenerIdLibroMasReciente();
+
                 if (facturaCompra.Activo)
                 {
                     var IdFactura = await _facturaCompraRep.CrearFacturaId(facturaCompra.FacturaCom, facturaCompra.FechaFactura, facturaCompra.TotalCompra, facturaCompra.DetallesCompra, facturaCompra.IdTipoPago, facturaCompra.IdTipoFactura, facturaCompra.IdMateriaPrima);
+                    
+                    await _cuentaPagarRep.CrearCuentaPagar(facturaCompra.FechaFactura, facturaCompra.FechaVencimiento, facturaCompra.TotalCompra, IdFactura, facturaCompra.IdProveedor, facturaCompra.Activo);
+                    await _historialCompraRep.CrearHistorialCompra(facturaCompra.IdMateriaPrima, facturaCompra.Cantidad, facturaCompra.TotalCompra, facturaCompra.Peso, facturaCompra.FechaFactura, IdFactura);
+                    await _detallesTransacRep.CrearDetalleTransaccion(IdLibro, facturaCompra.DetallesCompra, facturaCompra.Cantidad, facturaCompra.TotalCompra, facturaCompra.FechaFactura, 2, "TAX002", false, facturaCompra.FechaFactura,"No Recurrente", false);
+
                     return Json(new { success = true, message = "Factura de Compra agregada correctamente." });
                 }
                 else
                 {
-                    await _facturaCompraRep.CrearFacturaCompra(facturaCompra.FacturaCom, facturaCompra.FechaFactura, facturaCompra.TotalCompra, facturaCompra.DetallesCompra, facturaCompra.IdTipoPago, facturaCompra.IdTipoFactura, facturaCompra.IdMateriaPrima);
+                    var IdFactura = await _facturaCompraRep.CrearFacturaId(facturaCompra.FacturaCom, facturaCompra.FechaFactura, facturaCompra.TotalCompra, facturaCompra.DetallesCompra, facturaCompra.IdTipoPago, facturaCompra.IdTipoFactura, facturaCompra.IdMateriaPrima);
+
+                    await _historialCompraRep.CrearHistorialCompra(facturaCompra.IdMateriaPrima, facturaCompra.Cantidad, facturaCompra.TotalCompra, facturaCompra.Peso, facturaCompra.FechaFactura, IdFactura);
+                    await _detallesTransacRep.CrearDetalleTransaccion(IdLibro, facturaCompra.DetallesCompra, facturaCompra.Cantidad, facturaCompra.TotalCompra, facturaCompra.FechaFactura, 2, "TAX002", false, facturaCompra.FechaFactura, "No Recurrente", false);
+
                     return Json(new { success = true, message = "Factura de Compra agregada correctamente." });
                 }
             }

@@ -11,7 +11,7 @@ namespace PupuseriaSalvadorena.Models
 
         [Required(ErrorMessage = "La cantidad de materia prima es obligatoria")]
         [RegularExpression(@"^[0-9]+$", ErrorMessage = "La cantidad de materia prima solo puede contener números")]
-        public int Cantidad { get; set; }
+        public int CantCompra { get; set; }
 
         [Required(ErrorMessage = "El precio de la materia prima es obligatorio")]
         [RegularExpression(@"^[0-9]+(\.[0-9]+)?$", ErrorMessage = "El precio de la materia prima solo puede contener números")]

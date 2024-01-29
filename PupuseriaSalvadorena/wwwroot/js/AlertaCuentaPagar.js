@@ -1,11 +1,38 @@
-﻿// Agregar Cuenta por Pagar
-document.getElementById("AddCuentaPagar").addEventListener("click", function () {
+﻿// Mostrar Notificaciones
+document.addEventListener('DOMContentLoaded', function () {
+    cargarNotificaciones();
+    countNotificaciones();
+
+    setInterval(cargarNotificaciones, 1800000);
+    setInterval(countNotificaciones, 1800000);
+});
+
+function cargarNotificaciones() {
+    fetch('/AlertasCuentaPagar/GetNotificaciones')
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('notificacionesContainer').innerHTML = html;
+        })
+        .catch(error => console.error('Error al cargar las notificaciones'));
+}
+
+function countNotificaciones() {
+    fetch('/AlertasCuentaPagar/GetNotificacionesCount')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('notificationCount').textContent = data.count;
+        })
+        .catch(error => console.error('Error al cargar las notificaciones'));
+}
+
+// Agregar Alerta
+document.getElementById("AddAlerta").addEventListener("click", function () {
     $.ajax({
-        url: '/CuentaPagars/Create',
+        url: '/AlertasCuentaPagar/Create',
         type: 'GET',
         success: function (result) {
-            $('#newCuentaPagarModal .modal-body').html(result);
-            $('#newCuentaPagarModal').modal('show');
+            $('#newAlertaModal .modal-body').html(result);
+            $('#newAlertaModal').modal('show');
         },
         error: function (error) {
             console.error("Error al cargar la vista parcial", error);
@@ -14,10 +41,10 @@ document.getElementById("AddCuentaPagar").addEventListener("click", function () 
 });
 
 document.addEventListener('click', function (e) {
-    if (e.target && e.target.id === 'submitCuentaPagar') {
-        var formData = new FormData(document.getElementById('CuentaPagarForm'));
+    if (e.target && e.target.id === 'submitAlerta') {
+        var formData = new FormData(document.getElementById('AlertaForm'));
 
-        fetch('/CuentaPagars/Create', {
+        fetch('/AlertasCuentaPagar/Create', {
             method: 'POST',
             body: formData,
             headers: {
@@ -27,7 +54,7 @@ document.addEventListener('click', function (e) {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    $('#newCuentaPagarModal').modal('hide');
+                    $('#newAlertaModal').modal('hide');
                     Swal.fire({
                         title: '¡Éxito!',
                         text: data.message,
@@ -55,21 +82,21 @@ document.addEventListener('click', function (e) {
     }
 });
 
-// Editar Cuenta por Pagar
-document.querySelectorAll('.edit-CuentaPagar').forEach(button => {
+// Editar Alerta
+document.querySelectorAll('.edit-Alerta').forEach(button => {
     button.addEventListener('click', function () {
-        var IdCuentaPagar = this.getAttribute('data-id');
-        fetch(`/CuentaPagars/Edit/${IdCuentaPagar}`)
+        var IdAlerta = this.getAttribute('data-id');
+        fetch(`/AlertasCuentaPagar/Edit/${IdAlerta}`)
             .then(response => response.text())
             .then(html => {
-                document.querySelector('#editCuentaPagarModal .modal-body').innerHTML = html;
-                $('#editCuentaPagarModal').modal('show');
-                document.querySelector('#editCuentaPagarModal #editCuentaPagarForm').addEventListener('submit', function (e) {
+                document.querySelector('#editAlertaModal .modal-body').innerHTML = html;
+                $('#editAlertaModal').modal('show');
+                document.querySelector('#editAlertaModal #editAlertaForm').addEventListener('submit', function (e) {
                     e.preventDefault();
 
                     var formData = new FormData(this);
 
-                    fetch(`/CuentaPagars/Edit/${IdCuentaPagar}`, {
+                    fetch(`/AlertasCuentaPagar/Edit/${IdAlerta}`, {
                         method: 'POST',
                         body: formData,
                         headers: {
@@ -78,7 +105,7 @@ document.querySelectorAll('.edit-CuentaPagar').forEach(button => {
                     })
                         .then(response => response.json())
                         .then(data => {
-                            $('#editCuentaPagarModal').modal('hide');
+                            $('#editAlertaModal').modal('hide');
                             if (data.success) {
                                 Swal.fire({
                                     title: '¡Éxito!',
@@ -96,7 +123,7 @@ document.querySelectorAll('.edit-CuentaPagar').forEach(button => {
                             }
                         })
                         .catch(error => {
-                            $('#editCuentaPagarModal').modal('hide');
+                            $('#editAlertaModal').modal('hide');
                             Swal.fire({
                                 title: 'Error',
                                 text: 'Hubo un problema con la solicitud.',
@@ -106,57 +133,5 @@ document.querySelectorAll('.edit-CuentaPagar').forEach(button => {
                 });
             })
             .catch(error => console.error('Error:', error));
-    });
-});
-
-// Eliminar Cuenta por Pagar
-document.querySelectorAll('.delete-CuentaPagar').forEach(button => {
-    button.addEventListener('click', function () {
-        var IdCuentaPagar = this.getAttribute('data-id');
-
-        Swal.fire({
-            title: '¿Estás seguro?',
-            text: "¡No podrás revertir esto!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Sí, elimínalo!',
-            cancelButtonText: 'Cancelar'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                fetch(`/CuentaPagars/Delete/${IdCuentaPagar}`, {
-                    method: 'POST',
-                    headers: {
-                        'RequestVerificationToken': document.getElementsByName('__RequestVerificationToken')[0].value
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        Swal.fire(
-                            '¡Eliminado!',
-                            'El impuesto ha sido eliminado.',
-                            'success'
-                        ).then(() => {
-                            window.location.reload();
-                        });
-                    } else {
-                        Swal.fire(
-                            'Error',
-                            'Hubo un problema al eliminar el impuesto.',
-                            'error'
-                        );
-                    }
-                })
-                .catch(error => {
-                    Swal.fire(
-                        'Error',
-                        'Hubo un problema con la solicitud.',
-                        'error'
-                    );
-                });
-            }
-        })
     });
 });

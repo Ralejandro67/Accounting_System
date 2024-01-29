@@ -8,11 +8,9 @@ namespace PupuseriaSalvadorena.Models
         public string? IdCuentaPagar { get; set; }
 
         [Required(ErrorMessage = "La fecha de creacion de la cuenta por pagar es obligatoria")]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime FechaCreacion { get; set; }
 
         [Required(ErrorMessage = "La fecha de vencimiento de la cuenta por pagar es obligatoria")]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime FechaVencimiento { get; set; }
 
         [Required(ErrorMessage = "El monto pagado es obligatorio")]
@@ -24,6 +22,9 @@ namespace PupuseriaSalvadorena.Models
         [Required(ErrorMessage = "El proveedor es obligatorio")]
         public string? IdProveedor { get; set; }
 
-        public string? Proveedor { get; set; }
+        public string? ProveedorCompleto { get; set; }
+
+        [Required(ErrorMessage = "El estado de la cuenta por pagar es obligatorio")]
+        public bool Estado { get; set; }
     }
 }

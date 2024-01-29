@@ -50,7 +50,7 @@ namespace PupuseriaSalvadorena.Controllers
         public async Task<IActionResult> Create()
         {
             var proveedores = await _proveedorRep.MostrarProveedores();
-            ViewBag.Proveedores = new SelectList(proveedores, "IdProveedor", "NombreProveedor");
+            ViewBag.Proveedores = new SelectList(proveedores, "IdProveedor", "ProveedorCompleto");
             return PartialView("_newMateriaPrimaPartial", new MateriaPrima());
         }
 

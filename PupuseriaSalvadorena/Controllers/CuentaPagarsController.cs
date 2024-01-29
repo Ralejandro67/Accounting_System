@@ -54,7 +54,7 @@ namespace PupuseriaSalvadorena.Controllers
             var proveedores = await _proveedorRep.MostrarProveedores();
             var facturaCompras = await _facturaCompraRep.MostrarFacturasCompras();
 
-            ViewBag.Proveedores = new SelectList(proveedores, "IdProveedor", "NombreProveedor");
+            ViewBag.Proveedores = new SelectList(proveedores, "IdProveedor", "ProveedorCompleto");
             ViewBag.FacturaCompras = new SelectList(facturaCompras, "IdFacturaCompra", "IdFacturaCompra");
             return PartialView("_newCuentaPagarPartial", new CuentaPagar());
         }
@@ -62,11 +62,11 @@ namespace PupuseriaSalvadorena.Controllers
         // POST: CuentaPagars/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdCuentaPagar,FechaCreacion,FechaVencimiento,TotalPagado,IdFacturaCompra,IdProveedor")] CuentaPagar cuentaPagar)
+        public async Task<IActionResult> Create([Bind("IdCuentaPagar,FechaCreacion,FechaVencimiento,TotalPagado,IdFacturaCompra,IdProveedor,Estado")] CuentaPagar cuentaPagar)
         {
             if (ModelState.IsValid)
             {
-                await _cuentaPagarRep.CrearCuentaPagar(cuentaPagar.FechaCreacion, cuentaPagar.FechaVencimiento, cuentaPagar.TotalPagado, cuentaPagar.IdFacturaCompra, cuentaPagar.IdProveedor);
+                await _cuentaPagarRep.CrearCuentaPagar(cuentaPagar.FechaCreacion, cuentaPagar.FechaVencimiento, cuentaPagar.TotalPagado, cuentaPagar.IdFacturaCompra, cuentaPagar.IdProveedor, cuentaPagar.Estado);
                 return Json(new { success = true, message = "Cuenta por pagar agregada correctamente." });
             }
             return Json(new { success = false, message = "Error al agregar la cuenta por pagar." });
@@ -81,46 +81,42 @@ namespace PupuseriaSalvadorena.Controllers
             }
 
             var cuentaPagar = await _cuentaPagarRep.ConsultarCuentasPagar(id);
+            var proveedores = await _proveedorRep.MostrarProveedores();
+            var facturaCompras = await _facturaCompraRep.MostrarFacturasCompras();
+
+            ViewBag.Proveedores = new SelectList(proveedores, "IdProveedor", "ProveedorCompleto");
+            ViewBag.FacturaCompras = new SelectList(facturaCompras, "IdFacturaCompra", "IdFacturaCompra");
+
             if (cuentaPagar == null)
             {
                 return NotFound();
             }
-            return View(cuentaPagar);
+            return PartialView("_editCuentaPagarPartial", cuentaPagar);
         }
 
         // POST: CuentaPagars/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("IdCuentaPagar,FechaCreacion,FechaVencimiento,TotalPagado,IdFacturaCompra,IdProveedor")] CuentaPagar cuentaPagar)
+        public async Task<IActionResult> Edit(string id, [Bind("IdCuentaPagar,FechaCreacion,FechaVencimiento,TotalPagado,IdFacturaCompra,IdProveedor,Estado")] CuentaPagar cuentaPagar)
         {
             if (id != cuentaPagar.IdCuentaPagar)
             {
-                return NotFound();
+                return Json(new { success = false, message = "Cuenta por pagar no encontrada." });
             }
 
             if (ModelState.IsValid)
             {
-                await _cuentaPagarRep.ActualizarCuentaPagar(cuentaPagar.IdCuentaPagar, cuentaPagar.TotalPagado, cuentaPagar.IdFacturaCompra, cuentaPagar.IdProveedor);
-                return RedirectToAction(nameof(Index));
+                await _cuentaPagarRep.ActualizarCuentaPagar(cuentaPagar.IdCuentaPagar, cuentaPagar.FechaCreacion, cuentaPagar.FechaVencimiento, cuentaPagar.TotalPagado, cuentaPagar.IdFacturaCompra, cuentaPagar.IdProveedor, cuentaPagar.Estado);
+                return Json(new { success = true, message = "Cuenta por Pagar actualizada correctamente." });
             }
-            return View(cuentaPagar);
+            return Json(new { success = false, message = "Datos inválidos." });
         }
 
         // GET: CuentaPagars/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var cuentaPagar = await _cuentaPagarRep.ConsultarCuentasPagar(id);
-            if (cuentaPagar == null)
-            {
-                return NotFound();
-            }
-
-            return View(cuentaPagar);
+            return Json(new { exists = cuentaPagar != null });
         }
 
         // POST: CuentaPagars/Delete/5
@@ -128,8 +124,15 @@ namespace PupuseriaSalvadorena.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            await _cuentaPagarRep.EliminarCuentaPagar(id);
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await _cuentaPagarRep.EliminarCuentaPagar(id);
+                return Json(new { success = true, message = "Cuenta por pagar eliminada correctamente." });
+            }
+            catch
+            {
+                return Json(new { success = false, message = "Error al eliminar la cuenta por pagar." });
+            }
         }
     }
 }

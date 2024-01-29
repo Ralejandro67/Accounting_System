@@ -11,5 +11,6 @@ namespace PupuseriaSalvadorena.Repositorios.Interfaces
         Task<DetalleTransaccion> ConsultarDetallesTransacciones(int IdTransaccion);
         Task<int> CrearTransaccionRecurrente(string IdRegistroLibros, string DescripcionTransaccion, int Cantidad, decimal Monto, DateTime FechaRegistro, int IdTipo, string IdImpuesto, bool Recurrencia, DateTime FechaRecurrencia, string Frecuencia, bool Conciliado);
         Task<List<DetalleTransaccion>> ConsultarTransacciones(string IdRegistroLibros);
+        Task<string> ObtenerIdLibroMasReciente();
     }
 }

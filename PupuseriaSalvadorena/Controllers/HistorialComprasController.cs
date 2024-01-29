@@ -14,10 +14,14 @@ namespace PupuseriaSalvadorena.Controllers
     public class HistorialComprasController : Controller
     {
         private readonly IHistorialCompraRep _historialCompraRep;
+        private readonly IMateriaPrimaRep _materiaPrimaRep;
+        private readonly IFacturaCompraRep _facturaCompraRep;
 
-        public HistorialComprasController(IHistorialCompraRep context)
+        public HistorialComprasController(IHistorialCompraRep context, IMateriaPrimaRep materiaPrimaRep, IFacturaCompraRep facturaCompraRep)
         {
             _historialCompraRep = context;
+            _materiaPrimaRep = materiaPrimaRep;
+            _facturaCompraRep = facturaCompraRep;
         }
 
         // GET: HistorialCompras
@@ -45,24 +49,27 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // GET: HistorialCompras/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var materiasPrimas = await _materiaPrimaRep.MostrarMateriaPrima();
+            var facturasCompras = await _facturaCompraRep.MostrarFacturasCompras();
+
+            ViewBag.MateriasPrimas = new SelectList(materiasPrimas, "IdMateriaPrima", "NombreMateriaPrima");
+            ViewBag.FacturasCompras = new SelectList(facturasCompras, "IdFacturaCompra", "IdFacturaCompra");
+            return PartialView("_newHistorialCPartial", new HistorialCompra());
         }
 
         // POST: HistorialCompras/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdCompra,IdMateriaPrima,Cantidad,Precio,Peso,FechaCompra,IdFacturaCompra")] HistorialCompra historialCompra)
+        public async Task<IActionResult> Create([Bind("IdCompra,IdMateriaPrima,CantCompra,Precio,Peso,FechaCompra,IdFacturaCompra")] HistorialCompra historialCompra)
         {
             if (ModelState.IsValid)
             {
-                await _historialCompraRep.CrearHistorialCompra(historialCompra.IdMateriaPrima, historialCompra.Cantidad, historialCompra.Precio, historialCompra.Peso, historialCompra.FechaCompra, historialCompra.IdFacturaCompra);
-                return RedirectToAction(nameof(Index));
+                await _historialCompraRep.CrearHistorialCompra(historialCompra.IdMateriaPrima, historialCompra.CantCompra, historialCompra.Precio, historialCompra.Peso, historialCompra.FechaCompra, historialCompra.IdFacturaCompra);
+                return Json(new { success = true, message = "Compra agregada correctamente." });
             }
-            return View(historialCompra);
+            return Json(new { success = false, message = "Error al agregar la compra." });
         }
 
         // GET: HistorialCompras/Edit/5
@@ -82,11 +89,9 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // POST: HistorialCompras/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("IdCompra,IdMateriaPrima,Cantidad,Precio,Peso,FechaCompra,IdFacturaCompra")] HistorialCompra historialCompra)
+        public async Task<IActionResult> Edit(string id, [Bind("IdCompra,IdMateriaPrima,CantCompra,Precio,Peso,FechaCompra,IdFacturaCompra")] HistorialCompra historialCompra)
         {
             if (id != historialCompra.IdFacturaCompra)
             {
@@ -95,7 +100,7 @@ namespace PupuseriaSalvadorena.Controllers
 
             if (ModelState.IsValid)
             {
-                await _historialCompraRep.ActualizarHistorialCompra(historialCompra.IdCompra, historialCompra.IdMateriaPrima, historialCompra.Cantidad, historialCompra.Precio, historialCompra.Peso, historialCompra.FechaCompra, historialCompra.IdFacturaCompra);
+                await _historialCompraRep.ActualizarHistorialCompra(historialCompra.IdCompra, historialCompra.IdMateriaPrima, historialCompra.CantCompra, historialCompra.Precio, historialCompra.Peso, historialCompra.FechaCompra, historialCompra.IdFacturaCompra);
                 return RedirectToAction(nameof(Index));
             }
             return View(historialCompra);

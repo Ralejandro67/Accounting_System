@@ -18,5 +18,7 @@ namespace PupuseriaSalvadorena.Models
         [Required(ErrorMessage = "El número de teléfono es obligatorio")]
         [RegularExpression(@"^[0-9]+$", ErrorMessage = "El número de teléfono solo puede contener números")]
         public int Telefono { get; set; }
+
+        public string? ProveedorCompleto { get; set; }
     }
 }

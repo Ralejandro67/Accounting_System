@@ -18,42 +18,44 @@
     </button>
 </div>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Pago)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FechaIngreso)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdCuentaPagar)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Pago)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FechaIngreso)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdCuentaPagar)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.IdDetallesCuenta">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.IdDetallesCuenta">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.IdDetallesCuenta">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<div class="card-body table-body-custom">
+    <table class="table table-hover mt-4">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Pago)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.FechaIngreso)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.IdCuentaPagar)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model) {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Pago)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FechaIngreso)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IdCuentaPagar)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.IdDetallesCuenta">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.IdDetallesCuenta">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.IdDetallesCuenta">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 
 <div class="modal fade" id="newDetalleCuentaModal" tabindex="-1" role="dialog" aria-labelledby="newDetalleCuentaModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">

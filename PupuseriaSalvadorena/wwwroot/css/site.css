@@ -88,7 +88,7 @@ header .navbar {
 }
 
 .accordion-button:not(.collapsed) {
-    background-color: #85E6C5 !important;
+    background-color: #72DDD9 !important;
 }
 
 .accordion-button:hover {
@@ -114,7 +114,7 @@ header .navbar {
 #content {
     flex-grow: 1;
     padding: 1rem;
-    padding-top: 4rem;
+    padding-top: 3rem;
     overflow-y: auto;
     background-color: #F5F7F8;
 }
@@ -122,6 +122,11 @@ header .navbar {
 .nav-link-icon svg {
     margin-bottom: 0.2em;
     margin-right: 0.5em;
+}
+
+.nav-link-icon2 svg {
+    margin-bottom: 0.1em;
+    margin-right: 0.3em;
 }
 
 @media (max-width: 768px) {
@@ -146,4 +151,47 @@ header .navbar {
     .wrapper {
         flex-direction: column;
     }
+}
+
+#dropdownNotificaciones {
+    color: black;
+    background-color: white;
+    border: 0;
+}
+
+#dropdownNotificaciones:hover {
+    color: white;
+    background-color: #0DBCB5;
+}
+
+#dropdownNotificaciones:focus {
+    background-color: #72DDD9;
+    color: white;
+    box-shadow: none;
+}
+
+#dropdownNotificaciones::after {
+    display: none;
+}
+
+.hr-notificaciones {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.hr-notificaciones:not([size]) {
+    height: 0px;
+}
+
+#notificacionesContainer {
+    margin-right: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.badge {
+    background-color: #D71313;
+}
+
+.badge:focus {
+    background-color: #FFE1E1 !important;
 }

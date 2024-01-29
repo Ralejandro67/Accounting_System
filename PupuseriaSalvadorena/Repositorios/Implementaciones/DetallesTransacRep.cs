@@ -109,5 +109,25 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
 
             return resultado;
         }
+
+        public async Task<string> ObtenerIdLibroMasReciente()
+        {
+            using (var command = _context.Database.GetDbConnection().CreateCommand())
+            {
+                command.CommandText = "ObtenerIdLibroMasReciente";
+                command.CommandType = CommandType.StoredProcedure;
+
+                var IdRegistroLibros = new SqlParameter("@IdRegistroLibros", SqlDbType.VarChar, 10)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                command.Parameters.Add(IdRegistroLibros);
+
+                await _context.Database.OpenConnectionAsync();
+                await command.ExecuteNonQueryAsync();
+
+                return (string)IdRegistroLibros.Value;
+            }
+        }
     }
 }

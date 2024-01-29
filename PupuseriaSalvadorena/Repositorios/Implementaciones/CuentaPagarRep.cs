@@ -15,23 +15,27 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             _context = context;
         }
 
-        public async Task CrearCuentaPagar(DateTime FechaCreacion, DateTime FechaVencimiento, decimal TotalPagado, string IdFacturaCompra, string IdProveedor)
+        public async Task CrearCuentaPagar(DateTime FechaCreacion, DateTime FechaVencimiento, decimal TotalPagado, string IdFacturaCompra, string IdProveedor, bool Estado)
         {
             var FechaCreacionParam = new SqlParameter("@FechaCreacion", FechaCreacion);
             var FechaVencimientoParam = new SqlParameter("@FechaVencimiento", FechaVencimiento);
             var TotalPagadoParam = new SqlParameter("@TotalPagado", TotalPagado);
             var IdFacturaCompraParam = new SqlParameter("@IdFacturaCompra", IdFacturaCompra);
             var IdProveedorParam = new SqlParameter("@IdProveedor", IdProveedor);
-            await _context.Database.ExecuteSqlRawAsync("CrearCuentaPagar @FechaCreacion, @FechaVencimiento, @TotalPagado, @IdFacturaCompra, @IdProveedor", FechaCreacionParam, FechaVencimientoParam, TotalPagadoParam, IdFacturaCompraParam, IdProveedorParam);
+            var EstadoParam = new SqlParameter("@Estado", Estado);
+            await _context.Database.ExecuteSqlRawAsync("CrearCuentaPagar @FechaCreacion, @FechaVencimiento, @TotalPagado, @IdFacturaCompra, @IdProveedor, @Estado", FechaCreacionParam, FechaVencimientoParam, TotalPagadoParam, IdFacturaCompraParam, IdProveedorParam, EstadoParam);
         }
 
-        public async Task ActualizarCuentaPagar(string IdCuentaPagar, decimal TotalPagado, string IdFacturaCompra, string IdProveedor)
+        public async Task ActualizarCuentaPagar(string IdCuentaPagar, DateTime FechaCreacion, DateTime FechaVencimiento, decimal TotalPagado, string IdFacturaCompra, string IdProveedor, bool Estado)
         {
             var IdCuentaPagarParam = new SqlParameter("@IdCuentaPagar", IdCuentaPagar);
+            var FechaCreacionParam = new SqlParameter("@FechaCreacion", FechaCreacion);
+            var FechaVencimientoParam = new SqlParameter("@FechaVencimiento", FechaVencimiento);
             var TotalPagadoParam = new SqlParameter("@TotalPagado", TotalPagado);
             var IdFacturaCompraParam = new SqlParameter("@IdFacturaCompra", IdFacturaCompra);
             var IdProveedorParam = new SqlParameter("@IdProveedor", IdProveedor);
-            await _context.Database.ExecuteSqlRawAsync("ActualizarCuentaPagar @IdCuentaPagar, @TotalPagado, @IdFacturaCompra, @IdProveedor", IdCuentaPagarParam, TotalPagadoParam, IdFacturaCompraParam, IdProveedorParam);
+            var EstadoParam = new SqlParameter("@Estado", Estado);
+            await _context.Database.ExecuteSqlRawAsync("ActualizarCuentaPagar @IdCuentaPagar, @FechaCreacion, @FechaVencimiento, @TotalPagado, @IdFacturaCompra, @IdProveedor, @Estado", IdCuentaPagarParam, FechaCreacionParam, FechaVencimientoParam, TotalPagadoParam, IdFacturaCompraParam, IdProveedorParam, EstadoParam);
         }
 
         public async Task EliminarCuentaPagar(string IdCuentaPagar)

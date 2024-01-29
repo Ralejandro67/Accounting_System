@@ -3,6 +3,7 @@ using PupuseriaSalvadorena.Conexion;
 using PupuseriaSalvadorena.Repositorios.Interfaces;
 using PupuseriaSalvadorena.Repositorios.Implementaciones;
 using Hangfire;
+using PupuseriaSalvadorena.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,6 +44,8 @@ builder.Services.AddScoped<IDetallesCuentaRep, DetallesCuentaRep>();
 builder.Services.AddScoped<IPlatilloRep, PlatilloRep>();
 builder.Services.AddScoped<ITipoVentaRep, TipoVentaRep>();
 builder.Services.AddScoped<IPronosticoRep, PronosticoRep>();
+builder.Services.AddScoped<IAlertaCuentaPagarRep, AlertaCuentaPagarRep>();
+builder.Services.AddHostedService<AlertaCuentaPagarServ>();
 
 builder.Services.AddHangfire(config => config.UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddHangfireServer();

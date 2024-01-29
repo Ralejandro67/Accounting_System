@@ -37,21 +37,34 @@ namespace PupuseriaSalvadorena.Controllers
                 return NotFound();
             }
 
-            var detalleCuenta = await _detallesCuentaRep.ConsultarDetallesCuentas(id);
+            var cuentaPagar = await _cuentasPagarRep.ConsultarCuentasPagar(id);
+            var detalleCuenta = await _detallesCuentaRep.ConsultarCuentaDetalles(id);
+            decimal Pagado = detalleCuenta.Sum(x => x.Pago);
+            decimal PorPagar = cuentaPagar.TotalPagado - Pagado;
+
             if (detalleCuenta == null)
             {
                 return NotFound();
             }
 
+            ViewBag.PorPagar = PorPagar;
+            ViewBag.FechaVencimiento = cuentaPagar.FechaVencimiento.ToString("dd/MM/yyyy");
+            ViewBag.Total = cuentaPagar.TotalPagado;
+            ViewBag.Pago = Pagado;
+            ViewBag.IdCuentaPagar = id;
+
+            ViewBag.VencimientoExpirado = cuentaPagar.FechaVencimiento < DateTime.Now;
+            ViewBag.PorPagarEsCero = PorPagar == 0;
+
             return View(detalleCuenta);
         }
 
         // GET: DetalleCuentas/Create
-        public async Task<IActionResult> Create()
+        public IActionResult Create(string id)
         {
-            var cuentasPagar = await _cuentasPagarRep.MostrarCuentasPagar();
-            ViewBag.CuentasPagar = new SelectList(cuentasPagar, "IdCuentaPagar", "IdCuentaPagar");
-            return PartialView("_newDetalleCuentaPartial", new DetalleCuenta());
+            var detalleCuenta = new DetalleCuenta{ FechaIngreso = DateTime.Now };
+            ViewBag.CuentasPagar = id;
+            return PartialView("_newDetalleCuentaPartial", detalleCuenta);
         }
 
         // POST: DetalleCuentas/Create
@@ -61,8 +74,26 @@ namespace PupuseriaSalvadorena.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _detallesCuentaRep.CrearDetallesCuenta(detalleCuenta.Pago, detalleCuenta.FechaIngreso, detalleCuenta.IdCuentaPagar);
-                return Json(new { success = true, message = "Pago agregado correctamente." });
+                var cuentaPagar = await _cuentasPagarRep.ConsultarCuentasPagar(detalleCuenta.IdCuentaPagar);
+
+                if (detalleCuenta.Pago > cuentaPagar.TotalPagado)
+                {
+                    return Json(new { success = false, message = "El monto pagado no puede ser mayor al monto de la cuenta por pagar." });
+                }
+                else
+                {
+                    var totalPagado = cuentaPagar.TotalPagado - detalleCuenta.Pago;
+                    if (totalPagado == 0)
+                    {
+                        await _cuentasPagarRep.ActualizarCuentaPagar(detalleCuenta.IdCuentaPagar, cuentaPagar.FechaCreacion, cuentaPagar.FechaVencimiento, totalPagado, cuentaPagar.IdFacturaCompra, cuentaPagar.IdProveedor, false);
+                    }
+                    else
+                    {
+                        await _cuentasPagarRep.ActualizarCuentaPagar(detalleCuenta.IdCuentaPagar, cuentaPagar.FechaCreacion, cuentaPagar.FechaVencimiento, totalPagado, cuentaPagar.IdFacturaCompra, cuentaPagar.IdProveedor, cuentaPagar.Estado);
+                    }
+                    await _detallesCuentaRep.CrearDetallesCuenta(detalleCuenta.Pago, detalleCuenta.FechaIngreso, detalleCuenta.IdCuentaPagar);
+                    return Json(new { success = true, message = "Pago agregado correctamente." });
+                }
             }
             return Json(new { success = false, message = "Error al agregar la factura de compra." });
         }

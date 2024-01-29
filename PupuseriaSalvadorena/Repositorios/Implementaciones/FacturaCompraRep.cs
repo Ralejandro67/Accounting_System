@@ -69,7 +69,7 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
         {
             using (var command = _context.Database.GetDbConnection().CreateCommand())
             {
-                command.CommandText = "CrearFacturaCompra";
+                command.CommandText = "CrearFacturaId";
                 command.CommandType = CommandType.StoredProcedure;
 
                 command.Parameters.Add(new SqlParameter("@FacturaCom", FacturaCom));

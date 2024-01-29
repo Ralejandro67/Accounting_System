@@ -54,5 +54,15 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
 
             return resultado.FirstOrDefault();
         }
+
+        public async Task<List<DetalleCuenta>> ConsultarCuentaDetalles(string IdCuentaPagar)
+        {
+            var IdCuentaPagarParam = new SqlParameter("@IdCuentaPagar", IdCuentaPagar);
+            var resultado = await _context.DetalleCuenta
+                                          .FromSqlRaw("EXEC ConsultarCuentaDetalles @IdCuentaPagar", IdCuentaPagarParam)
+                                          .ToListAsync();
+
+            return resultado;
+        }
     }
 }

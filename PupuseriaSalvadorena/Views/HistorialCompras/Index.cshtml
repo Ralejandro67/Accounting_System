@@ -1,22 +1,37 @@
 ﻿@model IEnumerable<PupuseriaSalvadorena.Models.HistorialCompra>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Historial de Compras";
 }
 
-<h1>Index</h1>
+@section Scripts {
+    <script src="~/js/historialcompra.js" asp-append-version="true"></script>
+}
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center">
+        <h1 class="mb-0">
+            <img src="~/images/facturacompra.png" alt="Icono Factura de Compra" style="height: 60px;" />
+            Historial de Compras
+        </h1>
+        <button type="button" class="btn btn-primary nav-link-icon" id="AddHistorialC">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
+                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
+            </svg> Nueva Compra
+        </button>
+    </div>
+</div>
+<div class="container mt-4">
+    Historial de compras de materia prima para la elaboracion de los platillos.
+</div>
+<table class="table table-hover mt-4">
     <thead>
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.IdMateriaPrima)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Cantidad)
+                @Html.DisplayNameFor(model => model.CantCompra)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Precio)
@@ -37,7 +52,7 @@
                 @Html.DisplayFor(modelItem => item.IdMateriaPrima)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Cantidad)
+                @Html.DisplayFor(modelItem => item.CantCompra)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Precio)
@@ -57,3 +72,19 @@
 }
     </tbody>
 </table>
+<div class="modal fade" id="newHistorialCModal" tabindex="-1" role="dialog" aria-labelledby="newHistorialCModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="newHistorialCModalLabel">Nueva Compra</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @Html.Partial("_newHistorialCPartial", new PupuseriaSalvadorena.Models.HistorialCompra())
+            </div>
+        </div>
+    </div>
+</div>
+

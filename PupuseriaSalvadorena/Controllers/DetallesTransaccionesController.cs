@@ -73,9 +73,11 @@ namespace PupuseriaSalvadorena.Controllers
         {
             if (ModelState.IsValid)
             {
+                var IdLibro = await _detallesTransacRep.ObtenerIdLibroMasReciente();
+
                 if (detalleTransaccion.Recurrencia)
                 {
-                    var idTransaccion =  await _detallesTransacRep.CrearTransaccionRecurrente(detalleTransaccion.IdRegistroLibros, detalleTransaccion.DescripcionTransaccion, detalleTransaccion.Cantidad, detalleTransaccion.Monto, detalleTransaccion.FechaTrans, detalleTransaccion.IdTipo, detalleTransaccion.IdImpuesto, detalleTransaccion.Recurrencia, detalleTransaccion.FechaRecurrencia, detalleTransaccion.Frecuencia, detalleTransaccion.Conciliado);
+                    var idTransaccion =  await _detallesTransacRep.CrearTransaccionRecurrente(IdLibro, detalleTransaccion.DescripcionTransaccion, detalleTransaccion.Cantidad, detalleTransaccion.Monto, detalleTransaccion.FechaTrans, detalleTransaccion.IdTipo, detalleTransaccion.IdImpuesto, detalleTransaccion.Recurrencia, detalleTransaccion.FechaRecurrencia, detalleTransaccion.Frecuencia, detalleTransaccion.Conciliado);
                     var cronExpression = FrecuenciaACron(detalleTransaccion.Frecuencia);
 
                     RecurringJob.AddOrUpdate($"transaccion_{idTransaccion}",
@@ -86,7 +88,7 @@ namespace PupuseriaSalvadorena.Controllers
                 }
                 else
                 {
-                    await _detallesTransacRep.CrearDetalleTransaccion(detalleTransaccion.IdRegistroLibros, detalleTransaccion.DescripcionTransaccion, detalleTransaccion.Cantidad, detalleTransaccion.Monto, detalleTransaccion.FechaTrans, detalleTransaccion.IdTipo, detalleTransaccion.IdImpuesto, detalleTransaccion.Recurrencia, detalleTransaccion.FechaRecurrencia, detalleTransaccion.Frecuencia, detalleTransaccion.Conciliado);
+                    await _detallesTransacRep.CrearDetalleTransaccion(IdLibro, detalleTransaccion.DescripcionTransaccion, detalleTransaccion.Cantidad, detalleTransaccion.Monto, detalleTransaccion.FechaTrans, detalleTransaccion.IdTipo, detalleTransaccion.IdImpuesto, detalleTransaccion.Recurrencia, detalleTransaccion.FechaRecurrencia, detalleTransaccion.Frecuencia, detalleTransaccion.Conciliado);
                     return Json(new { success = true, message = "Transaccion agregada correctamente." });
                 }
             }
@@ -180,6 +182,7 @@ namespace PupuseriaSalvadorena.Controllers
         public async Task TransaccionRecurrente(int idTransaccion)
         {
             var TransaccionOriginal = await _detallesTransacRep.ConsultarDetallesTransacciones(idTransaccion);
+            var IdLibro = await _detallesTransacRep.ObtenerIdLibroMasReciente();
 
             if(TransaccionOriginal != null && TransaccionOriginal.Recurrencia) 
             {
@@ -200,7 +203,7 @@ namespace PupuseriaSalvadorena.Controllers
                 }
 
                 await _detallesTransacRep.CrearDetalleTransaccion(
-                    TransaccionOriginal.IdRegistroLibros,
+                    IdLibro,
                     TransaccionOriginal.DescripcionTransaccion,
                     TransaccionOriginal.Cantidad,
                     TransaccionOriginal.Monto,
