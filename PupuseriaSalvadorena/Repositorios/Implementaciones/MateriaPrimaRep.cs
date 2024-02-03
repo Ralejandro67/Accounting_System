@@ -53,5 +53,15 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
 
             return resultado.FirstOrDefault();
         }
+
+        public async Task<List<MateriaPrima>> ConsultarMateriasPrimasProveedor(string IdProveedor)
+        {
+            var IdProveedorParam = new SqlParameter("@IdProveedor", IdProveedor);
+            var resultado = await _context.MateriaPrima
+                                          .FromSqlRaw("EXEC ConsultarMateriasPrimasProveedor @IdProveedor", IdProveedorParam)
+                                          .ToListAsync();
+
+            return resultado;
+        }
     }
 }

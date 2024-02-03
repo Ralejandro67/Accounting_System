@@ -12,11 +12,9 @@ namespace PupuseriaSalvadorena.Models
         public string? NombreP { get; set; }
 
         [Required(ErrorMessage = "La fecha de inicio es obligatoria")]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime FechaInicio { get; set; }
 
         [Required(ErrorMessage = "La fecha de fin es obligatoria")]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime FechaFin { get; set; }
 
         public string? Descripcion { get; set; }
@@ -34,5 +32,7 @@ namespace PupuseriaSalvadorena.Models
 
         [Required(ErrorMessage = "El tipo de presupuesto es obligatorio")]
         public int IdCategoriaP { get; set; }
+
+        public string? Categoria { get; set; }
     }
 }

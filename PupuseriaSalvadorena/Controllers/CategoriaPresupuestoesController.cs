@@ -47,20 +47,20 @@ namespace PupuseriaSalvadorena.Controllers
         // GET: CategoriaPresupuestoes/Create
         public IActionResult Create()
         {
-            return View();
+            return PartialView("_newCategoriaPPartial", new CategoriaPresupuesto());
         }
 
         // POST: CategoriaPresupuestoes/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdCategoriaP,NombreCategoriaP,Estado")] CategoriaPresupuesto categoriaPresupuesto)
+        public async Task<IActionResult> Create([Bind("IdCategoriaP,Nombre,Estado")] CategoriaPresupuesto categoriaPresupuesto)
         {
             if (ModelState.IsValid)
             {
-                await _categoriaPresupuestoRep.CrearCatPresupuesto(categoriaPresupuesto.NombreCategoriaP, categoriaPresupuesto.Estado);
-                return RedirectToAction(nameof(Index));
+                await _categoriaPresupuestoRep.CrearCatPresupuesto(categoriaPresupuesto.Nombre, categoriaPresupuesto.Estado);
+                return Json(new { success = true, message = "Categoria agregada correctamente." });
             }
-            return View(categoriaPresupuesto);
+            return Json(new { success = false, message = "Error al agregar la categoria." });
         }
 
         // GET: CategoriaPresupuestoes/Edit/5
@@ -76,42 +76,32 @@ namespace PupuseriaSalvadorena.Controllers
             {
                 return NotFound();
             }
-            return View(categoriaPresupuesto);
+            return PartialView("_editCategoriaPPartial", categoriaPresupuesto);
         }
 
         // POST: CategoriaPresupuestoes/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdCategoriaP,NombreCategoriaP,Estado")] CategoriaPresupuesto categoriaPresupuesto)
+        public async Task<IActionResult> Edit(int id, [Bind("IdCategoriaP,Nombre,Estado")] CategoriaPresupuesto categoriaPresupuesto)
         {
             if (id != categoriaPresupuesto.IdCategoriaP)
             {
-                return NotFound();
+                return Json(new { success = false, message = "Error al editar la categoria." });
             }
 
             if (ModelState.IsValid)
             {
-                await _categoriaPresupuestoRep.ActualizarCatPresupuestos(categoriaPresupuesto.IdCategoriaP, categoriaPresupuesto.NombreCategoriaP, categoriaPresupuesto.Estado);
-                return RedirectToAction(nameof(Index));
+                await _categoriaPresupuestoRep.ActualizarCatPresupuestos(categoriaPresupuesto.IdCategoriaP, categoriaPresupuesto.Nombre, categoriaPresupuesto.Estado);
+                return Json(new { success = true, message = "Categoria editada correctamente." });
             }
-            return View(categoriaPresupuesto);
+            return Json(new { success = false, message = "Error al editar la categoria." });
         }
 
         // GET: CategoriaPresupuestoes/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var categoriaPresupuesto = await _categoriaPresupuestoRep.ConsultarCatPresupuestos(id.Value);
-            if (categoriaPresupuesto == null)
-            {
-                return NotFound();
-            }
-
-            return View(categoriaPresupuesto);
+            return Json(new { exists = categoriaPresupuesto != null });
         }
 
         // POST: CategoriaPresupuestoes/Delete/5
@@ -119,8 +109,15 @@ namespace PupuseriaSalvadorena.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _categoriaPresupuestoRep.EliminarCatPresupuestos(id);
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await _categoriaPresupuestoRep.EliminarCatPresupuestos(id);
+                return Json(new { success = true, message = "Categoria eliminada correctamente." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Error al eliminar la categoria." });
+            }
         }
     }
 }

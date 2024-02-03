@@ -1,63 +1,67 @@
 ﻿@model PupuseriaSalvadorena.Models.HistorialCompra
 
 @{
-    ViewData["Title"] = "Create";
+    Model.FechaCompra = Model.FechaCompra == default ? DateTime.Now : Model.FechaCompra;
 }
 
-<h1>Create</h1>
-
-<h4>HistorialCompra</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="IdCompra" class="control-label"></label>
-                <input asp-for="IdCompra" class="form-control" />
-                <span asp-validation-for="IdCompra" class="text-danger"></span>
-            </div>
+<form id="editHistorialCompraForm" asp-action="Edit" asp-controller="HistorialCompras" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <input type="hidden" asp-for="IdCompra" />
+    </div>
+    <div class="row">
+        <div class="col-md-6">
             <div class="form-group">
                 <label asp-for="IdMateriaPrima" class="control-label"></label>
-                <input asp-for="IdMateriaPrima" class="form-control" />
+                <select asp-for="IdMateriaPrima" asp-items="@ViewBag.MateriasPrimas" class="form-control">
+                    <option value="">Seleccione la materia prima</option>
+                </select>
                 <span asp-validation-for="IdMateriaPrima" class="text-danger"></span>
             </div>
+        </div>
+        <div class="col-md-6">
             <div class="form-group">
                 <label asp-for="CantCompra" class="control-label"></label>
                 <input asp-for="CantCompra" class="form-control" />
                 <span asp-validation-for="CantCompra" class="text-danger"></span>
             </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
             <div class="form-group">
                 <label asp-for="Precio" class="control-label"></label>
                 <input asp-for="Precio" class="form-control" />
                 <span asp-validation-for="Precio" class="text-danger"></span>
             </div>
+        </div>
+        <div class="col-md-6">
             <div class="form-group">
                 <label asp-for="Peso" class="control-label"></label>
                 <input asp-for="Peso" class="form-control" />
                 <span asp-validation-for="Peso" class="text-danger"></span>
             </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
             <div class="form-group">
                 <label asp-for="FechaCompra" class="control-label"></label>
-                <input asp-for="FechaCompra" class="form-control" />
+                <input asp-for="FechaCompra" class="form-control" type="date" />
                 <span asp-validation-for="FechaCompra" class="text-danger"></span>
             </div>
+        </div>
+        <div class="col-md-6">
             <div class="form-group">
                 <label asp-for="IdFacturaCompra" class="control-label"></label>
-                <input asp-for="IdFacturaCompra" class="form-control" />
+                <select asp-for="IdFacturaCompra" asp-items="@ViewBag.FacturasCompras" class="form-control">
+                    <option value="">Seleccione la factura asociada</option>
+                </select>
                 <span asp-validation-for="IdFacturaCompra" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+    <div class="form-group text-right">
+        <button type="submit" id="submitEditHistorialCompra" class="btn btn-primary">Editar</button>
+    </div>
+</form>

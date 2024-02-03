@@ -92,5 +92,13 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
                 return (string)IdFactura.Value;
             }
         }
+
+        public async Task<List<FacturaCompra>> MostrarFacturasCExisteHistorial()
+        {
+            var FacturasCompras = await _context.FacturaCompra
+                                        .FromSqlRaw("EXEC MostrarFacturasCExisteHistorial")
+                                        .ToListAsync();
+            return FacturasCompras;
+        }
     }
 }

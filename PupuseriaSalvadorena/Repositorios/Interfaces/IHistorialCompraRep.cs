@@ -9,5 +9,6 @@ namespace PupuseriaSalvadorena.Repositorios.Interfaces
         Task EliminarHistorialCompra(string IdCompra);
         Task<List<HistorialCompra>> MostrarHistorialCompras();
         Task<HistorialCompra> ConsultarHistorialCompras(string IdCompra);
+        Task<HistorialCompra> ConsultarHistorialComprasporFactura(string IdFacturaCompra);
     }
 }

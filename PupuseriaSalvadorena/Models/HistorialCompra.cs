@@ -22,10 +22,11 @@ namespace PupuseriaSalvadorena.Models
         public decimal Peso { get; set; }
 
         [Required(ErrorMessage = "La fecha de compra es obligatoria")]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime FechaCompra { get; set; }
 
         [Required(ErrorMessage = "El id de la factura asociada es obligatoria")]
         public string? IdFacturaCompra { get; set; }
+
+        public string? NombreMateriaPrima { get; set; }
     }
 }

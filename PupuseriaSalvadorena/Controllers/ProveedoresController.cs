@@ -76,7 +76,7 @@ namespace PupuseriaSalvadorena.Controllers
             {
                 return NotFound();
             }
-            return View(proveedor);
+            return PartialView("_editProveedorPartial", proveedor);
         }
 
         // POST: Proveedores/Edit/5
@@ -94,26 +94,16 @@ namespace PupuseriaSalvadorena.Controllers
             if (ModelState.IsValid)
             {
                 await _proveedorRep.ActualizarProveedor(proveedor.IdProveedor, proveedor.NombreProveedor, proveedor.ApellidoProveedor, proveedor.Telefono);
-                return RedirectToAction(nameof(Index));
+                return Json(new { success = true, message = "Proveedor actualizado correctamente." });
             }
-            return View(proveedor);
+            return Json(new { success = false, message = "Error al actualizar el proveedor." });
         }
 
         // GET: Proveedores/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var proveedor = await _proveedorRep.ConsultarProveedores(id);
-            if (proveedor == null)
-            {
-                return NotFound();
-            }
-
-            return View(proveedor);
+            return Json(new { exists = proveedor != null });
         }
 
         // POST: Proveedores/Delete/5
@@ -121,8 +111,15 @@ namespace PupuseriaSalvadorena.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            await _proveedorRep.EliminarProveedor(id);
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await _proveedorRep.EliminarProveedor(id);
+                return Json(new { success = true, message = "Proveedor eliminado correctamente." });
+            }
+            catch (Exception)
+            {
+                return Json(new { success = false, message = "Error al eliminar el proveedor." });
+            }
         }
     }
 }

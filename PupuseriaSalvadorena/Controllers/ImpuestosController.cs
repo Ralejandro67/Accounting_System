@@ -45,10 +45,16 @@ namespace PupuseriaSalvadorena.Controllers
             return View(impuesto);
         }
 
+        // GET: Impuestos/Create
+        public async Task<IActionResult> Create()
+        {
+            return PartialView("_newImpuestoPartial", new Impuesto());
+        }
+
         // POST: Impuestos/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdImpuesto,NombreImpuesto,Tasa,Estado,Descripcion")] Impuesto impuesto)
+        public async Task<IActionResult> Create([Bind("IdImpuesto,NombreImpuesto,Tasa,Estado,Descripcion,IdTipo")] Impuesto impuesto)
         {
             if (ModelState.IsValid)
             {
@@ -67,6 +73,7 @@ namespace PupuseriaSalvadorena.Controllers
             }
 
             var impuesto = await _impuestosRep.ConsultarImpuestos(id);
+
             if (impuesto == null)
             {
                 return NotFound();
@@ -77,7 +84,7 @@ namespace PupuseriaSalvadorena.Controllers
         // POST: Impuestos/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("IdImpuesto,NombreImpuesto,Tasa,Estado,Descripcion")] Impuesto impuesto)
+        public async Task<IActionResult> Edit(string id, [Bind("IdImpuesto,NombreImpuesto,Tasa,Estado,Descripcion,IdTipo")] Impuesto impuesto)
         {
             if (id != impuesto.IdImpuesto)
             {

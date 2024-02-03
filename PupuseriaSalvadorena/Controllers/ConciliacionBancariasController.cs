@@ -79,7 +79,7 @@ namespace PupuseriaSalvadorena.Controllers
                 decimal SaldoLibro = 0;
                 foreach (var item in detallesTransac)
                 {
-                    if (item.TipoTransac == "Ingreso")
+                    if (item.IdMovimiento == 1)
                     {
                         SaldoLibro += item.Monto;
                     }

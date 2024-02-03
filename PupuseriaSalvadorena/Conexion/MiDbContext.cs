@@ -9,6 +9,7 @@ namespace PupuseriaSalvadorena.Conexion
         public MiDbContext(DbContextOptions<MiDbContext> options): base(options)
         {}
 
+        public DbSet<TipoMovimiento> TipoMovimiento { get; set; }
         public DbSet<AlertaCuentaPagar> AlertaCuentaPagar { get; set; }
         public DbSet<CorreoElectronico> CorreoElectronico { get; set; }
         public DbSet<Provincia> Provincia { get; set; }

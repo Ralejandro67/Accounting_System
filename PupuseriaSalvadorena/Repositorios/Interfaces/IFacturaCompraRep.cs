@@ -10,5 +10,6 @@ namespace PupuseriaSalvadorena.Repositorios.Interfaces
         Task<List<FacturaCompra>> MostrarFacturasCompras();
         Task<FacturaCompra> ConsultarFacturasCompras(string IdFacturaCompra);
         Task<string> CrearFacturaId(byte[] FacturaCom, DateTime FechaFactura, decimal TotalCompra, string DetallesCompra, int IdTipoPago, int IdTipoFactura, int IdMateriaPrima);
+        Task<List<FacturaCompra>> MostrarFacturasCExisteHistorial();
     }
 }

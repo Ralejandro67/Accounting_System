@@ -24,7 +24,7 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
 
         public async Task ActualizarCatPresupuestos(int IdCategoriaP, string Nombre, bool Estado)
         {
-            var IdCategoriaPParam = new SqlParameter("@IdCatPresupuesto", IdCategoriaP);
+            var IdCategoriaPParam = new SqlParameter("@IdCategoriaP", IdCategoriaP);
             var nombreRolParam = new SqlParameter("@Nombre", Nombre);
             var activoParam = new SqlParameter("@Estado", Estado);
             await _context.Database.ExecuteSqlRawAsync("ActualizarCatPresupuestos @IdCategoriaP, @Nombre, @Estado", IdCategoriaPParam, nombreRolParam, activoParam);
@@ -32,7 +32,7 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
 
         public async Task EliminarCatPresupuestos(int IdCategoriaP)
         {
-            var IdCategoriaPParam = new SqlParameter("@IdCatPresupuesto", IdCategoriaP);
+            var IdCategoriaPParam = new SqlParameter("@IdCategoriaP", IdCategoriaP);
             await _context.Database.ExecuteSqlRawAsync("EliminarCatPresupuestos @IdCategoriaP", IdCategoriaPParam);
         }
 

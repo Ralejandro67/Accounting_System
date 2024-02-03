@@ -9,5 +9,6 @@ namespace PupuseriaSalvadorena.Repositorios.Interfaces
         Task EliminarMateriaPrima(int IdMateriaPrima);
         Task<List<MateriaPrima>> MostrarMateriaPrima();
         Task<MateriaPrima> ConsultarMateriasPrimas(int IdMateriaPrima);
+        Task<List<MateriaPrima>> ConsultarMateriasPrimasProveedor(string IdProveedor);
     }
 }

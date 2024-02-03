@@ -27,8 +27,8 @@ header .navbar {
 }
 
 #sidebar {
-    min-width: 280px;
-    max-width: 280px;
+    min-width: 290px;
+    max-width: 290px;
     transition: all 0.3s;
     overflow-y: auto;
     display: flex;

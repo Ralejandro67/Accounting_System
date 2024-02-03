@@ -15,17 +15,21 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             _context = context;
         }
 
-        public async Task CrearTipoTransac(string TipoTransac)
+        public async Task CrearTipoTransac(string TipoTransac, int IdMovimiento, string IdImpuesto)
         {
             var nombreParam = new SqlParameter("@TipoTransac", TipoTransac);
-            await _context.Database.ExecuteSqlRawAsync("CrearTipoTransac @TipoTransac", nombreParam);
+            var idMovimientoParam = new SqlParameter("@IdMovimiento", IdMovimiento);
+            var idImpuestoParam = new SqlParameter("@IdImpuesto", IdImpuesto);
+            await _context.Database.ExecuteSqlRawAsync("CrearTipoTransac @TipoTransac, @IdMovimiento, @IdImpuesto", nombreParam, idMovimientoParam, idImpuestoParam);
         }
 
-        public async Task ActualizarTipoTransac(int IdTipo, string TipoTransac)
+        public async Task ActualizarTipoTransac(int IdTipo, string TipoTransac, int IdMovimiento, string IdImpuesto)
         {
             var idTipoTransacParam = new SqlParameter("@IdTipo", IdTipo);
             var nombreParam = new SqlParameter("@TipoTransac", TipoTransac);
-            await _context.Database.ExecuteSqlRawAsync("ActualizarTipoTransac @IdTipo, @TipoTransac", idTipoTransacParam, nombreParam);
+            var idMovimientoParam = new SqlParameter("@IdMovimiento", IdMovimiento);
+            var idImpuestoParam = new SqlParameter("@IdImpuesto", IdImpuesto);
+            await _context.Database.ExecuteSqlRawAsync("ActualizarTipoTransac @IdTipo, @TipoTransac, @IdMovimiento, @IdImpuesto", idTipoTransacParam, nombreParam, idMovimientoParam, idImpuestoParam);
         }
 
         public async Task EliminarTipoTransac(int IdTipo)
@@ -50,6 +54,16 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
                                           .ToListAsync();
 
             return resultado.FirstOrDefault();
+        }
+
+        public async Task<List<TipoTransacciones>> ConsultarImpuestosporTransaccion(string IdImpuesto)
+        {
+            var idImpuestoParam = new SqlParameter("@IdImpuesto", IdImpuesto);
+            var resultado = await _context.TipoTransacciones
+                                          .FromSqlRaw("EXEC ConsultarImpuestosporTransaccion @IdImpuesto", idImpuestoParam)
+                                          .ToListAsync();
+
+            return resultado;
         }
     }
 }

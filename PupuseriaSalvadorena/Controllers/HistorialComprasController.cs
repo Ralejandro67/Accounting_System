@@ -81,11 +81,18 @@ namespace PupuseriaSalvadorena.Controllers
             }
 
             var historialCompra = await _historialCompraRep.ConsultarHistorialCompras(id);
+
+            var materiasPrimas = await _materiaPrimaRep.MostrarMateriaPrima();
+            var facturasCompras = await _facturaCompraRep.MostrarFacturasCompras();
+
+            ViewBag.MateriasPrimas = new SelectList(materiasPrimas, "IdMateriaPrima", "NombreMateriaPrima");
+            ViewBag.FacturasCompras = new SelectList(facturasCompras, "IdFacturaCompra", "IdFacturaCompra");
+
             if (historialCompra == null)
             {
                 return NotFound();
             }
-            return View(historialCompra);
+            return PartialView("_editHistorialCPartial", historialCompra);
         }
 
         // POST: HistorialCompras/Edit/5
@@ -93,7 +100,7 @@ namespace PupuseriaSalvadorena.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("IdCompra,IdMateriaPrima,CantCompra,Precio,Peso,FechaCompra,IdFacturaCompra")] HistorialCompra historialCompra)
         {
-            if (id != historialCompra.IdFacturaCompra)
+            if (id != historialCompra.IdCompra)
             {
                 return NotFound();
             }
@@ -101,26 +108,16 @@ namespace PupuseriaSalvadorena.Controllers
             if (ModelState.IsValid)
             {
                 await _historialCompraRep.ActualizarHistorialCompra(historialCompra.IdCompra, historialCompra.IdMateriaPrima, historialCompra.CantCompra, historialCompra.Precio, historialCompra.Peso, historialCompra.FechaCompra, historialCompra.IdFacturaCompra);
-                return RedirectToAction(nameof(Index));
+                return Json(new { success = true, message = "Compra actualizada correctamente." });
             }
-            return View(historialCompra);
+            return Json(new { success = false, message = "Error al actualizar la compra." });
         }
 
         // GET: HistorialCompras/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var historialCompra = await _historialCompraRep.ConsultarHistorialCompras(id);
-            if (historialCompra == null)
-            {
-                return NotFound();
-            }
-
-            return View(historialCompra);
+            return Json(new { exists = historialCompra != null });
         }
 
         // POST: HistorialCompras/Delete/5
@@ -128,8 +125,15 @@ namespace PupuseriaSalvadorena.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            await _historialCompraRep.EliminarHistorialCompra(id);
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await _historialCompraRep.EliminarHistorialCompra(id);
+                return Json(new { success = true, message = "Compra eliminada correctamente." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Error al eliminar la compra." });
+            }
         }
     }
 }

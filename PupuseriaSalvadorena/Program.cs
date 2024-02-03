@@ -44,6 +44,7 @@ builder.Services.AddScoped<IDetallesCuentaRep, DetallesCuentaRep>();
 builder.Services.AddScoped<IPlatilloRep, PlatilloRep>();
 builder.Services.AddScoped<ITipoVentaRep, TipoVentaRep>();
 builder.Services.AddScoped<IPronosticoRep, PronosticoRep>();
+builder.Services.AddScoped<ITipoMovimientoRep, TipoMovimientoRep>();
 builder.Services.AddScoped<IAlertaCuentaPagarRep, AlertaCuentaPagarRep>();
 builder.Services.AddHostedService<AlertaCuentaPagarServ>();
 

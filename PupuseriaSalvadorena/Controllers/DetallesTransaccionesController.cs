@@ -57,11 +57,6 @@ namespace PupuseriaSalvadorena.Controllers
         public async Task<IActionResult> GetDetalleTransaccionPartial()
         {
             var impuestos = await _impuestosRep.MostrarImpuestos();
-            var registroLibros = await _registroLibrosRep.MostrarRegistrosLibros();
-            var tipoTransac = await _tipoTransacRep.MostrarTipoTransaccion();
-
-            ViewBag.TipoTransac = new SelectList(tipoTransac, "IdTipo", "TipoTransac");
-            ViewBag.RegistroLibros = new SelectList(registroLibros, "IdRegistroLibros", "IdRegistroLibros");
             ViewBag.Impuestos = new SelectList(impuestos, "IdImpuesto", "NombreImpuesto");
             return PartialView("_newDetallesTPartial", new DetalleTransaccion());
         }
@@ -74,23 +69,35 @@ namespace PupuseriaSalvadorena.Controllers
             if (ModelState.IsValid)
             {
                 var IdLibro = await _detallesTransacRep.ObtenerIdLibroMasReciente();
+                var idTransaccion = await _detallesTransacRep.CrearTransaccionRecurrente(IdLibro, detalleTransaccion.DescripcionTransaccion, detalleTransaccion.Cantidad, detalleTransaccion.Monto, detalleTransaccion.FechaTrans, detalleTransaccion.IdTipo, detalleTransaccion.IdImpuesto, detalleTransaccion.Recurrencia, detalleTransaccion.FechaRecurrencia, detalleTransaccion.Frecuencia, false);
+                var transaccion = await _detallesTransacRep.ConsultarDetallesTransacciones(idTransaccion);
+
+                var registroLibro = await _registroLibrosRep.ConsultarRegistrosLibros(IdLibro);
+
+                decimal MontoLibro = 0;
+
+                if (transaccion.IdMovimiento == 2)
+                {
+                    MontoLibro = registroLibro.MontoTotal - transaccion.Monto;
+                }
+                else
+                {
+                    MontoLibro = registroLibro.MontoTotal + transaccion.Monto;
+                }
+
+                await _registroLibrosRep.ActualizarRegistroLibros(IdLibro, MontoLibro, registroLibro.Descripcion, registroLibro.Conciliado);
 
                 if (detalleTransaccion.Recurrencia)
                 {
-                    var idTransaccion =  await _detallesTransacRep.CrearTransaccionRecurrente(IdLibro, detalleTransaccion.DescripcionTransaccion, detalleTransaccion.Cantidad, detalleTransaccion.Monto, detalleTransaccion.FechaTrans, detalleTransaccion.IdTipo, detalleTransaccion.IdImpuesto, detalleTransaccion.Recurrencia, detalleTransaccion.FechaRecurrencia, detalleTransaccion.Frecuencia, detalleTransaccion.Conciliado);
                     var cronExpression = FrecuenciaACron(detalleTransaccion.Frecuencia);
 
                     RecurringJob.AddOrUpdate($"transaccion_{idTransaccion}",
                                  () => TransaccionRecurrente(idTransaccion), 
                                  cronExpression);
-                    
-                    return Json(new { success = true, message = "Transaccion agregada correctamente." });
                 }
-                else
-                {
-                    await _detallesTransacRep.CrearDetalleTransaccion(IdLibro, detalleTransaccion.DescripcionTransaccion, detalleTransaccion.Cantidad, detalleTransaccion.Monto, detalleTransaccion.FechaTrans, detalleTransaccion.IdTipo, detalleTransaccion.IdImpuesto, detalleTransaccion.Recurrencia, detalleTransaccion.FechaRecurrencia, detalleTransaccion.Frecuencia, detalleTransaccion.Conciliado);
-                    return Json(new { success = true, message = "Transaccion agregada correctamente." });
-                }
+
+                await _registroLibrosRep.ActualizarRegistroLibros(IdLibro, MontoLibro, registroLibro.Descripcion, registroLibro.Conciliado);
+                return Json(new { success = true, message = "Transaccion agregada correctamente." });
             }
             return Json(new { success = false, message = "Error al agregar la transaccion." });
         }
@@ -105,9 +112,7 @@ namespace PupuseriaSalvadorena.Controllers
 
             var detalleTransaccion = await _detallesTransacRep.ConsultarDetallesTransacciones(id.Value);
             var impuestos = await _impuestosRep.MostrarImpuestos();
-            var tipoTransac = await _tipoTransacRep.MostrarTipoTransaccion();
 
-            ViewBag.TipoTransac2 = new SelectList(tipoTransac, "IdTipo", "TipoTransac");
             ViewBag.Impuestos2 = new SelectList(impuestos, "IdImpuesto", "NombreImpuesto");
 
             if (detalleTransaccion == null)
@@ -120,7 +125,7 @@ namespace PupuseriaSalvadorena.Controllers
         // POST: DetallesTransacciones/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdRegistroLibros,IdTransaccion,DescripcionTransaccion,Cantidad,Monto,FechaTrans,IdTipo,IdImpuesto,NombreImpuesto,TipoTransac")] DetalleTransaccion detalleTransaccion)
+        public async Task<IActionResult> Edit(int id, [Bind("IdRegistroLibros,IdTransaccion,DescripcionTransaccion,Cantidad,Monto,FechaTrans,IdTipo,IdImpuesto,NombreImpuesto,TipoTransac,IdMovimiento")] DetalleTransaccion detalleTransaccion)
         {
             if (id != detalleTransaccion.IdTransaccion)
             {
@@ -129,7 +134,22 @@ namespace PupuseriaSalvadorena.Controllers
 
             if (ModelState.IsValid)
             {
-                await _detallesTransacRep.ActualizarDetalleTransaccion(detalleTransaccion.IdTransaccion, detalleTransaccion.DescripcionTransaccion, detalleTransaccion.Cantidad, detalleTransaccion.Monto, detalleTransaccion.IdTipo, detalleTransaccion.IdImpuesto, detalleTransaccion.Conciliado);
+                var IdLibro = await _detallesTransacRep.ObtenerIdLibroMasReciente();
+                var libro = await _registroLibrosRep.ConsultarRegistrosLibros(IdLibro);
+                var transaccion = await _detallesTransacRep.ConsultarDetallesTransacciones(detalleTransaccion.IdTransaccion);
+                decimal MontoLibro;
+
+                if (detalleTransaccion.IdMovimiento == 2)
+                {
+                    MontoLibro = (libro.MontoTotal + transaccion.Monto) - detalleTransaccion.Monto;
+                }
+                else
+                {
+                    MontoLibro = (libro.MontoTotal - transaccion.Monto) + detalleTransaccion.Monto;
+                }
+
+                await _detallesTransacRep.ActualizarDetalleTransaccion(detalleTransaccion.IdTransaccion, detalleTransaccion.DescripcionTransaccion, detalleTransaccion.Cantidad, detalleTransaccion.Monto, detalleTransaccion.IdTipo, detalleTransaccion.IdImpuesto, false);
+                await _registroLibrosRep.ActualizarRegistroLibros(IdLibro, MontoLibro, libro.Descripcion, libro.Conciliado);
                 return Json(new { success = true, message = "Transaccion actualizada correctamente." });
             }
             return Json(new { success = false, message = "Datos inválidos." });
@@ -151,6 +171,23 @@ namespace PupuseriaSalvadorena.Controllers
             {
                 string jobId = id.ToString();
                 RecurringJob.RemoveIfExists(jobId);
+
+                var detalleTransaccion = await _detallesTransacRep.ConsultarDetallesTransacciones(id);
+                var Libro = await _registroLibrosRep.ConsultarRegistrosLibros(detalleTransaccion.IdRegistroLibros);
+
+                decimal MontoLibro;
+
+                if (detalleTransaccion.IdMovimiento == 2)
+                {
+                    MontoLibro = Libro.MontoTotal - detalleTransaccion.Monto;
+                }
+                else
+                {
+                    MontoLibro = Libro.MontoTotal + detalleTransaccion.Monto;
+                }
+
+                await _registroLibrosRep.ActualizarRegistroLibros(detalleTransaccion.IdRegistroLibros, MontoLibro, Libro.Descripcion, Libro.Conciliado);
+
                 await _detallesTransacRep.EliminarDetallesTransaccion(id);
                 return Json(new { success = true, message = "Transaccion eliminada correctamente." });
             }
@@ -183,8 +220,21 @@ namespace PupuseriaSalvadorena.Controllers
         {
             var TransaccionOriginal = await _detallesTransacRep.ConsultarDetallesTransacciones(idTransaccion);
             var IdLibro = await _detallesTransacRep.ObtenerIdLibroMasReciente();
+            var registroLibro = await _registroLibrosRep.ConsultarRegistrosLibros(IdLibro);
+            decimal MontoLibro;
 
-            if(TransaccionOriginal != null && TransaccionOriginal.Recurrencia) 
+            if (TransaccionOriginal.IdMovimiento == 2)
+            {
+                MontoLibro = registroLibro.MontoTotal - TransaccionOriginal.Monto;
+            }
+            else
+            {
+                MontoLibro = registroLibro.MontoTotal + TransaccionOriginal.Monto;
+            }
+
+            await _registroLibrosRep.ActualizarRegistroLibros(IdLibro, MontoLibro, registroLibro.Descripcion, registroLibro.Conciliado);
+
+            if (TransaccionOriginal != null && TransaccionOriginal.Recurrencia) 
             {
                 DateTime FechaTransaccion;
                 switch (TransaccionOriginal.Frecuencia) 
@@ -213,9 +263,25 @@ namespace PupuseriaSalvadorena.Controllers
                     TransaccionOriginal.Recurrencia,
                     TransaccionOriginal.FechaRecurrencia,
                     TransaccionOriginal.Frecuencia,
-                    TransaccionOriginal.Conciliado
+                    false
                 );
             }
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetTipoTransaccion(string IdImpuesto)
+        {
+            var tipotransaccion = await _tipoTransacRep.ConsultarImpuestosporTransaccion(IdImpuesto);
+            return Json(new SelectList(tipotransaccion, "IdTipo", "TipoTransac"));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetImpuesto(string IdImpuesto, decimal monto)
+        {
+            Impuesto impuesto = await _impuestosRep.ConsultarImpuestos(IdImpuesto);
+            decimal montoImpuesto = monto * (impuesto.Tasa / 100);
+            decimal montoTotal = monto + montoImpuesto;
+            return Json(new { montoImpuesto = montoImpuesto, montoTotal = montoTotal });
         }
     }
 }

@@ -2,9 +2,8 @@
 
 <form id="editdetallesTForm" asp-action="Edit" asp-controller="DetallesTransacciones" method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="form-group">
-        <input type="hidden" asp-for="IdTransaccion" />
-    </div>
+    <input type="hidden" asp-for="IdTransaccion" />
+    <input type="hidden" asp-for="IdMovimiento" />
     <div class="form-group">
         <label asp-for="DescripcionTransaccion" class="control-label"></label>
         <input asp-for="DescripcionTransaccion" class="form-control" />

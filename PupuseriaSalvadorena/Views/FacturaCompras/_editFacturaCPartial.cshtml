@@ -1,5 +1,71 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model PupuseriaSalvadorena.Models.FacturaCompra
+
 @{
+    Model.FechaFactura = Model.FechaFactura == default ? DateTime.Now : Model.FechaFactura;
 }
+
+<form id="editFacturaCompraForm" asp-action="Edit" asp-controller="FacturaCompras" method="post" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <input type="hidden" asp-for="IdFacturaCompra" />
+    </div>
+    <div class="form-group">
+        <label class="control-label">Factura de Compra</label>
+        <input asp-for="FacturaDoc" type="file" class="form-control" />
+        <span asp-validation-for="FacturaDoc" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label class="control-label">Fecha de la Compra</label>
+        <input asp-for="FechaFactura" class="form-control" type="date" />
+        <span asp-validation-for="FechaFactura" class="text-danger"></span>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="control-label">Materia Prima</label>
+                <select asp-for="IdMateriaPrima" asp-items="@ViewBag.MateriasPrimas" class="form-control">
+                    <option value="">Seleccione la materia prima</option>
+                </select>
+                <span asp-validation-for="IdMateriaPrima" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="control-label">Monto de la Compra</label>
+                <div class="input-group">
+                    <span class="input-group-text">₡</span>
+                    <input asp-for="TotalCompra" class="form-control" />
+                    <span asp-validation-for="TotalCompra" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="control-label">Tipo de Pago</label>
+                <select asp-for="IdTipoPago" asp-items="@ViewBag.TipoPagos" class="form-control">
+                    <option value="">Seleccione el tipo de pago</option>
+                </select>
+                <span asp-validation-for="IdTipoPago" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="control-label">Tipo de Factura</label>
+                <select asp-for="IdTipoFactura" asp-items="@ViewBag.TipoFacturas" class="form-control">
+                    <option value="">Seleccione el tipo de factura</option>
+                </select>
+                <span asp-validation-for="IdTipoFactura" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label">Observaciones</label>
+        <textarea asp-for="DetallesCompra" class="form-control" id="CampoArea"></textarea>
+        <span asp-validation-for="DetallesCompra" class="text-danger"></span>
+    </div>
+    <div class="form-group text-right">
+        <button type="submit" id="submitEditFacturaCompra" class="btn btn-primary">Editar</button>
+    </div>
+</form>

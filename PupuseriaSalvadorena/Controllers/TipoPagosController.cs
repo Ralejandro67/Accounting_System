@@ -76,7 +76,7 @@ namespace PupuseriaSalvadorena.Controllers
             {
                 return NotFound();
             }
-            return View(tipoPago);
+            return PartialView("_editTipoPPartial", tipoPago);
         }
 
         // POST: TipoPagos/Edit/5
@@ -94,26 +94,16 @@ namespace PupuseriaSalvadorena.Controllers
             if (ModelState.IsValid)
             {
                 await _tipoPagoRep.ActualizarTipoPago(tipoPago.IdTipoPago, tipoPago.NombrePago, tipoPago.Estado);
-                return RedirectToAction(nameof(Index));
+                return Json(new { success = true, message = "Tipo de pago actualizado correctamente." });
             }
-            return View(tipoPago);
+            return Json(new { success = false, message = "Error al actualizar el tipo de pago." });
         }
 
         // GET: TipoPagos/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var tipoPago = await _tipoPagoRep.ConsultarTipoPagos(id.Value);
-            if (tipoPago == null)
-            {
-                return NotFound();
-            }
-
-            return View(tipoPago);
+            return Json(new { exists = tipoPago != null });
         }
 
         // POST: TipoPagos/Delete/5
@@ -121,8 +111,15 @@ namespace PupuseriaSalvadorena.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _tipoPagoRep.EliminarTipoPago(id);
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await _tipoPagoRep.EliminarTipoPago(id);
+                return Json(new { success = true, message = "Tipo de pago eliminado correctamente." });
+            }
+            catch (Exception)
+            {
+                return Json(new { success = false, message = "Error al eliminar el tipo de pago." });
+            }
         }
     }
 }

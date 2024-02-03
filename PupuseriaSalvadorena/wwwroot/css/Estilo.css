@@ -1,4 +1,76 @@
-﻿#AddFacturaC {
+﻿#AddImpuesto {
+    background-color: #0DBCB5;
+    border-radius: 0.5rem;
+    border-color: #0DBCB5;
+    border-radius: 0.5rem;
+}
+
+#AddImpuesto:hover {
+    background-color: #72DDD9;
+    border-color: #72DDD9;
+}
+
+#AddTipoT {
+    background-color: #0DBCB5;
+    border-radius: 0.5rem;
+    border-color: #0DBCB5;
+    border-radius: 0.5rem;
+}
+
+#AddTipoT:hover {
+    background-color: #72DDD9;
+    border-color: #72DDD9;
+}
+
+#AddTipoM {
+    background-color: #0DBCB5;
+    border-radius: 0.5rem;
+    border-color: #0DBCB5;
+    border-radius: 0.5rem;
+}
+
+#AddTipoM:hover {
+    background-color: #72DDD9;
+    border-color: #72DDD9;
+}
+
+#AddProveedor {
+    background-color: #0DBCB5;
+    border-radius: 0.5rem;
+    border-color: #0DBCB5;
+    border-radius: 0.5rem;
+}
+
+#AddProveedor:hover {
+    background-color: #72DDD9;
+    border-color: #72DDD9;
+}
+
+#AddTipoF {
+    background-color: #0DBCB5;
+    border-radius: 0.5rem;
+    border-color: #0DBCB5;
+    border-radius: 0.5rem;
+}
+
+#AddTipoF:hover {
+    background-color: #72DDD9;
+    border-color: #72DDD9;
+}
+
+#AddTipoP {
+    background-color: #0DBCB5;
+    border-radius: 0.5rem;
+    border-color: #0DBCB5;
+    border-radius: 0.5rem;
+}
+
+#AddTipoP:hover {
+    background-color: #72DDD9;
+    border-color: #72DDD9;
+}
+
+#AddFacturaC {
     background-color: #0DBCB5;
     border-radius: 0.5rem;
     border-color: #0DBCB5;
@@ -9,6 +81,19 @@
     background-color: #72DDD9;
     border-color: #72DDD9;
 }
+
+#AddHistorialC {
+    background-color: #0DBCB5;
+    border-radius: 0.5rem;
+    border-color: #0DBCB5;
+    border-radius: 0.5rem;
+}
+
+#AddHistorialC:hover {
+    background-color: #72DDD9;
+    border-color: #72DDD9;
+}
+
 
 .modal-header {
     background-color: #0DBCB5;
@@ -115,9 +200,9 @@
 
 #BtnEditar {
     color: black;
-    background-color: #F5F7F8;
+    background-color: white;
     border-radius: 0.5rem;
-    border-color: #F5F7F8;
+    border-color: white;
     padding: 0.5rem;
     padding-top: 0.2rem;
 }
@@ -130,9 +215,9 @@
 
 #BtnEliminar {
     color: black;
-    background-color: #F5F7F8;
+    background-color: white;
     border-radius: 0.5rem;
-    border-color: #F5F7F8;
+    border-color: white;
     padding: 0.5rem;
     padding-top: 0.2rem;
 }
@@ -145,9 +230,9 @@
 
 #BtnPagar {
     color: black;
-    background-color: #F5F7F8;
+    background-color: white;
     border-radius: 0.5rem;
-    border-color: #F5F7F8;
+    border-color: white;
     padding: 0.5rem;
     padding-top: 0.2rem;
 }
@@ -160,9 +245,9 @@
 
 #BtnImprimir {
     color: black;
-    background-color: #F5F7F8;
+    background-color: white;
     border-radius: 0.5rem;
-    border-color: #F5F7F8;
+    border-color: white;
     padding: 0.5rem;
     padding-top: 0.2rem;
 }
@@ -175,9 +260,9 @@
 
 #BtnDetalles {
     color: black;
-    background-color: #F5F7F8;
+    background-color: white;
     border-radius: 0.5rem;
-    border-color: #F5F7F8;
+    border-color: white;
     padding: 0.5rem;
     padding-top: 0.2rem;
 }

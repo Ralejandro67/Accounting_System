@@ -23,7 +23,7 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             var DescripcionParam = new SqlParameter("@Descripcion", Descripcion);
             await _context.Database.ExecuteSqlRawAsync("CrearImpuesto @NombreImpuesto, @Tasa, @Estado, @Descripcion", NombreImpuestoParam, TasaParam, EstadoParam, DescripcionParam);
         }
-
+        
         public async Task ActualizarImpuesto(string IdImpuesto, string NombreImpuesto, decimal Tasa, bool Estado, string Descripcion)
         {
             var IdImpuestoParam = new SqlParameter("@IdImpuesto", IdImpuesto);
@@ -33,7 +33,7 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             var DescripcionParam = new SqlParameter("@Descripcion", Descripcion);
             await _context.Database.ExecuteSqlRawAsync("ActualizarImpuesto @IdImpuesto, @NombreImpuesto, @Tasa, @Estado, @Descripcion", IdImpuestoParam, NombreImpuestoParam, TasaParam, EstadoParam, DescripcionParam);
         }
-
+        
         public async Task EliminarImpuesto(string IdImpuesto)
         {
             var IdImpuestoParam = new SqlParameter("@IdImpuesto", IdImpuesto);

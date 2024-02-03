@@ -9,7 +9,7 @@ namespace PupuseriaSalvadorena.Models
 
         [Required(ErrorMessage = "El nombre de la categoría es obligatorio")]
         [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "El nombre de la categoría solo puede contener letras")]
-        public string? NombreCategoriaP { get; set; }
+        public string? Nombre { get; set; }
 
         [Required(ErrorMessage = "El estado de la categoría es obligatorio")]
         public bool Estado { get; set; }

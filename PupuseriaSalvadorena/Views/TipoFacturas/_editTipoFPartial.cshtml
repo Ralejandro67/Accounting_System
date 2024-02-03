@@ -1,0 +1,19 @@
+﻿@model PupuseriaSalvadorena.Models.TipoFactura
+
+<form id="editTipoFForm" asp-action="Edit" asp-controller="TipoFacturas" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="IdTipoFactura" />
+    <div class="form-group">
+        <label asp-for="NombreFactura" class="control-label"></label>
+        <input asp-for="NombreFactura" class="form-control" />
+        <span asp-validation-for="NombreFactura" class="text-danger"></span>
+    </div>
+    <div class="form-group form-check">
+        <label class="form-check-label">
+            <input class="form-check-input" asp-for="Estado" /> @Html.DisplayNameFor(model => model.Estado)
+        </label>
+    </div>
+    <div class="form-group text-right">
+        <button type="submit" id="submitEditTipoFForm" class="btn btn-primary">Agregar</button>
+    </div>
+</form>

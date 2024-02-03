@@ -68,6 +68,7 @@
                                             <li><a class="dropdown-item" asp-area="" asp-controller="RegistroLibroes" asp-action="Index">Libros</a></li>
                                             <li><a class="dropdown-item" asp-area="" asp-controller="DetallesTransacciones" asp-action="Index">Transacciones</a></li>
                                             <li><a class="dropdown-item" asp-area="" asp-controller="TipoTransacciones" asp-action="Index">Tipo de Transacciones</a></li>
+                                            <li><a class="dropdown-item" asp-area="" asp-controller="TipoMovimientos" asp-action="Index">Tipo de Movimientos</a></li>
                                             <li><a class="dropdown-item" asp-area="" asp-controller="RegistroBancarios" asp-action="Index">RegistroBancarios</a></li>
                                             <li><a class="dropdown-item" asp-area="" asp-controller="ConciliacionBancarias" asp-action="Index">Conciliacion</a></li>
                                         </ul>
@@ -97,6 +98,67 @@
                                             <li><a class="dropdown-item" asp-area="" asp-controller="DetalleCuentas" asp-action="Index">Detalles Cuentas</a></li>
                                             <li><a class="dropdown-item" asp-area="" asp-controller="HistorialCompras" asp-action="Index">Historial de Compras</a></li>
                                             <li><a class="dropdown-item" asp-area="" asp-controller="AlertasCuentaPagar" asp-action="Index">Alertas</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <div class="accordion" id="accordionConciliacion">
+                            <div class="accordion-item">
+                                <a class="accordion-button collapsed nav-link-icon" data-bs-toggle="collapse" data-bs-target="#collapseConciliacion3" aria-expanded="false" aria-controls="collapseConciliacion">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-diagram-3-fill" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M6 3.5A1.5 1.5 0 0 1 7.5 2h1A1.5 1.5 0 0 1 10 3.5v1A1.5 1.5 0 0 1 8.5 6v1H14a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0v-1A.5.5 0 0 1 2 7h5.5V6A1.5 1.5 0 0 1 6 4.5zm-6 8A1.5 1.5 0 0 1 1.5 10h1A1.5 1.5 0 0 1 4 11.5v1A1.5 1.5 0 0 1 2.5 14h-1A1.5 1.5 0 0 1 0 12.5zm6 0A1.5 1.5 0 0 1 7.5 10h1a1.5 1.5 0 0 1 1.5 1.5v1A1.5 1.5 0 0 1 8.5 14h-1A1.5 1.5 0 0 1 6 12.5zm6 0a1.5 1.5 0 0 1 1.5-1.5h1a1.5 1.5 0 0 1 1.5 1.5v1a1.5 1.5 0 0 1-1.5 1.5h-1a1.5 1.5 0 0 1-1.5-1.5z" />
+                                    </svg>  Planificacion Financiera
+                                </a>
+                                <div id="collapseConciliacion3" class="accordion-collapse collapse" aria-labelledby="headingConciliacion" data-bs-parent="#accordionConciliacion">
+                                    <div class="accordion-body">
+                                        <ul class="list-unstyled">
+                                            <li><a class="dropdown-item" asp-area="" asp-controller="Presupuestoes" asp-action="Index">Presupuestos</a></li>
+                                            <li><a class="dropdown-item" asp-area="" asp-controller="CategoriaPresupuestoes" asp-action="Index">Categorias Presupuestos</a></li>
+                                            <li><a class="dropdown-item" asp-area="" asp-controller="DetallePresupuestos" asp-action="Index">Destalles Presupuestos</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <div class="accordion" id="accordionConciliacion">
+                            <div class="accordion-item">
+                                <a class="accordion-button collapsed nav-link-icon" data-bs-toggle="collapse" data-bs-target="#collapseConciliacion4" aria-expanded="false" aria-controls="collapseConciliacion">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cash-stack" viewBox="0 0 16 16">
+                                        <path d="M1 3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1zm7 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4" />
+                                        <path d="M0 5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1zm3 0a2 2 0 0 1-2 2v4a2 2 0 0 1 2 2h10a2 2 0 0 1 2-2V7a2 2 0 0 1-2-2z" />
+                                    </svg>  Ventas
+                                </a>
+                                <div id="collapseConciliacion4" class="accordion-collapse collapse" aria-labelledby="headingConciliacion" data-bs-parent="#accordionConciliacion">
+                                    <div class="accordion-body">
+                                        <ul class="list-unstyled">
+                                            <li><a class="dropdown-item" asp-area="" asp-controller="Presupuestoes" asp-action="Index">Presupuestos</a></li>
+                                            <li><a class="dropdown-item" asp-area="" asp-controller="CategoriaPresupuestoes" asp-action="Index">Categorias Presupuestos</a></li>
+                                            <li><a class="dropdown-item" asp-area="" asp-controller="DetallePresupuestos" asp-action="Index">Destalles Presupuestos</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <div class="accordion" id="accordionConciliacion">
+                            <div class="accordion-item">
+                                <a class="accordion-button collapsed nav-link-icon" data-bs-toggle="collapse" data-bs-target="#collapseConciliacion5" aria-expanded="false" aria-controls="collapseConciliacion">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bar-chart-line-fill" viewBox="0 0 16 16">
+                                        <path d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h1V7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7h1z" />
+                                    </svg>  Pronosticos
+                                </a>
+                                <div id="collapseConciliacion5" class="accordion-collapse collapse" aria-labelledby="headingConciliacion" data-bs-parent="#accordionConciliacion">
+                                    <div class="accordion-body">
+                                        <ul class="list-unstyled">
+                                            <li><a class="dropdown-item" asp-area="" asp-controller="Presupuestoes" asp-action="Index">Presupuestos</a></li>
+                                            <li><a class="dropdown-item" asp-area="" asp-controller="CategoriaPresupuestoes" asp-action="Index">Categorias Presupuestos</a></li>
+                                            <li><a class="dropdown-item" asp-area="" asp-controller="DetallePresupuestos" asp-action="Index">Destalles Presupuestos</a></li>
                                         </ul>
                                     </div>
                                 </div>

@@ -61,5 +61,15 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
 
             return resultado.FirstOrDefault();
         }
+
+        public async Task<HistorialCompra> ConsultarHistorialComprasporFactura(string IdFacturaCompra)
+        {
+            var IdFacturaCompraParam = new SqlParameter("@IdFacturaCompra", IdFacturaCompra);
+            var resultado = await _context.HistorialCompra
+                                          .FromSqlRaw("EXEC ConsultarHistorialComprasporFactura @IdFacturaCompra", IdFacturaCompraParam)
+                                          .ToListAsync();
+
+            return resultado.FirstOrDefault();
+        }
     }
 }

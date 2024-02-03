@@ -31,13 +31,14 @@ namespace PupuseriaSalvadorena.Models
 
         public string? TipoTransac { get; set; }
 
+        public int IdMovimiento { get; set; }
+
         public bool Recurrencia { get; set; }
 
         public DateTime FechaRecurrencia { get; set; }
 
         public string Frecuencia { get; set; }
 
-        [Required(ErrorMessage = "El estado de conciliacion es obligatorio")]
         public bool Conciliado { get; set; }
     }
 }

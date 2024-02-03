@@ -14,10 +14,14 @@ namespace PupuseriaSalvadorena.Controllers
     public class TipoTransaccionesController : Controller
     {
         private readonly ITipoTransacRep _tipoTransacRep;  
+        private readonly ITipoMovimientoRep _movimientosRep;
+        private readonly IImpuestosRep _impuestosRep;
 
-        public TipoTransaccionesController(ITipoTransacRep context)
+        public TipoTransaccionesController(ITipoTransacRep context, ITipoMovimientoRep movimientosRep, IImpuestosRep impuestosRep)
         {
             _tipoTransacRep = context;
+            _movimientosRep = movimientosRep;
+            _impuestosRep = impuestosRep;
         }
 
         // GET: TipoTransacciones
@@ -45,19 +49,25 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // GET: TipoTransacciones/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var movimientos = await _movimientosRep.MostrarTipoMovimiento();
+            var impuestos = await _impuestosRep.MostrarImpuestos();
+
+            ViewBag.Movimientos = new SelectList(movimientos, "IdMovimiento", "NombreMov");
+            ViewBag.Impuestos = new SelectList(impuestos, "IdImpuesto", "NombreImpuesto");
+
+            return PartialView("_newTipoTPartial", new TipoTransacciones());
         }
 
         // POST: TipoTransacciones/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdTipo,TipoTransac")] TipoTransacciones tipoTransacciones)
+        public async Task<IActionResult> Create([Bind("IdTipo,TipoTransac,IdMovimiento,IdImpuesto")] TipoTransacciones tipoTransacciones)
         {
             if (ModelState.IsValid)
             {
-                await _tipoTransacRep.CrearTipoTransac(tipoTransacciones.TipoTransac);
+                await _tipoTransacRep.CrearTipoTransac(tipoTransacciones.TipoTransac, tipoTransacciones.IdMovimiento, tipoTransacciones.IdImpuesto);
                 return Json(new { success = true, message = "Tipo de transaccion agregado correctamente." });
             }
             return Json(new { success = false, message = "Error al agregar el tipo de transaccion." });
@@ -72,6 +82,11 @@ namespace PupuseriaSalvadorena.Controllers
             }
 
             var tipoTransacciones = await _tipoTransacRep.ConsultarTipoTransaccion(id.Value);
+            var movimientos = await _movimientosRep.MostrarTipoMovimiento();
+            var impuestos = await _impuestosRep.MostrarImpuestos();
+            ViewBag.Movimientos = new SelectList(movimientos, "IdMovimiento", "NombreMov");
+            ViewBag.Impuestos = new SelectList(impuestos, "IdImpuesto", "NombreImpuesto");
+
             if (tipoTransacciones == null)
             {
                 return NotFound();
@@ -82,7 +97,7 @@ namespace PupuseriaSalvadorena.Controllers
         // POST: TipoTransacciones/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdTipo,TipoTransac")] TipoTransacciones tipoTransacciones)
+        public async Task<IActionResult> Edit(int id, [Bind("IdTipo,TipoTransac,IdMovimiento,IdImpuesto")] TipoTransacciones tipoTransacciones)
         {
             if (id != tipoTransacciones.IdTipo)
             {
@@ -91,7 +106,7 @@ namespace PupuseriaSalvadorena.Controllers
 
             if (ModelState.IsValid)
             {
-                await _tipoTransacRep.ActualizarTipoTransac(tipoTransacciones.IdTipo, tipoTransacciones.TipoTransac);
+                await _tipoTransacRep.ActualizarTipoTransac(tipoTransacciones.IdTipo, tipoTransacciones.TipoTransac, tipoTransacciones.IdMovimiento, tipoTransacciones.IdImpuesto);
                 return Json(new { success = true, message = "Tipo de transaccion actualizada correctamente." });
             }
             return Json(new { success = false, message = "Datos inválidos." });

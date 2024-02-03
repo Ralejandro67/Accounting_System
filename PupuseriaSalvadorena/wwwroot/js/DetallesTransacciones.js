@@ -14,6 +14,17 @@ $(document).on('change', '#Recurrencia', function () {
     toggleRecurrenceFields();
 });
 
+function inicializarInputMonto() {
+    $('#inputMonto').on('input', function () {
+        var monto = $(this).val();
+        if (monto === '') {
+            $('#montoDisplay').text('₡0.00');
+        } else {
+            $('#montoDisplay').text('₡' + monto);
+        }
+    });
+}
+
 // Agregar Transacciones
 document.getElementById("AddTransaccion").addEventListener("click", function () {
     $.ajax({
@@ -22,6 +33,7 @@ document.getElementById("AddTransaccion").addEventListener("click", function () 
         success: function (result) {
             $('#newDetallesTModal .modal-body').html(result);
             toggleRecurrenceFields();
+            inicializarInputMonto();
             $('#newDetallesTModal').modal('show');
         },
         error: function (error) {
@@ -68,6 +80,47 @@ document.addEventListener('click', function (e) {
                 text: 'Hubo un problema con la solicitud.',
                 icon: 'error'
             });
+        });
+    }
+});
+
+$(document).on('change', '#IdImpuesto', function () {
+    var impuestoId = $(this).val();
+    var monto = $('#inputMonto').val();
+    $.ajax({
+        url: '/DetallesTransacciones/GetTipoTransaccion/',
+        type: 'GET',
+        dataType: 'json',
+        data: { IdImpuesto: impuestoId },
+        success: function (data) {
+            var tipotransaccionSelect = $('#IdTipo');
+            tipotransaccionSelect.empty();
+            tipotransaccionSelect.append($('<option></option>').val('').text('Seleccione un tipo de transacción'));
+            $.each(data, function (index, item) {
+                tipotransaccionSelect.append($('<option></option>').val(item.value).text(item.text));
+            });
+        },
+        error: function () {
+            alert('Error al cargar los tipos de transacción');
+        }
+    });
+    if (impuestoId && monto) {
+        $.ajax({
+            url: '/DetallesTransacciones/GetImpuesto/',
+            type: 'GET',
+            dataType: 'json',
+            data: {
+                IdImpuesto: impuestoId,
+                Monto: monto
+            },
+            success: function (data) {
+                $('#inputMontoImpuesto').text('₡' + data.montoImpuesto.toFixed(2));
+                $('#inputMontoTotal').text('₡' + data.montoTotal.toFixed(2));
+                $('#MontoTotal').val(data.montoTotal.toFixed(2));
+            },
+            error: function () {
+                alert('Error al cargar la tasa del impuesto');
+            }
         });
     }
 });
