@@ -47,7 +47,7 @@ namespace PupuseriaSalvadorena.Controllers
         // GET: TipoMovimientos/Create
         public IActionResult Create()
         {
-            return View();
+            return PartialView("_newTipoMovimientoPartial", new TipoMovimiento());
         }
 
         // POST: TipoMovimientos/Create

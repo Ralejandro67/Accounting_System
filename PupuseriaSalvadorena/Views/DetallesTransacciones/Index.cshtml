@@ -1,4 +1,6 @@
-﻿@model IEnumerable<PupuseriaSalvadorena.Models.DetalleTransaccion>
+﻿@using System.Globalization;
+
+@model IEnumerable<PupuseriaSalvadorena.Models.DetalleTransaccion>
 
 @{
     ViewData["Title"] = "Transacciones";
@@ -68,7 +70,7 @@
                 @Html.DisplayFor(modelItem => item.Cantidad)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Monto)
+                @(item.Monto.ToString("C", new CultureInfo("es-CR")))
             </td>
             <td>
                 @item.FechaTrans.ToString("dd/MM/yyyy")
@@ -100,7 +102,6 @@
 }
     </tbody>
 </table>
-
 <div class="modal fade" id="newDetallesTModal" tabindex="-1" role="dialog" aria-labelledby="newDetallesTModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">

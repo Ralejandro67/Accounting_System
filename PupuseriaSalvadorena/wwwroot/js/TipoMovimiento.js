@@ -50,10 +50,10 @@ document.querySelectorAll('.edit-TipoM').forEach(button => {
         fetch(`/TipoMovimientos/Edit/${Id}`)
             .then(response => response.text())
             .then(html => {
-                document.querySelector('#newTipoMovimientoModal .modal-body').innerHTML = html;
-                $('#newTipoMovimientoModal').modal('show');
+                document.querySelector('#editTipoMovimientoModal .modal-body').innerHTML = html;
+                $('#editTipoMovimientoModal').modal('show');
 
-                document.querySelector('#newTipoMovimientoModal #editTipoMovimientoForm').addEventListener('submit', function (e) {
+                document.querySelector('#editTipoMovimientoModal #editTipoMovimientoForm').addEventListener('submit', function (e) {
                     e.preventDefault();
 
                     var formData = new FormData(this);
@@ -67,7 +67,7 @@ document.querySelectorAll('.edit-TipoM').forEach(button => {
                     })
                         .then(response => response.json())
                         .then(data => {
-                            $('#newTipoMovimientoModal').modal('hide');
+                            $('#editTipoMovimientoModal').modal('hide');
                             if (data.success) {
                                 Swal.fire({
                                     title: '¡Éxito!',
@@ -85,7 +85,7 @@ document.querySelectorAll('.edit-TipoM').forEach(button => {
                             }
                         })
                         .catch(error => {
-                            $('#newTipoMovimientoModal').modal('hide');
+                            $('#editTipoMovimientoModal').modal('hide');
                             Swal.fire({
                                 title: 'Error',
                                 text: 'Hubo un problema con la solicitud.',

@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Net.Http.Headers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PupuseriaSalvadorena.Conexion;
 using PupuseriaSalvadorena.Models;
 using PupuseriaSalvadorena.Repositorios.Interfaces;
+using System.Text;
 
 namespace PupuseriaSalvadorena.Controllers
 {
@@ -28,14 +30,14 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // GET: Platillos/Details/5
-        public async Task<IActionResult> Details(string id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var platillo = await _platilloRep.ConsultarPlatillos(id);
+            var platillo = await _platilloRep.ConsultarPlatillos(id.Value);
             if (platillo == null)
             {
                 return NotFound();
@@ -47,33 +49,56 @@ namespace PupuseriaSalvadorena.Controllers
         // GET: Platillos/Create
         public IActionResult Create()
         {
-            return View();
+            return PartialView("_newPlatilloPartial", new Platillo());
         }
 
         // POST: Platillos/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdPlatillo,NombrePlatillo,CostoProduccion,PrecioVenta")] Platillo platillo)
         {
             if (ModelState.IsValid)
             {
+                var client = new HttpClient();
+                var request = new HttpRequestMessage
+                {
+                    Method = HttpMethod.Post,
+                    RequestUri = new Uri("https://api.alegra.com/api/v1/items"),
+                    Headers =
+                    {
+                        { "accept", "application/json" },
+                        { "authorization", "Basic cmFsZWphbmRybzY3QGdtYWlsLmNvbToxOTU4ZjIwZTBhNTJjMTc1YjM3ZQ==" },
+                    },
+                    Content = new StringContent($"{{\"inventory\":{{\"unit\":\"unit\"}},\"name\":\"{platillo.NombrePlatillo}\",\"price\":{platillo.PrecioVenta},\"tax\":1}}", Encoding.UTF8, "application/json")
+                    {
+                        Headers =
+                        {
+                            ContentType = new MediaTypeHeaderValue("application/json")
+                        }
+                    }
+                };
+                using (var response = await client.SendAsync(request))
+                {
+                    response.EnsureSuccessStatusCode();
+                    var body = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine(body);
+                }
+
                 await _platilloRep.CrearPlatillo(platillo.NombrePlatillo, platillo.CostoProduccion, platillo.PrecioVenta);
-                return RedirectToAction(nameof(Index));
+                return Json(new { success = true, message = "Platillo agregado correctamente." });
             }
-            return View(platillo);
+            return Json(new { success = false, message = "Error al agregar el platillo." });
         }
 
         // GET: Platillos/Edit/5
-        public async Task<IActionResult> Edit(string id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var platillo = await _platilloRep.ConsultarPlatillos(id);
+            var platillo = await _platilloRep.ConsultarPlatillos(id.Value);
             if (platillo == null)
             {
                 return NotFound();
@@ -86,7 +111,7 @@ namespace PupuseriaSalvadorena.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("IdPlatillo,NombrePlatillo,CostoProduccion,PrecioVenta")] Platillo platillo)
+        public async Task<IActionResult> Edit(int id, [Bind("IdPlatillo,NombrePlatillo,CostoProduccion,PrecioVenta")] Platillo platillo)
         {
             if (id != platillo.IdPlatillo)
             {
@@ -102,14 +127,14 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // GET: Platillos/Delete/5
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var platillo = await _platilloRep.ConsultarPlatillos(id);
+            var platillo = await _platilloRep.ConsultarPlatillos(id.Value);
             if (platillo == null)
             {
                 return NotFound();
@@ -121,7 +146,7 @@ namespace PupuseriaSalvadorena.Controllers
         // POST: Platillos/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await _platilloRep.EliminarPlatillo(id);
             return RedirectToAction(nameof(Index));

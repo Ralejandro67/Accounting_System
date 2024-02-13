@@ -47,12 +47,10 @@ namespace PupuseriaSalvadorena.Controllers
         // GET: TipoVentas/Create
         public IActionResult Create()
         {
-            return View();
+            return PartialView("_newTipoVPartial", new TipoVenta());
         }
 
         // POST: TipoVentas/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdTipoVenta,NombreVenta,Estado")] TipoVenta tipoVenta)
@@ -60,9 +58,9 @@ namespace PupuseriaSalvadorena.Controllers
             if (ModelState.IsValid)
             {
                 await _tipoVentaRep.CrearTipoVenta(tipoVenta.NombreVenta, tipoVenta.Estado);
-                return RedirectToAction(nameof(Index));
+                return Json(new { success = true, message = "Tipo de venta agregada correctamente." });
             }
-            return View(tipoVenta);
+            return Json(new { success = false, message = "Error al agregar el tipo de venta." });
         }
 
         // GET: TipoVentas/Edit/5
@@ -70,52 +68,40 @@ namespace PupuseriaSalvadorena.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return Json(new { success = false, message = "Error al editar el tipo de venta." });
             }
 
             var tipoVenta = await _tipoVentaRep.ConsultarTipoVentas(id.Value);
             if (tipoVenta == null)
             {
-                return NotFound();
+                return Json(new { success = false, message = "No se encontro el tipo de venta." });
             }
             return View(tipoVenta);
         }
 
         // POST: TipoVentas/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("IdTipoVenta,NombreVenta,Estado")] TipoVenta tipoVenta)
         {
             if (id != tipoVenta.IdTipoVenta)
             {
-                return NotFound();
+                return Json(new { success = false, message = "Error al editar el tipo de venta." });
             }
 
             if (ModelState.IsValid)
             {
                 await _tipoVentaRep.ActualizarTipoVentas(tipoVenta.IdTipoVenta, tipoVenta.NombreVenta, tipoVenta.Estado);
-                return RedirectToAction(nameof(Index));
+                return Json(new { success = true, message = "Tipo de venta actualizada correctamente." });
             }
-            return View(tipoVenta);
+            return Json(new { success = false, message = "Error al editar el tipo de venta." });
         }
 
         // GET: TipoVentas/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var tipoVenta = await _tipoVentaRep.ConsultarTipoVentas(id.Value);
-            if (tipoVenta == null)
-            {
-                return NotFound();
-            }
-
-            return View(tipoVenta);
+            return Json(new { exists = tipoVenta != null });
         }
 
         // POST: TipoVentas/Delete/5
@@ -123,8 +109,15 @@ namespace PupuseriaSalvadorena.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _tipoVentaRep.EliminarTipoVenta(id);
-            return RedirectToAction(nameof(Index));
+            try 
+            {                 
+                await _tipoVentaRep.EliminarTipoVenta(id);
+                return Json(new { success = true, message = "Tipo de venta eliminada correctamente." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Error al eliminar el tipo de venta." });
+            }
         }
     }
 }

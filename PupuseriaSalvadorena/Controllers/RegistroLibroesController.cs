@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Globalization;
 using Hangfire;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -129,9 +130,10 @@ namespace PupuseriaSalvadorena.Controllers
         public void CrearLibroMensual()
         {
             DateTime FechaResgistro = DateTime.Now;
-            string Mes = FechaResgistro.ToString("MMMM");
+            CultureInfo cultura = new CultureInfo("es-ES");
+            DateTime fechaMes = FechaResgistro.AddMonths(1);
+            string Mes = fechaMes.ToString("MMMM", cultura);
             string Libro = "Libro " + Mes;
-            bool conciliado = false;
 
             _registroLibroRep.CrearRegistroLibros(FechaResgistro, 0, Libro, false);
         }

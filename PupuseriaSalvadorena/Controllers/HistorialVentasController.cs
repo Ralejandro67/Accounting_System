@@ -28,7 +28,7 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // GET: HistorialVentas/Details/5
-        public async Task<IActionResult> Details(string id)
+        public async Task<IActionResult> Details(int id)
         {
             if (id == null)
             {
@@ -59,14 +59,14 @@ namespace PupuseriaSalvadorena.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _historialVentaRep.CrearHistorialVenta(historialVenta.CantVenta, historialVenta.FechaVenta, historialVenta.IdPlatillo, historialVenta.IdFacturaVenta, historialVenta.IdTipoVenta);
+                await _historialVentaRep.CrearHistorialVenta(historialVenta.IdVenta, historialVenta.CantVenta, historialVenta.FechaVenta, historialVenta.IdPlatillo, historialVenta.IdFacturaVenta, historialVenta.IdTipoVenta);
                 return RedirectToAction(nameof(Index));
             }
             return View(historialVenta);
         }
 
         // GET: HistorialVentas/Edit/5
-        public async Task<IActionResult> Edit(string id)
+        public async Task<IActionResult> Edit(int id)
         {
             if (id == null)
             {
@@ -86,7 +86,7 @@ namespace PupuseriaSalvadorena.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("IdVenta,CantVenta,FechaVenta,IdPlatillo,IdFacturaVenta,IdTipoVenta")] HistorialVenta historialVenta)
+        public async Task<IActionResult> Edit(int id, [Bind("IdVenta,CantVenta,FechaVenta,IdPlatillo,IdFacturaVenta,IdTipoVenta")] HistorialVenta historialVenta)
         {
             if (id != historialVenta.IdVenta)
             {
@@ -102,7 +102,7 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // GET: HistorialVentas/Delete/5
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> Delete(int id)
         {
             if (id == null)
             {
@@ -121,7 +121,7 @@ namespace PupuseriaSalvadorena.Controllers
         // POST: HistorialVentas/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await _historialVentaRep.EliminarHistorialVenta(id);
             return RedirectToAction(nameof(Index));

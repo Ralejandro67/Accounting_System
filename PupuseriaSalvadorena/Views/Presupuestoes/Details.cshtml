@@ -1,66 +1,140 @@
-﻿@model PupuseriaSalvadorena.Models.Presupuesto
+﻿@using System.Globalization;
+
+@model PupuseriaSalvadorena.ViewModels.DetallesPresupuestos
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalles del Presupuesto";
 }
 
-<h1>Details</h1>
+@section Scripts {
+    <script src="~/js/detallestransacciones.js" asp-append-version="true"></script>
+    <script src="~/js/detallespresupuestos.js" asp-append-version="true"></script>
+}
 
-<div>
-    <h4>Presupuesto</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NombreP)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NombreP)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FechaInicio)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FechaInicio)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FechaFin)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FechaFin)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Descripcion)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Descripcion)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.SaldoUsado)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.SaldoUsado)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.SaldoPresupuesto)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.SaldoPresupuesto)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Estado)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Estado)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IdCategoriaP)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdCategoriaP)
-        </dd>
-    </dl>
+<div class="card-body table-body-custom pt-4 pb-4">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1>
+                <img src="~/images/target.png" alt="Icono Target" style="height: 60px;" />
+                @Model.Presupuesto.NombreP
+            </h1>
+            <button type="button" class="btn btn-primary nav-link-icon" id="AddTransaccionP">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
+                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
+                </svg> Nueva Transaccion
+            </button>
+        </div>
+    </div>
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+            @Model.Presupuesto.Descripcion
+            <button type="button" class="btn btn-primary nav-link-icon details-Transaccion" id="AddTransaccion" onclick="location.href='@Url.Action("Index", "DetallePresupuestos", new { id = Model.Presupuesto.IdPresupuesto })'">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">
+                    <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0" />
+                    <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7" />
+                </svg> Ver Transacciones
+            </button>
+        </div>
+    </div>
+    <hr>
+    <div class="container mt-2 d-flex">
+        <canvas id="DoughnutChart"></canvas>
+        <div class="card-body ml-4 table-body-custom" style="height: auto; margin-top: 0 !important; margin-bottom: 0 !important">
+            <div class="mt-3" id="TituloPresupuesto">
+                <h5>Detalles</h5>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+                <p class="mb-0">Inicio</p>
+                <p class="mb-0">Fin</p>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+                <small class="mb-0 mr-2">@Model.Presupuesto.FechaInicio.ToString("dd/MM")</small>
+                <div id="progressContainer" style="width: 100%; background-color: #ddd;">
+                    <div id="progressBar"
+                         data-start-date="@Model.Presupuesto.FechaInicio.ToString("yyyy-MM-dd")"
+                         data-end-date="@Model.Presupuesto.FechaFin.ToString("yyyy-MM-dd")">
+                    </div>
+                </div>
+                <small class="mb-0 ml-2">@Model.Presupuesto.FechaFin.ToString("dd/MM")</small>
+            </div>
+            <hr>
+            <div class="d-flex justify-content-between align-items-center" style="text-align:center">
+                <div>
+                    <strong>Presupuesto</strong>
+                    <p>@Model.Presupuesto.SaldoPresupuesto.ToString("C", new CultureInfo("es-CR"))</p>
+                </div>
+                <div class="justify-content-center">
+                    <strong>Transacciones Asociadas</strong>
+                    <p>@ViewBag.TotalTransacciones</p>
+                </div>
+                <div class="justify-content-center">
+                    <strong>Estado</strong>
+                    <p>@(Model.Presupuesto.Estado ? "Activo" : "Inactivo")</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.IdPresupuesto">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+<div class="card-body pt-4 pb-4 table-body-custom">
+    <form id="DetallesPresupuestoForm" asp-action="Create" asp-controller="DetallePresupuestos" method="post">
+        <div class="d-flex justify-content-between align-items-center">
+            <h4>Transacciones disponibles: </h4>
+            <button type="submit" class="btn btn-success mr-3 agregar-boton nav-link-icon" id="submitDetallesPresupuesto">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
+                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
+                </svg> Agregar Transacciones
+            </button>
+        </div>
+        <div class="container mt-2 pl-0">
+            Selecciona las transacciones relacionadas al presupuesto.
+        </div>
+        <input type="hidden" name="Presupuesto.IdPresupuesto" value="@Model.Presupuesto.IdPresupuesto" />
+        <table class="table table-hover mt-4">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Descripción</th>
+                    <th>Fecha</th>
+                    <th>Monto</th>
+                    <th>Cantidad</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var transaccion in Model.DetallesTransacciones)
+                {
+                    <tr>
+                        <td>
+                            <input type="checkbox" name="TransaccionesSeleccionadas" id="check_@transaccion.IdTransaccion" value="@transaccion.IdTransaccion" />
+                            <label for="check_@transaccion.IdTransaccion" class="CheckboxTransac"><span></span></label>
+                        </td>
+                        <td>@transaccion.DescripcionTransaccion</td>
+                        <td>@transaccion.FechaTrans.ToString("dd/MM/yyyy")</td>
+                        <td>@transaccion.Monto.ToString("C", new CultureInfo("es-CR"))</td>
+                        <td>@transaccion.Cantidad</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </form>
 </div>
+<div class="modal fade" id="newPresupuestoTModal" tabindex="-1" role="dialog" aria-labelledby="newPresupuestoTModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="newPresupuestoTModalLabel">Nueva Transaccion</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @Html.Partial("_newTransaccionPresupuesto", new PupuseriaSalvadorena.Models.DetalleTransaccion())
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    var saldoUsado = @Html.Raw(Json.Serialize(ViewBag.SaldoUsado));
+    var saldoRestante = @Html.Raw(Json.Serialize(ViewBag.SaldoRestante));
+</script>

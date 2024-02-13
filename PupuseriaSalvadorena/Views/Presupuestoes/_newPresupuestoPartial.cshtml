@@ -5,25 +5,38 @@
     Model.FechaFin = Model.FechaFin == default ? DateTime.Now : Model.FechaFin;
 }
 
-<form id="PresupuestoForm" asp-action="Create" asp-controller="HistorialCompras" method="post">
+<form id="PresupuestoForm" asp-action="Create" asp-controller="Presupuestoes" method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <input asp-for="SaldoUsado" class="form-control" />
+    <div class="card-body card-body-custom">
+        <div class="row no-gutters">
+            <div class="col text-center item">
+                <div class="item-value">Saldo en Libros</div>
+                <div class="text-note">₡@ViewBag.SaldoLibros</div>
+            </div>
+            <div class="col text-center item">
+                <div class="item-value">Saldo Disponible</div>
+                <div id="SaldoDisponible" class="text-note" data-saldo="@ViewBag.SaldoPresupuestos">₡@ViewBag.SaldoPresupuestos</div>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" asp-for="SaldoUsado" class="form-control" />
+    <input type="hidden" asp-for="Estado" class="form-control" value="true">
     <div class="form-group">
-        <label asp-for="NombreP" class="control-label"></label>
+        <label class="control-label">Nombre del Presupuesto</label>
         <input asp-for="NombreP" class="form-control" />
         <span asp-validation-for="NombreP" class="text-danger"></span>
     </div>
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
-                <label asp-for="FechaInicio" class="control-label"></label>
+                <label class="control-label">Fecha de Inicio</label>
                 <input asp-for="FechaInicio" class="form-control" type="date" />
                 <span asp-validation-for="FechaInicio" class="text-danger"></span>
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <label asp-for="FechaFin" class="control-label"></label>
+                <label class="control-label">Fecha de Finalizacion</label>
                 <input asp-for="FechaFin" class="form-control" type="date" />
                 <span asp-validation-for="FechaFin" class="text-danger"></span>
             </div>
@@ -32,15 +45,18 @@
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
-                <label asp-for="SaldoPresupuesto" class="control-label"></label>
-                <input asp-for="SaldoPresupuesto" class="form-control" />
-                <span asp-validation-for="SaldoPresupuesto" class="text-danger"></span>
+                <label class="control-label">Saldo del Presupuesto</label>
+                <div class="input-group">
+                    <span class="input-group-text">₡</span>
+                    <input asp-for="SaldoPresupuesto" class="form-control" id="SaldoIncial"/>
+                    <span asp-validation-for="SaldoPresupuesto" class="text-danger"></span>
+                </div>
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <label asp-for="IdCategoriaP" class="control-label"></label>
-                <select asp-for="IdCategoriaP" asp-items="@ViewBag.CategoriaP" class="form-control">
+                <label class="control-label">Categoria</label>
+                <select asp-for="IdCategoriaP" asp-items="@ViewBag.CategoriasP" class="form-control">
                     <option value="">Seleccione una Categoria</option>
                 </select>
                 <span asp-validation-for="IdCategoriaP" class="text-danger"></span>
@@ -48,16 +64,11 @@
         </div>
     </div>
     <div class="form-group">
-        <label asp-for="Estado" class="control-label"></label>
-        <input asp-for="Estado" class="form-control" type="date" />
-        <span asp-validation-for="Estado" class="text-danger"></span>
-    </div>
-    <div class="form-group">
         <label class="control-label">Descripcion</label>
         <textarea asp-for="Descripcion" class="form-control" id="CampoArea"></textarea>
         <span asp-validation-for="Descripcion" class="text-danger"></span>
     </div>
     <div class="form-group text-right">
-        <button type="button" id="submitPresupuesto" class="btn btn-primary">Agregar</button>
+        <button type="button" id="submitPresupuesto" class="btn btn-primary agregar-boton">Agregar</button>
     </div>
 </form>

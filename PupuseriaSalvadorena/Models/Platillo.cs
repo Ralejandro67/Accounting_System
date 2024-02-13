@@ -5,7 +5,7 @@ namespace PupuseriaSalvadorena.Models
     public class Platillo
     {
         [Key]
-        public string? IdPlatillo { get; set; }
+        public int IdPlatillo { get; set; }
 
         [Required(ErrorMessage = "El nombre del platillo es obligatorio")]
         [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "El nombre del platillo solo puede contener letras")]

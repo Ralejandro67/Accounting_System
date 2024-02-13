@@ -9,5 +9,6 @@ namespace PupuseriaSalvadorena.Repositorios.Interfaces
         Task EliminarNegocio(long CedulaJuridica);
         Task<List<Negocio>> MostrarNegocio();
         Task<Negocio> ConsultarNegocio(long CedulaJuridica);
+        Task<long> ConsultarNegocio();
     }
 }

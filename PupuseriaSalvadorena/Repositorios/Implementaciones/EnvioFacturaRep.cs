@@ -15,19 +15,27 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             _context = context;
         }
 
-        public async Task CrearEnvioFactura(DateTime FechaEnvio, int IdFacturaVenta)
+        public async Task CrearEnvioFactura(DateTime FechaEnvio, int IdFacturaVenta, long Identificacion, string NombreCliente, string CorreoElectronico, int Telefono)
         {
             var FechaEnvioParam = new SqlParameter("@FechaEnvio", FechaEnvio);
             var IdFacturaVentaParam = new SqlParameter("@IdFacturaVenta", IdFacturaVenta);
-            await _context.Database.ExecuteSqlRawAsync("CrearEnvioFactura @FechaEnvio, @IdFacturaVenta", FechaEnvioParam, IdFacturaVentaParam);
+            var IdentificacionParam = new SqlParameter("@Identificacion", Identificacion);
+            var NombreClienteParam = new SqlParameter("@NombreCliente", NombreCliente);
+            var CorreoElectronicoParam = new SqlParameter("@CorreoElectronico", CorreoElectronico);
+            var TelefonoParam = new SqlParameter("@Telefono", Telefono);
+            await _context.Database.ExecuteSqlRawAsync("CrearEnvioFactura @FechaEnvio, @IdFacturaVenta, @Identificacion, @NombreCliente, @CorreoElectronico, @Telefono", FechaEnvioParam, IdFacturaVentaParam, IdentificacionParam, NombreClienteParam, CorreoElectronicoParam, TelefonoParam);
         }
 
-        public async Task ActualizarEnvioFactura(int IdEnvioFactura, DateTime FechaEnvio, int IdFacturaVenta)
+        public async Task ActualizarEnvioFactura(int IdEnvioFactura, DateTime FechaEnvio, int IdFacturaVenta, long Identificacion, string NombreCliente, string CorreoElectronico, int Telefono)
         {
             var IdEnvioFacturaParam = new SqlParameter("@IdEnvioFactura", IdEnvioFactura);
             var FechaEnvioParam = new SqlParameter("@FechaEnvio", FechaEnvio);
             var IdFacturaVentaParam = new SqlParameter("@IdFacturaVenta", IdFacturaVenta);
-            await _context.Database.ExecuteSqlRawAsync("ActualizarEnvioFactura @IdEnvioFactura, @FechaEnvio, @IdFacturaVenta", IdEnvioFacturaParam, FechaEnvioParam, IdFacturaVentaParam);
+            var IdentificacionParam = new SqlParameter("@Identificacion", Identificacion);
+            var NombreClienteParam = new SqlParameter("@NombreCliente", NombreCliente);
+            var CorreoElectronicoParam = new SqlParameter("@CorreoElectronico", CorreoElectronico);
+            var TelefonoParam = new SqlParameter("@Telefono", Telefono);
+            await _context.Database.ExecuteSqlRawAsync("ActualizarEnvioFactura @IdEnvioFactura, @FechaEnvio, @IdFacturaVenta, @Identificacion, @NombreCliente, @CorreoElectronico, @Telefono", IdEnvioFacturaParam, FechaEnvioParam, IdFacturaVentaParam, IdentificacionParam, NombreClienteParam, CorreoElectronicoParam, TelefonoParam);
         }
 
         public async Task EliminarEnvioFactura(int IdEnvioFactura)

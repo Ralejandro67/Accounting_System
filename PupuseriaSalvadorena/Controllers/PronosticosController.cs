@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PupuseriaSalvadorena.Conexion;
 using PupuseriaSalvadorena.Models;
+using PupuseriaSalvadorena.Services;
 using PupuseriaSalvadorena.Repositorios.Interfaces;
 
 namespace PupuseriaSalvadorena.Controllers
@@ -14,10 +15,14 @@ namespace PupuseriaSalvadorena.Controllers
     public class PronosticosController : Controller
     {
         private readonly IPronosticoRep _pronosticoRep;
+        private readonly IHistorialVentaRep _historialVentaRep;
+        private readonly ServicioPronosticos _servicioPronosticos;
 
-        public PronosticosController(IPronosticoRep context)
+        public PronosticosController(IPronosticoRep pronosticoRep, IHistorialVentaRep historialVentaRep, ServicioPronosticos servicioPronosticos)
         {
-            _pronosticoRep = context;
+            _pronosticoRep = pronosticoRep;
+            _historialVentaRep = historialVentaRep;
+            _servicioPronosticos = servicioPronosticos;
         }
 
         // GET: Pronosticos
@@ -51,15 +56,16 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // POST: Pronosticos/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdPronostico,IdPlatillo,FechaInicio,FechaFinal,CantTotalProd,TotalVentas,PronosticoDoc")] Pronostico pronostico)
         {
             if (ModelState.IsValid)
             {
-                await _pronosticoRep.CrearPronostico(pronostico.IdPlatillo, pronostico.FechaInicio, pronostico.FechaFinal, pronostico.CantTotalProd, pronostico.TotalVentas, pronostico.PronosticoDoc);
+                var historialVentas = (await _historialVentaRep.ConsultarHistorialVentasPlatillos(pronostico.IdPlatillo)).ToArray();
+
+                var descomposicion = _servicioPronosticos.DescomposicionMutiplicativa(historialVentas);
+
                 return RedirectToAction(nameof(Index));
             }
             return View(pronostico);

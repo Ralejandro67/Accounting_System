@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using PupuseriaSalvadorena.Conexion;
 using PupuseriaSalvadorena.Models;
 using PupuseriaSalvadorena.Repositorios.Interfaces;
+using System.Data;
 
 namespace PupuseriaSalvadorena.Repositorios.Implementaciones
 {
@@ -53,6 +54,26 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
                                         .ToListAsync();
 
             return negocio.FirstOrDefault();
+        }
+
+        public async Task<long> ConsultarNegocio()
+        {
+            using (var command = _context.Database.GetDbConnection().CreateCommand())
+            {
+                command.CommandText = "ConsultarNegocioDetalles";
+                command.CommandType = CommandType.StoredProcedure;
+
+                var CedulaJuridica = new SqlParameter("@CedulaJuridica", SqlDbType.BigInt)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                command.Parameters.Add(CedulaJuridica);
+
+                await _context.Database.OpenConnectionAsync();
+                await command.ExecuteNonQueryAsync();
+
+                return (long)CedulaJuridica.Value;
+            }
         }
     }
 }

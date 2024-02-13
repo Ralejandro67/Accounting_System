@@ -1,47 +1,79 @@
-﻿@model IEnumerable<PupuseriaSalvadorena.Models.DetallePresupuesto>
+﻿@using System.Globalization;
+
+@model IEnumerable<PupuseriaSalvadorena.Models.DetallePresupuesto>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Transacciones del Presupuesto";
 }
 
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.IdRegistroLibros)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FechaIngreso)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Observaciones)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdRegistroLibros)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FechaIngreso)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Observaciones)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
-        </tr>
+@section Scripts {
+    <script src="~/js/transaccionespresupuesto.js" asp-append-version="true"></script>
 }
-    </tbody>
-</table>
+
+<div class="card-body table-body-custom pb-4">
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1 class="mb-0">
+                <img src="~/images/transaccion.png" alt="Icono Transaccion" style="height: 60px;" />
+                Transacciones del Presupuesto: @ViewBag.Presupuesto
+            </h1>
+        </div>
+    </div>
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center">
+            Transacciones asociadas al presupuesto seleccionado.
+            <button type="button" class="btn btn-primary nav-link-icon" id="AddImpuesto">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
+                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
+                </svg> Volver
+            </button>
+        </div>
+    </div>
+</div>
+<div class="card-body table-body-custom">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>
+                    ID
+                </th>
+                <th>
+                    Fecha de Ingreso
+                </th>
+                <th>
+                    Transaccion
+                </th>
+                <th>
+                    Monto
+                </th>
+                <th>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model) {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IdTransaccion)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FechaIngreso)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Observaciones)
+                    </td>
+                    <td>
+                        @(item.Monto.ToString("C", new CultureInfo("es-CR")))
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-danger delete-detPresupuesto" id="BtnEliminar" data-idPresupuesto="@item.IdPresupuesto" data-id="@item.IdTransaccion">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+                                <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
+                            </svg>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

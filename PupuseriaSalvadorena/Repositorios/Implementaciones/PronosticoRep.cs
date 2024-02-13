@@ -15,7 +15,7 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             _context = context;
         }
 
-        public async Task CrearPronostico(string IdPlatillo, DateTime FechaInicio, DateTime FechaFinal, int CantTotalProd, decimal TotalVenta, string PronosticoDoc)
+        public async Task CrearPronostico(int IdPlatillo, DateTime FechaInicio, DateTime FechaFinal, int CantTotalProd, decimal TotalVenta, string PronosticoDoc)
         {
             var IdPlatilloParam = new SqlParameter("@IdPlatillo", IdPlatillo);
             var FechaInicioParam = new SqlParameter("@FechaInicio", FechaInicio);
@@ -26,7 +26,7 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             await _context.Database.ExecuteSqlRawAsync("CrearPronostico @IdPlatillo, @FechaInicio, @FechaFinal, @CantTotalProd, @TotalVenta, @PronosticoDoc", IdPlatilloParam, FechaInicioParam, FechaFinalParam, CantTotalProdParam, TotalVentaParam, PronosticoDocParam);
         }
 
-        public async Task ActualizarPronosticos(int IdPronostico, string IdPlatillo, DateTime FechaInicio, DateTime FechaFinal, int CantTotalProd, decimal TotalVenta, string PronosticoDoc)
+        public async Task ActualizarPronosticos(int IdPronostico, int IdPlatillo, DateTime FechaInicio, DateTime FechaFinal, int CantTotalProd, decimal TotalVenta, string PronosticoDoc)
         {
             var IdPronosticoParam = new SqlParameter("@IdPronostico", IdPronostico);
             var IdPlatilloParam = new SqlParameter("@IdPlatillo", IdPlatillo);

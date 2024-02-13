@@ -13,6 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <header>
@@ -58,8 +59,8 @@
                         <div class="accordion" id="accordionConciliacion">
                             <div class="accordion-item">
                                 <a class="accordion-button collapsed nav-link-icon" data-bs-toggle="collapse" data-bs-target="#collapseConciliacion" aria-expanded="false" aria-controls="collapseConciliacion">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-check-fill" viewBox="0 0 16 16">
-                                        <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0M9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1m1.354 4.354-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 9.793l2.646-2.647a.5.5 0 0 1 .708.708" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bank2" viewBox="0 0 16 16">
+                                        <path d="M8.277.084a.5.5 0 0 0-.554 0l-7.5 5A.5.5 0 0 0 .5 6h1.875v7H1.5a.5.5 0 0 0 0 1h13a.5.5 0 1 0 0-1h-.875V6H15.5a.5.5 0 0 0 .277-.916zM12.375 6v7h-1.25V6zm-2.5 0v7h-1.25V6zm-2.5 0v7h-1.25V6zm-2.5 0v7h-1.25V6zM8 4a1 1 0 1 1 0-2 1 1 0 0 1 0 2M.5 15a.5.5 0 0 0 0 1h15a.5.5 0 1 0 0-1z" />
                                     </svg>  Conciliación Bancaria
                                 </a>
                                 <div id="collapseConciliacion" class="accordion-collapse collapse" aria-labelledby="headingConciliacion" data-bs-parent="#accordionConciliacion">
@@ -136,9 +137,9 @@
                                 <div id="collapseConciliacion4" class="accordion-collapse collapse" aria-labelledby="headingConciliacion" data-bs-parent="#accordionConciliacion">
                                     <div class="accordion-body">
                                         <ul class="list-unstyled">
-                                            <li><a class="dropdown-item" asp-area="" asp-controller="Presupuestoes" asp-action="Index">Presupuestos</a></li>
-                                            <li><a class="dropdown-item" asp-area="" asp-controller="CategoriaPresupuestoes" asp-action="Index">Categorias Presupuestos</a></li>
-                                            <li><a class="dropdown-item" asp-area="" asp-controller="DetallePresupuestos" asp-action="Index">Destalles Presupuestos</a></li>
+                                            <li><a class="dropdown-item" asp-area="" asp-controller="Platillos" asp-action="Index">Platillos</a></li>
+                                            <li><a class="dropdown-item" asp-area="" asp-controller="TipoVentas" asp-action="Index">Tipos de Ventas</a></li>
+                                            <li><a class="dropdown-item" asp-area="" asp-controller="FacturaVentas" asp-action="Index">Facturacion</a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -157,7 +158,7 @@
                                     <div class="accordion-body">
                                         <ul class="list-unstyled">
                                             <li><a class="dropdown-item" asp-area="" asp-controller="Presupuestoes" asp-action="Index">Presupuestos</a></li>
-                                            <li><a class="dropdown-item" asp-area="" asp-controller="CategoriaPresupuestoes" asp-action="Index">Categorias Presupuestos</a></li>
+                                            <li><a class="dropdown-item" asp-area="" asp-controller="TipoVentas" asp-action="Index">Tipos de Ventas</a></li>
                                             <li><a class="dropdown-item" asp-area="" asp-controller="DetallePresupuestos" asp-action="Index">Destalles Presupuestos</a></li>
                                         </ul>
                                     </div>

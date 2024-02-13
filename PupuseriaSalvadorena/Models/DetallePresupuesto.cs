@@ -15,5 +15,7 @@ namespace PupuseriaSalvadorena.Models
         public DateTime FechaIngreso { get; set; }
 
         public string? Observaciones { get; set; }
+
+        public decimal Monto { get; set; }
     }
 }

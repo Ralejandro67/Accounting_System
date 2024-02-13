@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PupuseriaSalvadorena.Models
 {
@@ -7,17 +8,10 @@ namespace PupuseriaSalvadorena.Models
         [Key]
         public int IdFacturaVenta { get; set; }
 
-        [Required(ErrorMessage = "La cedula jurídica es obligatoria")]
         public long CedulaJuridica { get; set; }
 
-        [Required(ErrorMessage = "El consecutivo de la factura es obligatorio")]
-        public int Consecutivo { get; set; }
+        public decimal Consecutivo { get; set; }
 
-        [Required(ErrorMessage = "La clave de la factura es obligatorio")]
-        public int Clave { get; set; }
-
-        [Required(ErrorMessage = "La fecha de la factura es obligatoria")]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime FechaFactura { get; set; }
 
         [Required(ErrorMessage = "El sub total de la factura es obligatorio")]
@@ -33,5 +27,37 @@ namespace PupuseriaSalvadorena.Models
 
         [Required(ErrorMessage = "El tipo de factura es obligatorio")]
         public int IdTipoFactura { get; set; }
+
+        public string? NombrePago { get; set; }
+
+        public string? NombreFactura { get; set; }
+
+        [NotMapped]
+        public string? TipoId { get; set; }
+
+        [NotMapped]
+        public long Identificacion { get; set; }
+
+        [NotMapped]
+        public string? NombreCliente { get; set; }
+
+        [NotMapped]
+        [EmailAddress(ErrorMessage = "El correo del receptor no es válido")]
+        public string? CorreoElectronico { get; set; }
+
+        [NotMapped]
+        public int Telefono { get; set; }
+
+        [NotMapped]
+        public int[]? IdPlatillo { get; set; }
+
+        [NotMapped]
+        public int[]? CantVenta { get; set; }
+
+        [NotMapped]
+        public int IdTipoVenta { get; set; }
+
+        [NotMapped]
+        public bool FacturaElectronica { get; set; }
     }
 }

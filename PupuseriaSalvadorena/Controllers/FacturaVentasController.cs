@@ -2,22 +2,49 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Net.Http.Headers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 using PupuseriaSalvadorena.Conexion;
 using PupuseriaSalvadorena.Models;
 using PupuseriaSalvadorena.Repositorios.Interfaces;
+using System.Text;
+using System.Collections.Immutable;
+using System.Runtime.CompilerServices;
+using System.ComponentModel;
+using System.Diagnostics;
+using Microsoft.AspNetCore.Routing.Constraints;
+using Microsoft.VisualBasic;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace PupuseriaSalvadorena.Controllers
 {
     public class FacturaVentasController : Controller
     {
         private readonly IFacturaVentaRep _facturaVentaRep;
+        private readonly IPlatilloRep _platilloRep;
+        private readonly ITipoFacturaRep _tipoFacturaRep;
+        private readonly ITipoPagoRep _tipoPagoRep;
+        private readonly ITipoVentaRep _tipoVentaRep;
+        private readonly INegociosRep _negociosRep;
+        private readonly IEnvioFacturaRep _envioFacturaRep;
+        private readonly IHistorialVentaRep _historialVentaRep;
 
-        public FacturaVentasController(IFacturaVentaRep context)
+        public FacturaVentasController(IFacturaVentaRep context, IPlatilloRep platilloRep, ITipoFacturaRep tipoFacturaRep, 
+                                       ITipoPagoRep tipoPagoRep, ITipoVentaRep tipoVentaRep, INegociosRep negociosRep, 
+                                       IEnvioFacturaRep envioFacturaRep, IHistorialVentaRep historialVentaRep)
         {
             _facturaVentaRep = context;
+            _platilloRep = platilloRep;
+            _tipoFacturaRep = tipoFacturaRep;
+            _tipoPagoRep = tipoPagoRep;
+            _tipoVentaRep = tipoVentaRep;
+            _negociosRep = negociosRep;
+            _envioFacturaRep = envioFacturaRep;
+            _historialVentaRep = historialVentaRep;
         }
 
         // GET: FacturaVentas
@@ -45,24 +72,104 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // GET: FacturaVentas/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var tipoFactura = await _tipoFacturaRep.MostrarTipoFacturas();
+            var tipoPago = await _tipoPagoRep.MostrarTipoPagos();
+            var tipoVenta = await _tipoVentaRep.MostrarTipoVentas();
+            var platillos = await _platilloRep.MostrarPlatillos();
+
+            ViewBag.IdTipoFactura = new SelectList(tipoFactura, "IdTipoFactura", "NombreFactura");
+            ViewBag.IdTipoPago = new SelectList(tipoPago, "IdTipoPago", "NombrePago");
+            ViewBag.IdTipoVenta = new SelectList(tipoVenta, "IdTipoVenta", "NombreVenta");
+            ViewBag.IdPlatillo = platillos.Select(p => new
+            {
+                IdPlatillo = p.IdPlatillo,
+                NombrePlatillo = p.NombrePlatillo,
+                PrecioVenta = p.PrecioVenta
+            }).ToList();
+
+            return PartialView("_newFacturaVentaPartial", new FacturaVenta());
         }
 
         // POST: FacturaVentas/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdFacturaVenta,CedulaJuridica,Consecutivo,Clave,FechaFactura,SubTotal,TotalVenta,IdTipoPago,IdTipoFactura")] FacturaVenta facturaVenta)
+        public async Task<IActionResult> Create([Bind("IdFacturaVenta,FechaFactura,SubTotal,TotalVenta,IdTipoPago,IdTipoFactura,Identificacion,NombreCliente,CorreoElectronico,Telefono,IdPlatillo,CantVenta,IdTipoVenta,FacturaElectronica,TipoId")] FacturaVenta facturaVenta)
         {
             if (ModelState.IsValid)
             {
-                await _facturaVentaRep.CrearFacturaVenta(facturaVenta.CedulaJuridica, facturaVenta.Consecutivo, facturaVenta.Clave, facturaVenta.FechaFactura, facturaVenta.SubTotal, facturaVenta.TotalVenta, facturaVenta.IdTipoPago, facturaVenta.IdTipoFactura);
-                return RedirectToAction(nameof(Index));
+                int[] idPlatillos = facturaVenta.IdPlatillo;
+                int[] cantidades = facturaVenta.CantVenta;
+
+                var empresa = await _negociosRep.ConsultarNegocio();
+                var Pago = MetodosPago(facturaVenta.IdTipoPago);
+                int ContactoFactura = await CrearContacto(facturaVenta.TipoId, facturaVenta.Identificacion, facturaVenta.NombreCliente, facturaVenta.CorreoElectronico, facturaVenta.Telefono);
+                dynamic[] items = await ListaPlatillos(idPlatillos, cantidades);
+
+                var factura = new
+                {
+                    client = new { id = ContactoFactura },
+                    paymentMethod = Pago,
+                    saleCondition = "CASH",
+                    status = "open",
+                    items,
+                    dueDate = facturaVenta.FechaFactura.ToString("yyyy-MM-dd"),
+                    date = facturaVenta.FechaFactura.ToString("yyyy-MM-dd")
+                };
+
+                using (var client = new HttpClient())
+                {
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", "cmFsZWphbmRybzY3QGdtYWlsLmNvbToxOTU4ZjIwZTBhNTJjMTc1YjM3ZQ==");
+                    try
+                    {
+                        var content = new StringContent(JsonConvert.SerializeObject(factura), Encoding.UTF8, "application/json");
+                        var response = await client.PostAsync("https://api.alegra.com/api/v1/invoices", content);
+
+                        if (response.IsSuccessStatusCode)
+                        {
+                            response.EnsureSuccessStatusCode();
+                            var body = await response.Content.ReadAsStringAsync();
+                            var jsonObject = JObject.Parse(body);
+
+                            facturaVenta.Consecutivo = (decimal)jsonObject["numberTemplate"]["fullNumber"];
+                            int idfactura = (int)jsonObject["id"];
+                            
+                            var facturaId = await _facturaVentaRep.CrearFacturaVenta(empresa, facturaVenta.Consecutivo, facturaVenta.FechaFactura, facturaVenta.SubTotal, facturaVenta.TotalVenta, facturaVenta.IdTipoPago, facturaVenta.IdTipoFactura);
+
+                            for (int i = 0; i < idPlatillos.Length; i++)
+                            {
+                                await _historialVentaRep.CrearHistorialVenta(idfactura, cantidades[i], facturaVenta.FechaFactura, idPlatillos[i], facturaId, facturaVenta.IdTipoVenta);
+                            }
+
+                            if (ContactoFactura != 2)
+                            {
+                                bool envio = await EnvioFactura(idfactura, facturaVenta.CorreoElectronico);
+
+                                if (envio)
+                                {
+                                    await _envioFacturaRep.CrearEnvioFactura(facturaVenta.FechaFactura, facturaId, facturaVenta.Identificacion, facturaVenta.NombreCliente, facturaVenta.CorreoElectronico, facturaVenta.Telefono);
+                                    return Json(new { success = true, message = "Factura generada y enviada correctamente." });
+                                }
+                            }
+
+                            return Json(new { success = true, message = "Factura generada correctamente." });
+                        }
+                        else
+                        {
+                            var errorContent = await response.Content.ReadAsStringAsync();
+                            Console.WriteLine("Error en la solicitud HTTP: " + errorContent);
+                            return Json(new { success = false, message = "Error al crear la factura." });
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Error al crear el contenido de la solicitud: " + ex.Message);
+                        return Json(new { success = false, message = "Error al crear la factura." });
+                    }
+                }
             }
-            return View(facturaVenta);
+            return Json(new { success = false, message = "Error al crear la factura." });
         }
 
         // GET: FacturaVentas/Edit/5
@@ -78,12 +185,10 @@ namespace PupuseriaSalvadorena.Controllers
             {
                 return NotFound();
             }
-            return View(facturaVenta);
+            return View("_editFacturaVentaPartial", facturaVenta);
         }
 
         // POST: FacturaVentas/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("IdFacturaVenta,CedulaJuridica,Consecutivo,Clave,FechaFactura,SubTotal,TotalVenta,IdTipoPago,IdTipoFactura")] FacturaVenta facturaVenta)
@@ -125,6 +230,132 @@ namespace PupuseriaSalvadorena.Controllers
         {
             await _facturaVentaRep.EliminarFacturaVenta(id);
             return RedirectToAction(nameof(Index));
+        }
+
+        // Contacto Factura Electronica
+        private async Task<int> CrearContacto(string tipoId, long id, string nombre, string correo, int telefono)
+        {
+            int idContacto = 2;
+
+            if (id == 0)
+            {
+                return idContacto;
+            }
+
+            using (var client = new HttpClient())
+            {
+                var request = new HttpRequestMessage
+                {
+                    Method = HttpMethod.Post,
+                    RequestUri = new Uri("https://api.alegra.com/api/v1/contacts"),
+                    Headers =
+                    {
+                        { "accept", "application/json" },
+                        { "authorization", "Basic cmFsZWphbmRybzY3QGdtYWlsLmNvbToxOTU4ZjIwZTBhNTJjMTc1YjM3ZQ==" },
+                    },
+                    Content = new StringContent("{\"identificationObject\":{\"type\":\"" + tipoId + "\",\"number\":\"" + id + "\"},\"name\":\"" + nombre + "\",\"phonePrimary\":\"" + telefono + "\",\"type\":\"client\",\"status\":\"active\",\"email\":\"" + correo + "\"}")
+                    {
+                        Headers = { ContentType = new MediaTypeHeaderValue("application/json") }
+                    }
+                };
+
+                using (var response = await client.SendAsync(request))
+                {
+                    response.EnsureSuccessStatusCode();
+                    var body = await response.Content.ReadAsStringAsync();
+                    var jsonObject = JObject.Parse(body);
+
+                    idContacto = (int)jsonObject["id"];
+                    return idContacto;
+                }
+            }
+        }
+
+        // Envio Facura Electronica
+        private async Task<bool> EnvioFactura(int idFactura, string CorreoElectronico)
+        {
+            string requestUri = "https://api.alegra.com/api/v1/invoices/" + idFactura + "/email";
+
+            using (var client = new HttpClient())
+            {
+                var request = new HttpRequestMessage
+                {
+                    Method = HttpMethod.Post,
+                    RequestUri = new Uri(requestUri),
+                    Headers =
+                    {
+                        { "accept", "application/json" },
+                        { "authorization", "Basic cmFsZWphbmRybzY3QGdtYWlsLmNvbToxOTU4ZjIwZTBhNTJjMTc1YjM3ZQ==" },
+                    },
+                    Content = new StringContent($"{{\"emails\":[\"{CorreoElectronico}\"]}}", Encoding.UTF8, "application/json")
+                    {
+                        Headers =
+                {
+                    ContentType = new MediaTypeHeaderValue("application/json")
+                }
+                    }
+                };
+
+                try
+                {
+                    using (var response = await client.SendAsync(request))
+                    {
+                        if (!response.IsSuccessStatusCode)
+                        {
+                            // Si no es exitoso, leer el contenido del error
+                            var errorContent = await response.Content.ReadAsStringAsync();
+                            Console.WriteLine("Error en la solicitud HTTP: " + errorContent);
+                            return false; 
+                        }
+
+                        var body = await response.Content.ReadAsStringAsync();
+                        return true;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error inesperado: " + ex.Message);
+                    return false; 
+                }
+            }
+        }
+
+        // Lista Platillos
+        private async Task<dynamic[]> ListaPlatillos(int[] idPlatillos, int[] cantidades)
+        {
+            List<dynamic> items = new List<dynamic>();
+            for (int i = 0; i < idPlatillos.Length; i++)
+            {
+                var platillos = await _platilloRep.ConsultarPlatillos(idPlatillos[i]);
+
+                dynamic item = new
+                {
+                    id = idPlatillos[i],
+                    tax = new[] { new { id = 1 } },
+                    price = platillos.PrecioVenta,
+                    quantity = cantidades[i]
+                };
+                items.Add(item);
+            }
+            return items.ToArray();
+        }
+
+        // Metodo de Pago
+        private string MetodosPago(int idTipoPago)
+        {
+            switch (idTipoPago)
+            {
+                case 1:
+                    return "CASH";
+                case 2:
+                    return "TRANSFER";
+                case 3:
+                    return "CARD";
+                case 4:
+                    return "OTHER";
+                default:
+                    return "OTHER";
+            }
         }
     }
 }

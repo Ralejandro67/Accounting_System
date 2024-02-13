@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Hangfire;
@@ -19,13 +20,15 @@ namespace PupuseriaSalvadorena.Controllers
         private readonly IImpuestosRep _impuestosRep;
         private readonly IRegistroLibrosRep _registroLibrosRep;
         private readonly ITipoTransacRep _tipoTransacRep;
+        private readonly IDetallesPresupuestoRep _detallesPresupuestoRep;
 
-        public DetallesTransaccionesController(IDetallesTransacRep detallesTransacRep, IImpuestosRep impuestosRep, IRegistroLibrosRep registroLibrosRep, ITipoTransacRep tipoTransacRep)
+        public DetallesTransaccionesController(IDetallesTransacRep detallesTransacRep, IImpuestosRep impuestosRep, IRegistroLibrosRep registroLibrosRep, ITipoTransacRep tipoTransacRep, IDetallesPresupuestoRep detallesPresupuestoRep)
         {
             _detallesTransacRep = detallesTransacRep;
             _impuestosRep = impuestosRep;
             _registroLibrosRep = registroLibrosRep;
             _tipoTransacRep = tipoTransacRep;
+            _detallesPresupuestoRep = detallesPresupuestoRep;
         }
 
         // GET: DetallesTransacciones
@@ -52,19 +55,19 @@ namespace PupuseriaSalvadorena.Controllers
             return View(detalleTransaccion);
         }
 
-        // GET: DetallesTransacciones/Create
+        // GET: DetallesTransacciones/GetTransaccionP
         [HttpGet]
-        public async Task<IActionResult> GetDetalleTransaccionPartial()
+        public async Task<IActionResult> GetTransaccionPre()
         {
             var impuestos = await _impuestosRep.MostrarImpuestos();
             ViewBag.Impuestos = new SelectList(impuestos, "IdImpuesto", "NombreImpuesto");
             return PartialView("_newDetallesTPartial", new DetalleTransaccion());
         }
 
-        // POST: DetallesTransacciones/Create
+        // POST: DetallesTransacciones/CreateTransacPresupuesto
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdRegistroLibros,IdTransaccion,DescripcionTransaccion,Cantidad,Monto,FechaTrans,IdTipo,IdImpuesto,NombreImpuesto,TipoTransac,Recurrencia,FechaRecurrencia,Frecuencia,Conciliado")] DetalleTransaccion detalleTransaccion)
+        public async Task<IActionResult> CreateTransacPresupuesto([Bind("IdRegistroLibros,IdTransaccion,DescripcionTransaccion,Cantidad,Monto,FechaTrans,IdTipo,IdImpuesto,NombreImpuesto,TipoTransac,Recurrencia,FechaRecurrencia,Frecuencia,Conciliado")] DetalleTransaccion detalleTransaccion)
         {
             if (ModelState.IsValid)
             {
@@ -85,13 +88,58 @@ namespace PupuseriaSalvadorena.Controllers
                     MontoLibro = registroLibro.MontoTotal + transaccion.Monto;
                 }
 
+                if (detalleTransaccion.Recurrencia)
+                {
+                    var cronExpression = FrecuenciaACron(detalleTransaccion.Frecuencia);
+
+                    RecurringJob.AddOrUpdate($"{idTransaccion}",
+                                 () => TransaccionRecurrente(idTransaccion),
+                                 cronExpression);
+                }
+
                 await _registroLibrosRep.ActualizarRegistroLibros(IdLibro, MontoLibro, registroLibro.Descripcion, registroLibro.Conciliado);
+                return Json(new { success = true, message = "Transaccion agregada correctamente." });
+            }
+            return Json(new { success = false, message = "Error al agregar la transaccion." });
+        }
+
+        // GET: DetallesTransacciones/GetDetalleTransaccionPartial
+        [HttpGet]
+        public async Task<IActionResult> GetDetalleTransaccionPartial()
+        {
+            var impuestos = await _impuestosRep.MostrarImpuestos();
+            ViewBag.Impuestos = new SelectList(impuestos, "IdImpuesto", "NombreImpuesto");
+            return PartialView("_newDetallesTPartial", new DetalleTransaccion());
+        }
+
+        // POST: DetallesTransacciones/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("IdRegistroLibros,IdTransaccion,DescripcionTransaccion,Cantidad,Monto,FechaTrans,IdTipo,IdImpuesto,NombreImpuesto,TipoTransac,Recurrencia,FechaRecurrencia,Frecuencia,Conciliado")] DetalleTransaccion detalleTransaccion)
+        {
+            if (ModelState.IsValid)
+            {
+                var IdLibro = await _detallesTransacRep.ObtenerIdLibroMasReciente();
+                var idTransaccion = await _detallesTransacRep.CrearTransaccionRecurrente(IdLibro, detalleTransaccion.DescripcionTransaccion, detalleTransaccion.Cantidad, detalleTransaccion.Monto, detalleTransaccion.FechaTrans, detalleTransaccion.IdTipo, detalleTransaccion.IdImpuesto, detalleTransaccion.Recurrencia, detalleTransaccion.FechaRecurrencia, detalleTransaccion.Frecuencia, false);
+                var transaccion = await _detallesTransacRep.ConsultarDetallesTransacciones(idTransaccion);
+                var registroLibro = await _registroLibrosRep.ConsultarRegistrosLibros(IdLibro);
+
+                decimal MontoLibro = 0;
+
+                if (transaccion.IdMovimiento == 2)
+                {
+                    MontoLibro = registroLibro.MontoTotal - transaccion.Monto;
+                }
+                else
+                {
+                    MontoLibro = registroLibro.MontoTotal + transaccion.Monto;
+                }
 
                 if (detalleTransaccion.Recurrencia)
                 {
                     var cronExpression = FrecuenciaACron(detalleTransaccion.Frecuencia);
 
-                    RecurringJob.AddOrUpdate($"transaccion_{idTransaccion}",
+                    RecurringJob.AddOrUpdate($"{idTransaccion}",
                                  () => TransaccionRecurrente(idTransaccion), 
                                  cronExpression);
                 }
@@ -179,11 +227,11 @@ namespace PupuseriaSalvadorena.Controllers
 
                 if (detalleTransaccion.IdMovimiento == 2)
                 {
-                    MontoLibro = Libro.MontoTotal - detalleTransaccion.Monto;
+                    MontoLibro = Libro.MontoTotal + detalleTransaccion.Monto;
                 }
                 else
                 {
-                    MontoLibro = Libro.MontoTotal + detalleTransaccion.Monto;
+                    MontoLibro = Libro.MontoTotal - detalleTransaccion.Monto;
                 }
 
                 await _registroLibrosRep.ActualizarRegistroLibros(detalleTransaccion.IdRegistroLibros, MontoLibro, Libro.Descripcion, Libro.Conciliado);
@@ -232,8 +280,6 @@ namespace PupuseriaSalvadorena.Controllers
                 MontoLibro = registroLibro.MontoTotal + TransaccionOriginal.Monto;
             }
 
-            await _registroLibrosRep.ActualizarRegistroLibros(IdLibro, MontoLibro, registroLibro.Descripcion, registroLibro.Conciliado);
-
             if (TransaccionOriginal != null && TransaccionOriginal.Recurrencia) 
             {
                 DateTime FechaTransaccion;
@@ -265,6 +311,8 @@ namespace PupuseriaSalvadorena.Controllers
                     TransaccionOriginal.Frecuencia,
                     false
                 );
+
+                await _registroLibrosRep.ActualizarRegistroLibros(IdLibro, MontoLibro, registroLibro.Descripcion, registroLibro.Conciliado);
             }
         }
 

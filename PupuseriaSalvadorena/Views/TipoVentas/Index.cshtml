@@ -1,41 +1,105 @@
 ﻿@model IEnumerable<PupuseriaSalvadorena.Models.TipoVenta>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Tipo de Ventas";
 }
 
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.NombreVenta)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Estado)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.NombreVenta)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Estado)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.IdTipoVenta">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.IdTipoVenta">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.IdTipoVenta">Delete</a>
-            </td>
-        </tr>
+@section Scripts {
+    <script src="~/js/tipoventa.js" asp-append-version="true"></script>
 }
-    </tbody>
-</table>
+
+<div class="card-body table-body-custom pb-4">
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1 class="mb-0">
+                <img src="~/images/tipos.png" alt="Icono Factura de Compra" style="height: 60px;" />
+                Tipos de Ventas
+            </h1>
+            <button type="button" class="btn btn-primary nav-link-icon" id="AddTipoV">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
+                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
+                </svg> Nuevo Tipo de Venta
+            </button>
+        </div>
+    </div>
+    <div class="container mt-4">
+        Categorias de ventas disponibles.
+    </div>
+</div>
+<div class="card-body table-body-custom">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>
+                    ID
+                </th>
+                <th>
+                    Nombre de Venta
+                </th>
+                <th>
+                    Estado
+                </th>
+                <th>
+                    Acciones
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model) {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IdTipoVenta)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NombreVenta)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Estado)
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-primary edit-tipov" id="BtnEditar" data-id="@item.IdTipoVenta">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
+                                <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z" />
+                            </svg>
+                        </button>
+                        <button type="button" class="btn btn-danger delete-tipov" id="BtnEliminar" data-id="@item.IdTipoVenta">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+                                <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
+                            </svg>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div class="modal fade" id="newTipoVModal" tabindex="-1" role="dialog" aria-labelledby="newTipoVModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="newTipoVModalLabel">Nueva Categoria</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @Html.Partial("_newTipoVPartial", new PupuseriaSalvadorena.Models.TipoVenta())
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="editTipoVModal" tabindex="-1" role="dialog" aria-labelledby="editTipoVModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editTipoVModalLabel">Editar Categoria</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @Html.Partial("_editTipoVPartial", new PupuseriaSalvadorena.Models.TipoVenta())
+            </div>
+        </div>
+    </div>
+</div>

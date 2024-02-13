@@ -1,0 +1,14 @@
+﻿@model PupuseriaSalvadorena.Models.TipoVenta
+
+<form id="TipoVForm" asp-action="Create" asp-controller="TipoVentas" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="Estado" class="form-control" value="true"/>
+    <div class="form-group">
+        <label asp-for="NombreVenta" class="control-label"></label>
+        <input asp-for="NombreVenta" class="form-control" />
+        <span asp-validation-for="NombreVenta" class="text-danger"></span>
+    </div>
+    <div class="form-group text-right">
+        <button type="button" id="submitTipoVForm" class="btn btn-primary">Agregar</button>
+    </div>
+</form>

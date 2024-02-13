@@ -23,7 +23,7 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             await _context.Database.ExecuteSqlRawAsync("CrearPlatillo @NombrePlatillo, @CostoProduccion, @PrecioVenta", NombrePlatilloParam, CostoProduccionParam, PrecioVentaParam);
         }
 
-        public async Task ActualizarPlatillo(string IdPlatillo, string NombrePlatillo, decimal CostoProduccion, decimal PrecioVenta)
+        public async Task ActualizarPlatillo(int IdPlatillo, string NombrePlatillo, decimal CostoProduccion, decimal PrecioVenta)
         {
             var IdPlatilloParam = new SqlParameter("@IdPlatillo", IdPlatillo);
             var NombrePlatilloParam = new SqlParameter("@NombrePlatillo", NombrePlatillo);
@@ -32,7 +32,7 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             await _context.Database.ExecuteSqlRawAsync("ActualizarPlatillo @IdPlatillo, @NombrePlatillo, @CostoProduccion, @PrecioVenta", IdPlatilloParam, NombrePlatilloParam, CostoProduccionParam, PrecioVentaParam);
         }
 
-        public async Task EliminarPlatillo(string IdPlatillo)
+        public async Task EliminarPlatillo(int IdPlatillo)
         {
             var IdPlatilloParam = new SqlParameter("@IdPlatillo", IdPlatillo);
             await _context.Database.ExecuteSqlRawAsync("EliminarPlatillo @IdPlatillo", IdPlatilloParam);
@@ -46,7 +46,7 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             return platillos;
         }
 
-        public async Task<Platillo> ConsultarPlatillos(string IdPlatillo)
+        public async Task<Platillo> ConsultarPlatillos(int IdPlatillo)
         {
             var NombrePlatilloParam = new SqlParameter("@IdPlatillo", IdPlatillo);
             var resultado = await _context.Platillo

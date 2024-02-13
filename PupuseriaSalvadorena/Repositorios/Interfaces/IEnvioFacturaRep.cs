@@ -4,8 +4,8 @@ namespace PupuseriaSalvadorena.Repositorios.Interfaces
 {
     public interface IEnvioFacturaRep
     {
-        Task CrearEnvioFactura(DateTime FechaEnvio, int IdFacturaVenta);
-        Task ActualizarEnvioFactura(int IdEnvioFactura, DateTime FechaEnvio, int IdFacturaVenta);
+        Task CrearEnvioFactura(DateTime FechaEnvio, int IdFacturaVenta, long Identificacion, string NombreCliente, string CorreoElectronico, int Telefono);
+        Task ActualizarEnvioFactura(int IdEnvioFactura, DateTime FechaEnvio, int IdFacturaVenta, long Identificacion, string NombreCliente, string CorreoElectronico, int Telefono);
         Task EliminarEnvioFactura(int IdEnvioFactura);
         Task<List<EnvioFactura>> MostrarEnvioFactura();
         Task<EnvioFactura> ConsultarEnvioFacturas(int IdEnvioFactura);

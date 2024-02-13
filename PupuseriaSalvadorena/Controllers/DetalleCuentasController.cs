@@ -52,7 +52,6 @@ namespace PupuseriaSalvadorena.Controllers
             ViewBag.Total = cuentaPagar.TotalPagado;
             ViewBag.Pago = Pagado;
             ViewBag.IdCuentaPagar = id;
-
             ViewBag.VencimientoExpirado = cuentaPagar.FechaVencimiento < DateTime.Now;
             ViewBag.PorPagarEsCero = PorPagar == 0;
 

@@ -59,7 +59,7 @@ namespace PupuseriaSalvadorena.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _envioFacturaRep.CrearEnvioFactura(envioFactura.FechaEnvio, envioFactura.IdFacturaVenta);
+                await _envioFacturaRep.CrearEnvioFactura(envioFactura.FechaEnvio, envioFactura.IdFacturaVenta, envioFactura.Identificacion, envioFactura.NombreCliente, envioFactura.CorreoElectronico, envioFactura.Telefono);
                 return RedirectToAction(nameof(Index));
             }
             return View(envioFactura);
@@ -95,7 +95,7 @@ namespace PupuseriaSalvadorena.Controllers
 
             if (ModelState.IsValid)
             {
-                await _envioFacturaRep.ActualizarEnvioFactura(envioFactura.IdEnvioFactura, envioFactura.FechaEnvio, envioFactura.IdFacturaVenta);
+                await _envioFacturaRep.ActualizarEnvioFactura(envioFactura.IdEnvioFactura, envioFactura.FechaEnvio, envioFactura.IdFacturaVenta, envioFactura.Identificacion, envioFactura.NombreCliente, envioFactura.CorreoElectronico, envioFactura.Telefono);
                 return RedirectToAction(nameof(Index));
             }
             return View(envioFactura);

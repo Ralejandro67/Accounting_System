@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using PupuseriaSalvadorena.Conexion;
 using PupuseriaSalvadorena.Models;
 using PupuseriaSalvadorena.Repositorios.Interfaces;
+using System.Data;
 
 namespace PupuseriaSalvadorena.Repositorios.Implementaciones
 {
@@ -15,17 +16,32 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             _context = context;
         }
 
-        public async Task CrearFacturaVenta(long CedulaJuridica, int Consecutivo, int Clave, DateTime FechaFactura, decimal SubTotal, decimal TotalVenta, int IdTipoPago, int IdTipoFactura)
+        public async Task<int> CrearFacturaVenta(long CedulaJuridica, decimal Consecutivo, DateTime FechaFactura, decimal SubTotal, decimal TotalVenta, int IdTipoPago, int IdTipoFactura)
         {
-            var CedulaJuridicaParam = new SqlParameter("@CedulaJuridica", CedulaJuridica);
-            var ConsecutivoParam = new SqlParameter("@Consecutivo", Consecutivo);
-            var ClaveParam = new SqlParameter("@Clave", Clave);
-            var FechaFacturaParam = new SqlParameter("@FechaFactura", FechaFactura);
-            var SubTotalParam = new SqlParameter("@SubTotal", SubTotal);
-            var TotalVentaParam = new SqlParameter("@TotalVenta", TotalVenta);
-            var IdTipoPagoParam = new SqlParameter("@IdTipoPago", IdTipoPago);
-            var IdTipoFacturaParam = new SqlParameter("@IdTipoFactura", IdTipoFactura);
-            await _context.Database.ExecuteSqlRawAsync("CrearFacturaVenta @CedulaJuridica, @Consecutivo, @Clave, @FechaFactura, @SubTotal, @TotalVenta, @IdTipoPago, @IdTipoFactura", CedulaJuridicaParam, ConsecutivoParam, ClaveParam, FechaFacturaParam, SubTotalParam, TotalVentaParam, IdTipoPagoParam, IdTipoFacturaParam);
+            using (var command = _context.Database.GetDbConnection().CreateCommand())
+            {
+                command.CommandText = "CrearFacturaVenta";
+                command.CommandType = CommandType.StoredProcedure;
+
+                command.Parameters.Add(new SqlParameter("@CedulaJuridica", CedulaJuridica));
+                command.Parameters.Add(new SqlParameter("@Consecutivo", Consecutivo));
+                command.Parameters.Add(new SqlParameter("@FechaFactura", FechaFactura));
+                command.Parameters.Add(new SqlParameter("@SubTotal", SubTotal));
+                command.Parameters.Add(new SqlParameter("@TotalVenta", TotalVenta));
+                command.Parameters.Add(new SqlParameter("@IdTipoPago", IdTipoPago));
+                command.Parameters.Add(new SqlParameter("@IdTipoFactura", IdTipoFactura));
+                
+                var IdFactura = new SqlParameter("@IdFactura", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                command.Parameters.Add(IdFactura);
+
+                await _context.Database.OpenConnectionAsync();
+                await command.ExecuteNonQueryAsync();
+
+                return (int)IdFactura.Value;
+            }
         }
 
         public async Task ActualizarFacturaVenta(int IdFacturaVenta, int IdTipoPago, int IdTipoFactura)

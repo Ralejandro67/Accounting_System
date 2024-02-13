@@ -15,17 +15,18 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             _context = context;
         }
 
-        public async Task CrearHistorialVenta(int CantVenta, DateTime FechaVenta, string IdPlatillo, int IdFacturaVenta, int IdTipoVenta)
+        public async Task CrearHistorialVenta(int IdVenta, int CantVenta, DateTime FechaVenta, int IdPlatillo, int IdFacturaVenta, int IdTipoVenta)
         {
+            var IdVentaParam = new SqlParameter("@IdVenta", IdVenta);
             var CantVentaParam = new SqlParameter("@CantVenta", CantVenta);
             var FechaVentaParam = new SqlParameter("@FechaVenta", FechaVenta);
             var IdPlatilloParam = new SqlParameter("@IdPlatillo", IdPlatillo);
             var IdFacturaVentaParam = new SqlParameter("@IdFacturaVenta", IdFacturaVenta);
             var IdTipoVentaParam = new SqlParameter("@IdTipoVenta", IdTipoVenta);
-            await _context.Database.ExecuteSqlRawAsync("CrearHistorialVenta @CantVenta, @FechaVenta, @IdPlatillo, @IdFacturaVenta, @IdTipoVenta", CantVentaParam, FechaVentaParam, IdPlatilloParam, IdFacturaVentaParam, IdTipoVentaParam);
+            await _context.Database.ExecuteSqlRawAsync("CrearHistorialVenta @IdVenta, @CantVenta, @FechaVenta, @IdPlatillo, @IdFacturaVenta, @IdTipoVenta", IdVentaParam, CantVentaParam, FechaVentaParam, IdPlatilloParam, IdFacturaVentaParam, IdTipoVentaParam);
         }
 
-        public async Task ActualizarHistorialVenta(string IdVenta, int CantVenta, string IdPlatillo, int IdFacturaVenta, int IdTipoVenta)
+        public async Task ActualizarHistorialVenta(int IdVenta, int CantVenta, int IdPlatillo, int IdFacturaVenta, int IdTipoVenta)
         {
             var IdVentaParam = new SqlParameter("@IdVenta", IdVenta);
             var CantVentaParam = new SqlParameter("@CantVenta", CantVenta);
@@ -35,7 +36,7 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             await _context.Database.ExecuteSqlRawAsync("ActualizarHistorialVenta @IdVenta, @CantVenta, @IdPlatillo, @IdFacturaVenta, @IdTipoVenta", IdVentaParam, CantVentaParam, IdPlatilloParam, IdFacturaVentaParam, IdTipoVentaParam);
         }
 
-        public async Task EliminarHistorialVenta(string IdVenta)
+        public async Task EliminarHistorialVenta(int IdVenta)
         {
             var IdVentaParam = new SqlParameter("@IdVenta", IdVenta);
             await _context.Database.ExecuteSqlRawAsync("EliminarHistorialVenta @IdVenta", IdVentaParam);
@@ -49,7 +50,7 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             return historialVenta;
         }
 
-        public async Task<HistorialVenta> ConsultarHistorialVentas(string IdVenta)
+        public async Task<HistorialVenta> ConsultarHistorialVentas(int IdVenta)
         {
             var NombrePlatilloParam = new SqlParameter("@IdVenta", IdVenta);
             var resultado = await _context.HistorialVenta
@@ -57,6 +58,16 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
                                           .ToListAsync();
 
             return resultado.FirstOrDefault();
+        }
+
+        public async Task<List<HistorialVenta>> ConsultarHistorialVentasPlatillos(int IdPlatillo)
+        {
+            var IdPlatilloParam = new SqlParameter("@IdPlatillo", IdPlatillo);
+            var resultado = await _context.HistorialVenta
+                                          .FromSqlRaw("EXEC ConsultarHistorialVentasPlatillos @IdPlatillo", IdPlatilloParam)
+                                          .ToListAsync();
+
+            return resultado;
         }
     }
 }

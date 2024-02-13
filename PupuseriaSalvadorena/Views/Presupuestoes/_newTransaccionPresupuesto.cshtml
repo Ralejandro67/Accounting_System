@@ -1,0 +1,110 @@
+﻿@model PupuseriaSalvadorena.Models.DetalleTransaccion
+
+@{
+    Model.FechaTrans = Model.FechaTrans == default ? DateTime.Now : Model.FechaTrans;
+}
+
+<form id="transacPresupuestoForm" asp-action="CreateTransacPresupuesto" asp-controller="DetallesTransacciones" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input asp-for="Monto" class="form-control" id="MontoTotal" type="hidden" />
+    <div class="card-body card-body-custom">
+        <div class="row no-gutters">
+            <div class="col text-center item">
+                <div class="item-value">Monto de la Transaccion</div>
+                <div id="montoDisplay" class="text-note">₡0.00</div>
+            </div>
+            <div class="col text-center item">
+                <div class="item-value">Monto del Impuesto</div>
+                <div id="inputMontoImpuesto" class="text-note">₡0.00</div>
+            </div>
+            <div class="col text-center item">
+                <div class="item-value">Total</div>
+                <div asp-for="DescripcionTransaccion" id="inputMontoTotal" class="text-note">₡0.00</div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label class="control-label">Descripcion</label>
+                <input asp-for="DescripcionTransaccion" class="form-control" />
+                <span asp-validation-for="DescripcionTransaccion" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label class="control-label">Cantidad</label>
+                <input asp-for="Cantidad" class="form-control" />
+                <span asp-validation-for="Cantidad" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label class="control-label">Monto</label>
+                <input class="form-control" id="inputMonto" />
+                <span asp-validation-for="Monto" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="control-label">Impuesto</label>
+                <select asp-for="IdImpuesto" asp-items="@ViewBag.Impuestos" class="form-control" id="IdImpuesto">
+                    <option value="">Seleccione un impuesto</option>
+                </select>
+                <span asp-validation-for="IdImpuesto" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="control-label">Tipo de Transaccion</label>
+                <select asp-for="IdTipo" class="form-control" id="IdTipo">
+                    <option value="">Seleccione un tipo de transaccion</option>
+                </select>
+                <span asp-validation-for="IdTipo" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label class="control-label">Fecha de la Transaccion</label>
+                <input asp-for="FechaTrans" class="form-control" type="date" />
+                <span asp-validation-for="FechaTrans" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group recurrence-fields">
+                <label for="FechaRecurrencia">Dia de inicio</label>
+                <input asp-for="FechaRecurrencia" type="date" class="form-control" />
+                <span asp-validation-for="FechaRecurrencia" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group recurrence-fields">
+                <label for="Frecuencia">Frecuencia</label>
+                <select asp-for="Frecuencia" class="form-control">
+                    <option value="No Recurrente">Seleccionar...</option>
+                    <option value="Semanal">Semanal</option>
+                    <option value="Mensual">Mensual</option>
+                    <option value="Anual">Anual</option>
+                </select>
+                <span asp-validation-for="Frecuencia" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="form-group form-check">
+        <label class="form-check-label">
+            <input class="form-check-input" asp-for="Recurrencia" /> @Html.DisplayNameFor(model => model.Recurrencia)
+        </label>
+    </div>
+    <div class="form-group form-check">
+        <label class="form-check-label">
+            <input class="form-check-input" asp-for="Conciliado" /> @Html.DisplayNameFor(model => model.Conciliado)
+        </label>
+    </div>
+    <div class="form-group text-right">
+        <button type="button" id="submitTransacPresupuestoForm" class="btn btn-primary">Agregar</button>
+    </div>
+</form>

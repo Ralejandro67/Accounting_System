@@ -1,0 +1,126 @@
+﻿@model PupuseriaSalvadorena.Models.FacturaVenta
+
+@{
+    Model.FechaFactura = Model.FechaFactura.Date == default ? DateTime.Now : Model.FechaFactura;
+    var serializedPlatillos = Html.Raw(Json.Serialize(ViewBag.IdPlatillo));
+}
+
+<script type="text/javascript">
+    var platillosData = @serializedPlatillos;
+</script>
+
+<form id="FacturaVentaForm" asp-action="Create" asp-controller="FacturaVentas" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input asp-for="FacturaElectronica" class="form-control" id="FacturaE" type="hidden" />
+    <input asp-for="IdTipoFactura" value="2" class="form-control" type="hidden" />
+    <input asp-for="FechaFactura" asp-format="{0:dd/MM/yyyy}" class="form-control" type="hidden" />
+    <input asp-for="SubTotal" class="form-control" id="MontoSubTotal" type="hidden" />
+    <input asp-for="TotalVenta" class="form-control" id="MontoTotal" type="hidden" />
+    <div class="card-body card-body-custom">
+        <div class="row no-gutters">
+            <div class="col text-center item">
+                <div class="item-value">Subtotal</div>
+                <div id="montoDisplay" class="text-note">₡0.00</div>
+            </div>
+            <div class="col text-center item">
+                <div class="item-value">IVA</div>
+                <div id="inputMontoImpuesto" class="text-note">₡0.00</div>
+            </div>
+            <div class="col text-center item">
+                <div class="item-value">Total</div>
+                <div asp-for="DescripcionTransaccion" id="inputMontoTotal" class="text-note">₡0.00</div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="btn-group btn-group-toggle d-flex factura-switch" data-toggle="buttons">
+            <label class="btn btn-secondary flex-fill active">
+                <input type="radio" name="TipoFactura" id="FacturaFisica" autocomplete="off" value="Fisica" checked> Factura Física
+            </label>
+            <label class="btn btn-secondary flex-fill">
+                <input type="radio" name="TipoFactura" id="FacturaElectronica" autocomplete="off" value="Electronica"> Factura Electrónica
+            </label>
+        </div>
+    </div>
+    <fieldset id="CamposFacturasE" style="display: none;">
+        <legend>Factura Electronica</legend>
+        <div class="row" id="FECampos">
+            <div class="form-group recurrence-fields">
+                <label for="control-label">Tipo de Identificacion</label>
+                <select asp-for="TipoId" class="form-control">
+                    <option value="CF">Cédula Física</option>
+                    <option value="CJ">Cédula Jurídica</option>
+                    <option value="DIMEX">DIMEX</option>
+                    <option value="NITE">NITE</option>
+                </select>
+                <span asp-validation-for="TipoId" class="text-danger"></span>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label">Cedula</label>
+                    <input asp-for="Identificacion" class="form-control" />
+                    <span asp-validation-for="Identificacion" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label">Nombre del Cliente</label>
+                    <input asp-for="NombreCliente" class="form-control" />
+                    <span asp-validation-for="NombreCliente" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label">Correo</label>
+                    <input asp-for="CorreoElectronico" class="form-control" />
+                    <span asp-validation-for="CorreoElectronico" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label">Telefono</label>
+                    <input asp-for="Telefono" class="form-control" />
+                    <span asp-validation-for="Telefono" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset id="CamposPlatillos">
+        <legend>
+            <a id="agregarPlatillo">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+                </svg> Agregar Platillo
+            </a>
+        </legend>
+        <div id="platillosContenedor"></div>
+    </fieldset>
+    <fieldset id="CamposFinales">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label">Tipo de Pago</label>
+                    <select asp-for="IdTipoPago" asp-items="@ViewBag.IdTipoPago" class="form-control" id="IdImpuesto">
+                        <option value="">Tipo de pago</option>
+                    </select>
+                    <span asp-validation-for="IdTipoPago" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label">Tipo de Venta</label>
+                    <select asp-for="IdTipoVenta" asp-items="@ViewBag.IdTipoVenta" class="form-control" id="IdImpuesto">
+                        <option value="">Tipo de venta</option>
+                    </select>
+                    <span asp-validation-for="IdTipoVenta" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <div class="form-group text-right">
+        <button type="button" id="submitFacturaVentaForm" class="btn btn-primary">Agregar</button>
+    </div>
+</form>

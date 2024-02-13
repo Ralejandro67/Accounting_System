@@ -1,0 +1,54 @@
+﻿@model PupuseriaSalvadorena.Models.FacturaVenta
+
+@{
+    Model.FechaFactura = Model.FechaFactura == default ? DateTime.Now : Model.FechaFactura;
+}
+
+<form id="editFacturaVentaForm" asp-action="Edit" asp-controller="FacturaVentas" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input asp-for="SubTotal" class="form-control" id="MontoTotal" type="hidden" />
+    <input asp-for="TotalVenta" class="form-control" type="hidden" />
+    <div class="card-body card-body-custom">
+        <div class="row no-gutters">
+            <div class="col text-center item">
+                <div class="item-value">Subtotal</div>
+                <div id="montoDisplay" class="text-note">₡0.00</div>
+            </div>
+            <div class="col text-center item">
+                <div class="item-value">IVA</div>
+                <div id="inputMontoImpuesto" class="text-note">₡0.00</div>
+            </div>
+            <div class="col text-center item">
+                <div class="item-value">Total</div>
+                <div asp-for="DescripcionTransaccion" id="inputMontoTotal" class="text-note">₡0.00</div>
+            </div>
+        </div>
+    </div>
+    <div class="switch-button">
+        <input class="switch-button-checkbox" type="checkbox" />
+        <label class="switch-button-label" for=""><span class="switch-button-label-span">Photo</span></label>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="control-label">Impuesto</label>
+                <select asp-for="IdTipoPago" asp-items="@ViewBag.Impuestos" class="form-control" id="IdImpuesto">
+                    <option value="">Seleccione un impuesto</option>
+                </select>
+                <span asp-validation-for="IdTipoPago" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="control-label">Tipo de Transaccion</label>
+                <select asp-for="IdTipoPago" asp-items="@ViewBag.Impuestos" class="form-control" id="IdImpuesto">
+                    <option value="">Seleccione un impuesto</option>
+                </select>
+                <span asp-validation-for="IdTipoPago" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="form-group text-right">
+        <button type="submit" id="submitEditFacturaVentaForm" class="btn btn-primary">Agregar</button>
+    </div>
+</form>

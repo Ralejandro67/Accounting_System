@@ -34,10 +34,11 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             await _context.Database.ExecuteSqlRawAsync("ActualizarDetallesPresupuesto @IdPresupuesto, @IdTransaccion, @FechaIngreso, @Observaciones", IdPresupuestoParam, IdTransaccionParam, FechaIngresoParam, ObservacionesParam);
         }
 
-        public async Task EliminarDetallesPresupuesto(int IdTransaccion)
+        public async Task EliminarDetallesPresupuesto(string IdPresupuesto, int IdTransaccion)
         {
+            var IdPresupuestoParam = new SqlParameter("@IdPresupuesto", IdPresupuesto);
             var IdTransaccionParam = new SqlParameter("@IdTransaccion", IdTransaccion);
-            await _context.Database.ExecuteSqlRawAsync("EliminarDetallesPresupuesto @IdTransaccion", IdTransaccionParam);
+            await _context.Database.ExecuteSqlRawAsync("EliminarDetallesPresupuesto @IdPresupuesto, @IdTransaccion", IdPresupuestoParam, IdTransaccionParam);
         }
 
         public async Task<List<DetallePresupuesto>> MostrarDetallesPresupuesto()
@@ -48,14 +49,25 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             return detallesPresupuesto;
         }
 
-        public async Task<DetallePresupuesto> ConsultarDetallesPresupuesto(int IdTransaccion)
+        public async Task<DetallePresupuesto> ConsultarDetallesPresupuestos(string IdPresupuesto, int IdTransaccion)
         {
+            var IdPresupuestoParam = new SqlParameter("@IdPresupuesto", IdPresupuesto);
             var IdTransaccionParam = new SqlParameter("@IdTransaccion", IdTransaccion);
-            var resultado = await _context.DetallePresupuesto
-                                          .FromSqlRaw("EXEC ConsultarDetallesPresupuesto @IdTransaccion", IdTransaccionParam)
+            var Transaccion = await _context.DetallePresupuesto
+                                          .FromSqlRaw("EXEC ConsultarDetallesPresupuestos @IdPresupuesto, @IdTransaccion", IdPresupuestoParam, IdTransaccionParam)
                                           .ToListAsync();
 
-            return resultado.FirstOrDefault();
+            return Transaccion.FirstOrDefault();
+        }
+
+        public async Task<List<DetallePresupuesto>> ConsultarTransacPresupuestos(string IdPresupuesto)
+        {
+            var IdPresupuestoParam = new SqlParameter("@IdPresupuesto", IdPresupuesto);
+            var resultado = await _context.DetallePresupuesto
+                                          .FromSqlRaw("EXEC ConsultarTransacPresupuestos @IdPresupuesto", IdPresupuestoParam)
+                                          .ToListAsync();
+
+            return resultado;
         }
     }
 }

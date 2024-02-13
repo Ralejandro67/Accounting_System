@@ -25,8 +25,8 @@
         <div class="col-md-6">
             <div class="form-group" id="campoFechaVencimiento">
                 <label class="control-label">Fecha de Vencimiento</label>
-                @Html.TextBoxFor(model => model.FechaVencimiento, new { @class = "form-control", type = "date", id = "FechaVencimiento" })
-                @Html.ValidationMessageFor(model => model.FechaVencimiento, "", new { @class = "text-danger" })
+                <input asp-for="FechaVencimiento" class="form-control" type="date" id="FechaVencimiento" />
+                <span asp-validation-for="FechaVencimiento" class="text-danger"></span>
             </div>
         </div>
     </div>

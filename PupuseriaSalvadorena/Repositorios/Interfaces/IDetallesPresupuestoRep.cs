@@ -6,8 +6,9 @@ namespace PupuseriaSalvadorena.Repositorios.Interfaces
     {
         Task CrearDetallesPresupuesto(string IdPresupuesto, string IdRegistroLibros, int IdTransaccion, DateTime FechaIngreso, string Observaciones);
         Task ActualizarDetallesPresupuesto(string IdPresupuesto, int IdTransaccion, DateTime FechaIngreso, string Observaciones);
-        Task EliminarDetallesPresupuesto(int IdTransaccion);
+        Task EliminarDetallesPresupuesto(string IdPresupuesto, int IdTransaccion);
         Task<List<DetallePresupuesto>> MostrarDetallesPresupuesto();
-        Task<DetallePresupuesto> ConsultarDetallesPresupuesto(int IdTransaccion);
+        Task<DetallePresupuesto> ConsultarDetallesPresupuestos(string IdPresupuesto, int IdTransaccion);
+        Task<List<DetallePresupuesto>> ConsultarTransacPresupuestos(string IdPresupuesto);
     }
 }

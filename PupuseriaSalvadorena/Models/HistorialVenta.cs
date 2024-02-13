@@ -4,7 +4,7 @@ namespace PupuseriaSalvadorena.Models
 {
     public class HistorialVenta
     {
-        public string? IdVenta { get; set; }
+        public int IdVenta { get; set; }
 
         [Required(ErrorMessage = "La cantidad vendida es obligatoria")]
         [RegularExpression(@"^[0-9]+$", ErrorMessage = "La cantidad vendida solo puede contener números")]
@@ -15,7 +15,7 @@ namespace PupuseriaSalvadorena.Models
         public DateTime FechaVenta { get; set; }
 
         [Required(ErrorMessage = "El platillo vendido es obligatorio")]
-        public string? IdPlatillo { get; set; }
+        public int IdPlatillo { get; set; }
 
         [Required(ErrorMessage = "La factura de venta asociada es requerida")]
         public int IdFacturaVenta { get; set; }
