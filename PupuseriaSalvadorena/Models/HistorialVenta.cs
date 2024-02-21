@@ -17,6 +17,8 @@ namespace PupuseriaSalvadorena.Models
         [Required(ErrorMessage = "El platillo vendido es obligatorio")]
         public int IdPlatillo { get; set; }
 
+        public string? NombrePlatillo { get; set; }
+
         [Required(ErrorMessage = "La factura de venta asociada es requerida")]
         public int IdFacturaVenta { get; set; }
 

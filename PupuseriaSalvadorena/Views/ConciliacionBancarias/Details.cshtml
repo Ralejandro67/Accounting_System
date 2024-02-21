@@ -1,60 +1,75 @@
-﻿@model PupuseriaSalvadorena.Models.ConciliacionBancaria
+﻿@using System.Globalization
+
+@model PupuseriaSalvadorena.ViewModels.DetallesConciliacion
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Conciliacion";
 }
 
-<h1>Details</h1>
-
-<div>
-    <h4>ConciliacionBancaria</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FechaConciliacion)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FechaConciliacion)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.SaldoBancario)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.SaldoBancario)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.SaldoLibro)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.SaldoLibro)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Diferencia)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Diferencia)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Observaciones)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Observaciones)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IdRegistro)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdRegistro)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IdRegistroLibros)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdRegistroLibros)
-        </dd>
-    </dl>
+<div class="card-body table-body-custom pb-4">
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1 class="mb-0">
+                <img src="~/images/conciliacion.png" alt="Icono Conciliacion Bancaria" style="height: 60px;" />
+                Conciliacion Bancaria: @Model.ConciliacionBancaria.IdConciliacion
+            </h1>
+            <button type="button" class="btn btn-primary download-conciliacion nav-link-icon agregar-boton" id="DownloadConciliacion">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cloud-arrow-down-fill" viewBox="0 0 16 16">
+                    <path d="M8 2a5.53 5.53 0 0 0-3.594 1.342c-.766.66-1.321 1.52-1.464 2.383C1.266 6.095 0 7.555 0 9.318 0 11.366 1.708 13 3.781 13h8.906C14.502 13 16 11.57 16 9.773c0-1.636-1.242-2.969-2.834-3.194C12.923 3.999 10.69 2 8 2m2.354 6.854-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 1 1 .708-.708L7.5 9.293V5.5a.5.5 0 0 1 1 0v3.793l1.146-1.147a.5.5 0 0 1 .708.708" />
+                </svg> Descargar Conciliacion
+            </button>
+        </div>
+    </div>
+    <div class="container mt-2">
+        @Model.ConciliacionBancaria.Observaciones
+        <br />
+        Numero de Cuenta: @Model.ConciliacionBancaria.NumeroCuenta
+    </div>
+    <hr/>
+    <div class="container mt-2">
+        <div class="card-body table-body-custom" style="height: auto; margin-top: 0 !important; margin-bottom: 0 !important">
+            <div class="d-flex justify-content-between align-items-center" style="text-align:center">
+                <div class="card-body justify-content-center item">
+                    <strong>Saldo en Cuenta</strong>
+                    <p class="mt-2 mb-0">@Model.ConciliacionBancaria.SaldoBancario.ToString("C", new CultureInfo("es-CR"))</p>
+                </div>
+                <div class="card-body justify-content-center item">
+                    <strong>Saldo en Libro</strong>
+                    <p class="mt-2 mb-0">@Model.RegistroLibro.MontoTotal.ToString("C", new CultureInfo("es-CR"))</p>
+                </div>
+                <div class="card-body justify-content-center item">
+                    <strong>Diferencia</strong>
+                    <p class="mt-2 mb-0">@Model.ConciliacionBancaria.Diferencia.ToString("C", new CultureInfo("es-CR"))</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.IdConciliacion">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+<div class="card-body pt-4 pb-4 table-body-custom">
+    <h5>Transacciones del Libro Contable:</h5>
+    <table class="table table-hover table-sm mt-1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Fecha</th>
+                <th>Descripcion</th>
+                <th>Cantidad</th>
+                <th>Monto</th>
+                <th>Categoria</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var transacciones in Model.DetallesTransacciones)
+            {
+                <tr>
+                    <td>@transacciones.IdTransaccion</td>
+                    <td>@transacciones.FechaTrans.ToString("dd/MM/yyyy")</td>
+                    <td>@transacciones.DescripcionTransaccion</td>
+                    <td>@transacciones.Cantidad</td>
+                    <td>@transacciones.Monto.ToString("C", new CultureInfo("es-CR"))</td>
+                    <td>@transacciones.TipoTransac</td>
+                </tr>
+            }
+        </tbody>
+    </table>
 </div>

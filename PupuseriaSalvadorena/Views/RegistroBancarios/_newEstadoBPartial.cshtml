@@ -1,39 +1,37 @@
 ﻿@model PupuseriaSalvadorena.Models.RegistroBancario
 
 @{
-    Model.FechaRegistro = Model.FechaRegistro == default ? DateTime.Now : Model.FechaRegistro;
+    Model.FechaRegistro = Model.FechaRegistro.Date == default ? DateTime.Now : Model.FechaRegistro;
 }
 
 <form id="estadoBacForm" asp-action="Create" asp-controller="RegistroBancarios" method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="form-group">
-        <label asp-for="FechaRegistro" class="control-label"></label>
-        <input asp-for="FechaRegistro" class="form-control" type="date" />
-        <span asp-validation-for="FechaRegistro" class="text-danger"></span>
+    <input asp-for="FechaRegistro" class="form-control" type="hidden" />
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="control-label">Numero de la Cuenta</label>
+                <input asp-for="NumeroCuenta" class="form-control" />
+                <span asp-validation-for="NumeroCuenta" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="control-label">Saldo Inicial de la Cuenta</label>
+                <div class="input-group">
+                    <span class="input-group-text">₡</span>
+                    <input asp-for="SaldoInicial" class="form-control" />
+                    <span asp-validation-for="SaldoInicial" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="form-group">
-        <label asp-for="SaldoInicial" class="control-label"></label>
-        <input asp-for="SaldoInicial" class="form-control" />
-        <span asp-validation-for="SaldoInicial" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="NumeroCuenta" class="control-label"></label>
-        <input asp-for="NumeroCuenta" class="form-control" />
-        <span asp-validation-for="NumeroCuenta" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Observaciones" class="control-label"></label>
-        <input asp-for="Observaciones" class="form-control" />
+        <label class="control-label">Descripcion</label>
+        <textarea asp-for="Observaciones" class="form-control" id="CampoArea"></textarea>
         <span asp-validation-for="Observaciones" class="text-danger"></span>
     </div>
-    <div class="form-group">
-        <label asp-for="CedulaJuridica" class="control-label"></label>
-        <select asp-for="CedulaJuridica" asp-items="@ViewBag.Negocio" class="form-control">
-            <option value="">Seleccione un impuesto</option>
-        </select>
-        <span asp-validation-for="CedulaJuridica" class="text-danger"></span>
-    </div>
     <div class="form-group text-right">
-        <button type="button" id="submitEstadoBacForm" class="btn btn-primary">Agregar</button>
+        <button type="button" id="submitEstadoBacForm" class="btn btn-primary agregar-boton">Agregar</button>
     </div>
 </form>

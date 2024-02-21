@@ -19,7 +19,6 @@
         year: 'numeric', month: 'long', day: 'numeric'
     });
 
-
     var diffInicioActual = Math.floor((fechaActual - fechaInicioDate) / (1000 * 60 * 60 * 24));
     var diffInicioFin = Math.floor((fechaFinDate - fechaInicioDate) / (1000 * 60 * 60 * 24));
 
@@ -65,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function () {
             responsive: true,
             plugins: {
                 legend: {
-                    position: 'right',
+                    position: 'bottom',
                     labels: {
                         fontColor: 'black',
                         fontSize: 20,

@@ -4,8 +4,8 @@ namespace PupuseriaSalvadorena.Repositorios.Interfaces
 {
     public interface IDeclaracionTaxRep
     {
-        Task CrearDeclaracionTax(long CedulaJuridica, DateTime FechaInicio, DateTime FechaFinal, decimal MontoTotalIngresos, decimal MontoTotalEgresos, decimal MontoTotalImpuestos, string Observaciones);
-        Task ActualizarDeclaracionTax(string IdDeclaracionImpuesto, DateTime FechaInicio, DateTime FechaFinal, decimal MontoTotalIngresos, decimal MontoTotalEgresos, decimal MontoTotalImpuestos, string Observaciones);
+        Task<string> CrearDeclaracionTax(long CedulaJuridica, DateTime FechaInicio, string Trimestre, decimal MontoRenta, decimal MontoIVA, decimal MontoTotalImpuestos, decimal MontoTotal, string Observaciones);
+        Task ActualizarDeclaracionTax(string IdDeclaracionImpuesto, DateTime FechaInicio, string Trimestre, decimal MontoRenta, decimal MontoIVA, decimal MontoTotalImpuestos, decimal MontoTotal, string Observaciones);
         Task EliminarDeclaracionTax(string IdDeclaracionImpuesto);
         Task<List<DeclaracionImpuesto>> MostrarDeclaracionesImpuestos();
         Task<DeclaracionImpuesto> ConsultarDeclaracionesImpuestos(string IdDeclaracionImpuesto);

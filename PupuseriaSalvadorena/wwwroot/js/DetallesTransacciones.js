@@ -1,4 +1,49 @@
-﻿// Recurrencia Transacciones
+﻿//Grafico Linear
+document.addEventListener('DOMContentLoaded', function () {
+    var Meses = ingresos.map(function (x) { return x.Mes; });
+    var MontoIngresos = ingresos.map(function (d) { return d.TotalMonto; });
+    var MontoEgresos = egresos.map(function (d) { return d.TotalMonto; });
+
+    var ctx = document.getElementById('IngresosEgresosChart').getContext('2d');
+
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: Meses,
+            datasets: [{
+                label: 'Ingresos',
+                data: MontoIngresos,
+                backgroundColor: 'rgba(150, 239, 255, 0.5)',
+                borderColor: 'rgba(150, 239, 255, 1)', 
+                borderWidth: 2,
+                fill: false 
+            },
+            {
+                label: 'Egresos',
+                data: MontoEgresos,
+                backgroundColor: 'rgba(95, 189, 255, 0.5)', 
+                borderColor: 'rgba(95, 189, 255, 1)', 
+                borderWidth: 2,
+                fill: false 
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+}); 
+
+// Recurrencia Transacciones
 function toggleRecurrenceFields() {
     var isChecked = $('#check').is(':checked');
     if (isChecked) {
@@ -60,7 +105,8 @@ document.addEventListener('click', function (e) {
                 Swal.fire({
                     title: '¡Éxito!',
                     text: data.message,
-                    icon: 'success'
+                    icon: 'success',
+                    confirmButtonColor: '#0DBCB5'
                 }).then((result) => {
                     if (result.isConfirmed || result.isDismissed) {
                         window.location.reload();
@@ -70,7 +116,8 @@ document.addEventListener('click', function (e) {
                 Swal.fire({
                     title: 'Error',
                     text: data.message,
-                    icon: 'error'
+                    icon: 'error',
+                    confirmButtonColor: '#0DBCB5'
                 });
             }
         })
@@ -78,7 +125,8 @@ document.addEventListener('click', function (e) {
             Swal.fire({
                 title: 'Error',
                 text: 'Hubo un problema con la solicitud.',
-                icon: 'error'
+                icon: 'error',
+                confirmButtonColor: '#0DBCB5'
             });
         });
     }
@@ -104,106 +152,6 @@ $(document).on('change', '#IdImpuesto', function () {
             alert('Error al cargar los tipos de transacción');
         }
     });
-    if (impuestoId && monto) {
-        $.ajax({
-            url: '/DetallesTransacciones/GetImpuesto/',
-            type: 'GET',
-            dataType: 'json',
-            data: {
-                IdImpuesto: impuestoId,
-                Monto: monto
-            },
-            success: function (data) {
-                $('#inputMontoImpuesto').text('₡' + data.montoImpuesto.toFixed(2));
-                $('#inputMontoTotal').text('₡' + data.montoTotal.toFixed(2));
-                $('#MontoTotal').val(data.montoTotal.toFixed(2));
-            },
-            error: function () {
-                alert('Error al cargar la tasa del impuesto');
-            }
-        });
-    }
-});
-
-// Agregar Transaccion
-document.getElementById("AddTransaccionP").addEventListener("click", function () {
-    $.ajax({
-        url: '/DetallesTransacciones/GetTransaccionP',
-        type: 'GET',
-        success: function (result) {
-            $('#newPresupuestoTModal .modal-body').html(result);
-            inicializarInputMonto();
-            $('#newPresupuestoTModal').modal('show');
-        },
-        error: function (error) {
-            console.error("Error al cargar la vista parcial", error);
-        }
-    });
-});
-
-document.addEventListener('click', function (e) {
-    if (e.target && e.target.id === 'submitTransacPresupuestoForm') {
-        var formData = new FormData(document.getElementById('transacPresupuestoForm'));
-
-        fetch('/DetallesTransacciones/CreateTransacPresupuesto', {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'RequestVerificationToken': document.getElementsByName('__RequestVerificationToken')[0].value
-            }
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    $('#newPresupuestoTModal').modal('hide');
-                    Swal.fire({
-                        title: '¡Éxito!',
-                        text: data.message,
-                        icon: 'success'
-                    }).then((result) => {
-                        if (result.isConfirmed || result.isDismissed) {
-                            window.location.reload();
-                        }
-                    });
-                } else {
-                    Swal.fire({
-                        title: 'Error',
-                        text: data.message,
-                        icon: 'error'
-                    });
-                }
-            })
-            .catch(error => {
-                Swal.fire({
-                    title: 'Error',
-                    text: 'Hubo un problema con la solicitud.',
-                    icon: 'error'
-                });
-            });
-    }
-});
-
-$(document).on('change', '#IdImpuesto', function () {
-    var impuestoId = $(this).val();
-    var monto = $('#inputMonto').val();
-    $.ajax({
-        url: '/DetallesTransacciones/GetTipoTransaccion/',
-        type: 'GET',
-        dataType: 'json',
-        data: { IdImpuesto: impuestoId },
-        success: function (data) {
-            var tipotransaccionSelect = $('#IdTipo');
-            tipotransaccionSelect.empty();
-            tipotransaccionSelect.append($('<option></option>').val('').text('Seleccione un tipo de transacción'));
-            $.each(data, function (index, item) {
-                tipotransaccionSelect.append($('<option></option>').val(item.value).text(item.text));
-            });
-        },
-        error: function () {
-            alert('Error al cargar los tipos de transacción');
-        }
-    });
-
     if (impuestoId && monto) {
         $.ajax({
             url: '/DetallesTransacciones/GetImpuesto/',
@@ -253,7 +201,8 @@ document.querySelectorAll('.edit-transaccion').forEach(button => {
                             Swal.fire({
                                 title: '¡Éxito!',
                                 text: data.message,
-                                icon: 'success'
+                                icon: 'success',
+                                confirmButtonColor: '#0DBCB5'
                             }).then(() => {
                                 window.location.reload();
                             });
@@ -261,7 +210,8 @@ document.querySelectorAll('.edit-transaccion').forEach(button => {
                             Swal.fire({
                                 title: 'Error',
                                 text: data.message,
-                                icon: 'error'
+                                icon: 'error',
+                                confirmButtonColor: '#0DBCB5'
                             });
                         }
                     })
@@ -270,7 +220,8 @@ document.querySelectorAll('.edit-transaccion').forEach(button => {
                         Swal.fire({
                             title: 'Error',
                             text: 'Hubo un problema con la solicitud.',
-                            icon: 'error'
+                            icon: 'error',
+                            confirmButtonColor: '#0DBCB5'
                         });
                     });
                 });
@@ -289,8 +240,8 @@ document.querySelectorAll('.delete-transaccion').forEach(button => {
             text: "¡No podrás revertir esto!",
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
+            confirmButtonColor: '#0DBCB5',
+            cancelButtonColor: '#9DB2BF',
             confirmButtonText: 'Sí, elimínalo!',
             cancelButtonText: 'Cancelar'
         }).then((result) => {
@@ -304,27 +255,30 @@ document.querySelectorAll('.delete-transaccion').forEach(button => {
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            Swal.fire(
-                                '¡Eliminado!',
-                                'El impuesto ha sido eliminado.',
-                                'success'
-                            ).then(() => {
+                            Swal.fire({
+                                title: '¡Eliminado!',
+                                text: 'El impuesto ha sido eliminado.',
+                                icon: 'success',
+                                confirmButtonColor: '#0DBCB5'
+                            }).then(() => {
                                 window.location.reload();
                             });
                         } else {
-                            Swal.fire(
-                                'Error',
-                                'Hubo un problema al eliminar el impuesto.',
-                                'error'
-                            );
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Hubo un problema al eliminar el impuesto.',
+                                icon: 'error',
+                                confirmButtonColor: '#0DBCB5'
+                            });
                         }
                     })
                     .catch(error => {
-                        Swal.fire(
-                            'Error',
-                            'Hubo un problema con la solicitud.',
-                            'error'
-                        );
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Hubo un problema con la solicitud.',
+                            icon: 'error',
+                            confirmButtonColor: '#0DBCB5'
+                        });
                     });
             }
         })

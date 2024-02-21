@@ -2,6 +2,7 @@
 
 <form id="impuestoForm" asp-action="Create" asp-controller="Impuestos" method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="Estado" class="form-control" value="true" />
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
@@ -21,17 +22,12 @@
             </div>
         </div>
     </div>
-    <div class="form-group form-check">
-        <label class="form-check-label">
-        <input class="form-check-input" asp-for="Estado" /> @Html.DisplayNameFor(model => model.Estado)
-        </label>
-    </div>
     <div class="form-group">
         <label asp-for="Descripcion" class="control-label"></label>
         <textarea asp-for="Descripcion" class="form-control" id="CampoArea"></textarea>
         <span asp-validation-for="Descripcion" class="text-danger"></span>
     </div>
     <div class="form-group text-right">
-        <button type="button" id="submitCreateForm" class="btn btn-primary">Agregar</button>
+        <button type="button" id="submitCreateForm" class="btn btn-primary agregar-boton">Agregar</button>
     </div>
 </form>

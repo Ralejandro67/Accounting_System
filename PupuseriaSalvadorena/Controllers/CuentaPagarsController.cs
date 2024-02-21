@@ -28,6 +28,9 @@ namespace PupuseriaSalvadorena.Controllers
         public async Task<IActionResult> Index()
         {
             var cuentaPagars = await _cuentaPagarRep.MostrarCuentasPagar();
+            ViewBag.cuentasPagadas = cuentaPagars.Count(c => c.Estado == false);
+            ViewBag.cuentasPorPagar = cuentaPagars.Count(c => c.Estado == true);
+
             return View(cuentaPagars);  
         }
 

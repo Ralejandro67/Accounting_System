@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PupuseriaSalvadorena.Models
 {
@@ -15,5 +16,8 @@ namespace PupuseriaSalvadorena.Models
         public string? IdProveedor { get; set; }
 
         public string? ProveedorCompleto { get; set; }
+
+        [NotMapped]
+        public int ConteoCompras { get; set; }
     }
 }

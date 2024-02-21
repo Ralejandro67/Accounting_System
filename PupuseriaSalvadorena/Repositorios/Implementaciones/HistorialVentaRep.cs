@@ -45,7 +45,7 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
         public async Task<List<HistorialVenta>> MostrarHistorialVenta()
         {
             var historialVenta = await _context.HistorialVenta
-                                        .FromSqlRaw("EXEC MostrarHistorialVenta")
+                                        .FromSqlRaw("EXEC MostrarHistorialVentas")
                                         .ToListAsync();
             return historialVenta;
         }

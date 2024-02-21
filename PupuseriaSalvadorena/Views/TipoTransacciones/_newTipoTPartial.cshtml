@@ -5,14 +5,14 @@
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
-                <label asp-for="TipoTransac" class="control-label"></label>
+                <label class="control-label">Nombre del Tipo</label>
                 <input asp-for="TipoTransac" class="form-control" />
                 <span asp-validation-for="TipoTransac" class="text-danger"></span>
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <label asp-for="IdMovimiento" class="control-label"></label>
+                <label class="control-label">Tipo de Movimiento</label>
                 <select asp-for="IdMovimiento" asp-items="@ViewBag.Movimientos" class="form-control">
                     <option value="">Tipo de Movimiento</option>
                 </select>
@@ -21,13 +21,13 @@
         </div>
     </div>
     <div class="form-group">
-        <label asp-for="IdImpuesto" class="control-label"></label>
+        <label class="control-label">Impuesto</label>
         <select asp-for="IdImpuesto" asp-items="@ViewBag.Impuestos" class="form-control">
             <option value="">Tipo de Movimiento</option>
         </select>
         <span asp-validation-for="IdImpuesto" class="text-danger"></span>
     </div>
     <div class="form-group text-right">
-        <button type="button" id="submitTipoTForm" class="btn btn-primary">Agregar</button>
+        <button type="button" id="submitTipoTForm" class="btn btn-primary agregar-boton">Agregar</button>
     </div>
 </form>

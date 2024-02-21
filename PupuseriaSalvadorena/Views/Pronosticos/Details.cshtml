@@ -1,54 +1,80 @@
-﻿@model PupuseriaSalvadorena.Models.Pronostico
+﻿@using System.Globalization;
+
+@model PupuseriaSalvadorena.ViewModels.DetallesPronosticos
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalles del Pronostico";
 }
 
-<h1>Details</h1>
+@section Scripts {
+    <script src="~/js/detallespronosticos.js" asp-append-version="true"></script>
+}
 
-<div>
-    <h4>Pronostico</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IdPlatillo)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdPlatillo)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FechaInicio)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FechaInicio)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FechaFinal)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FechaFinal)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CantTotalProd)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CantTotalProd)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TotalVentas)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TotalVentas)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PronosticoDoc)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PronosticoDoc)
-        </dd>
-    </dl>
+<div class="card-body table-body-custom pt-4 pb-4">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2>
+                <img src="~/images/graficocircular.png" alt="Icono Grafico" style="height: 60px;" />
+                Pronostico @Model.Pronostico.IdPronostico: @Model.Pronostico.NombrePlatillo
+            </h2>
+            <button type="button" class="btn btn-primary nav-link-icon details-Transaccion" id="AddTransaccion" onclick="location.href='@Url.Action("Index", "Pronosticos", new { id = Model.Pronostico.IdPronostico })'">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-printer-fill" viewBox="0 0 16 16">
+                    <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2zm6 8H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1" />
+                    <path d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1" />
+                </svg> Imprimir Pronostico
+            </button>
+        </div>
+    </div>
+    <hr>
+    <div class="container mt-2">
+        <div id="Titulo">
+            <h4 class="mt-1 mb-3">Pronostico</h4>
+            <canvas id="PVentasChart"></canvas>
+        </div>
+        <hr/>
+        <div class="card-body table-body-custom" style="height: auto; margin-top: 0 !important; margin-bottom: 0 !important">
+            <div class="d-flex justify-content-between align-items-center" style="text-align:center">
+                <div class="card-body justify-content-center item">
+                    <strong>Dias Pronosticados</strong>
+                    <p class ="mt-2 mb-0">@ViewBag.CantPronosticos</p>
+                </div>
+                <div class="card-body justify-content-center item">
+                    <strong>Total de Ventas</strong>
+                    <p class="mt-2 mb-0">@Model.Pronostico.CantTotalProd</p>
+                </div>
+                <div class="card-body justify-content-center item">
+                    <strong>Valor en Ventas</strong>
+                    <p class="mt-2 mb-0">@Model.Pronostico.TotalVentas.ToString("C", new CultureInfo("es-CR"))</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.IdPronostico">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+<div class="card-body pt-4 pb-4 table-body-custom">
+    <h4>Pronosticos:</h4>
+    <table class="table table-hover mt-4">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Fecha</th>
+                <th>Cantidad a Vender</th>
+                <th>Valor de las Ventas</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var pronostico in Model.DetallesP)
+            {
+                <tr>
+                    <td>@pronostico.IdDetallePronostico</td>
+                    <td>@pronostico.FechaPronostico.ToString("dd/MM/yyyy")</td>
+                    <td>@pronostico.PCantVenta</td>
+                    <td>@pronostico.PValorVenta.ToString("C", new CultureInfo("es-CR"))</td>
+                </tr>
+            }
+        </tbody>
+    </table>
 </div>
+
+<script>
+    var detalles = @Html.Raw(ViewBag.JsonDetallesPronostico);
+</script>

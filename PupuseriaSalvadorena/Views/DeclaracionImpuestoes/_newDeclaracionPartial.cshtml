@@ -1,0 +1,30 @@
+﻿@model PupuseriaSalvadorena.Models.DeclaracionImpuesto
+
+@{
+    Model.FechaInicio = Model.FechaInicio.Date == default ? DateTime.Now : Model.FechaInicio;
+    var year = DateTime.Now.Year;
+}
+
+<form id="DeclaracionImpuestoForm" asp-action="Create" asp-controller="DeclaracionImpuestoes" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input asp-for="FechaInicio" class="form-control" type="hidden" />
+    <div class="form-group">
+        <label class="control-label">Trimestre</label>
+        <select asp-for="Trimestre" class="form-control">
+            <option value="">Seleccione el trimestre requerido</option>
+            <option value="Trimestre 1 @year">Trimestre 1: @year</option>
+            <option value="Trimestre 2 @year">Trimestre 2: @year</option>
+            <option value="Trimestre 3 @year">Trimestre 3: @year</option>
+            <option value="Trimestre 4 @year">Trimestre 4: @year</option>
+        </select>
+        <span asp-validation-for="Trimestre" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label class="control-label">Observaciones</label>
+        <textarea asp-for="Observaciones" class="form-control" id="CampoArea"></textarea>
+        <span asp-validation-for="Observaciones" class="text-danger"></span>
+    </div>
+    <div class="form-group text-right">
+        <button type="button" id="submitDeclaracionImpuesto" class="btn btn-primary agregar-boton">Agregar</button>
+    </div>
+</form>

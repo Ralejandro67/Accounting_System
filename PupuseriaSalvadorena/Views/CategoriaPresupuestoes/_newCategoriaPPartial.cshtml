@@ -2,21 +2,27 @@
 
 <form id="CategoriaPresupuestoForm" asp-action="Create" asp-controller="CategoriaPresupuestoes" method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="form-group">
-        <label class="control-label">Nombre de la Categoria</label>
-        <input asp-for="Nombre" class="form-control" />
-        <span asp-validation-for="Nombre" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label class="control-label">Tipos de Presupuestos</label>
-        <select asp-for="Estado" class="form-control" >
-            <option value="">Tipo de presupuesto</option>
-            <option value="false">Ingreso</option>
-            <option value="true">Egreso</option>
-        </select>
-        <span asp-validation-for="Estado" class="text-danger"></span>
+    <div class="row">
+        <div class="col-md-7">
+            <div class="form-group">
+                <label class="control-label">Nombre de la Categoria</label>
+                <input asp-for="Nombre" class="form-control" />
+                <span asp-validation-for="Nombre" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="form-group">
+                <label class="control-label">Tipo de Presupuesto</label>
+                <select asp-for="Estado" class="form-control" >
+                    <option value="">Tipo de presupuesto</option>
+                    <option value="false">Ingreso</option>
+                    <option value="true">Egreso</option>
+                </select>
+                <span asp-validation-for="Estado" class="text-danger"></span>
+            </div>
+        </div>
     </div>
     <div class="form-group text-right">
-        <button type="button" id="submitCategoriaPresupuesto" class="btn btn-primary">Agregar</button>
+        <button type="button" id="submitCategoriaPresupuesto" class="btn btn-primary agregar-boton">Agregar</button>
     </div>
 </form>

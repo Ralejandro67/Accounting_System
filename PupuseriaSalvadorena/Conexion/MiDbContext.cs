@@ -9,6 +9,7 @@ namespace PupuseriaSalvadorena.Conexion
         public MiDbContext(DbContextOptions<MiDbContext> options): base(options)
         {}
 
+        public DbSet<DetallesPronostico> DetallesPronostico { get; set; }
         public DbSet<TipoMovimiento> TipoMovimiento { get; set; }
         public DbSet<AlertaCuentaPagar> AlertaCuentaPagar { get; set; }
         public DbSet<CorreoElectronico> CorreoElectronico { get; set; }
@@ -61,6 +62,9 @@ namespace PupuseriaSalvadorena.Conexion
 
             modelBuilder.Entity<HistorialVenta>()
                 .HasKey(hv => new { hv.IdVenta, hv.IdPlatillo, hv.IdFacturaVenta });
+
+            modelBuilder.Entity<DetallesPronostico>()
+                .HasKey(dp => new { dp.IdDetallePronostico, dp.IdPronostico });
         }
     }
 }

@@ -13,7 +13,7 @@
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <input asp-for="FacturaElectronica" class="form-control" id="FacturaE" type="hidden" />
     <input asp-for="IdTipoFactura" value="2" class="form-control" type="hidden" />
-    <input asp-for="FechaFactura" asp-format="{0:dd/MM/yyyy}" class="form-control" type="hidden" />
+    <input asp-for="FechaFactura" class="form-control" type="hidden" />
     <input asp-for="SubTotal" class="form-control" id="MontoSubTotal" type="hidden" />
     <input asp-for="TotalVenta" class="form-control" id="MontoTotal" type="hidden" />
     <div class="card-body card-body-custom">
@@ -121,6 +121,6 @@
         </div>
     </fieldset>
     <div class="form-group text-right">
-        <button type="button" id="submitFacturaVentaForm" class="btn btn-primary">Agregar</button>
+        <button type="button" id="submitFacturaVentaForm" class="btn btn-primary agregar-boton">Agregar</button>
     </div>
 </form>

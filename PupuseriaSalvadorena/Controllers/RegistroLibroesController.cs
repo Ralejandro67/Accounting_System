@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PupuseriaSalvadorena.Conexion;
 using PupuseriaSalvadorena.Models;
+using PupuseriaSalvadorena.ViewModels;
 using PupuseriaSalvadorena.Repositorios.Implementaciones;
 using PupuseriaSalvadorena.Repositorios.Interfaces;
 
@@ -17,10 +18,12 @@ namespace PupuseriaSalvadorena.Controllers
     public class RegistroLibroesController : Controller
     {
         private readonly IRegistroLibrosRep _registroLibroRep;   
+        private readonly IDetallesTransacRep _detallesTransacRep;
 
-        public RegistroLibroesController(IRegistroLibrosRep context)
+        public RegistroLibroesController(IRegistroLibrosRep context, IDetallesTransacRep detallesTransacRep)
         {
             _registroLibroRep = context;
+            _detallesTransacRep = detallesTransacRep;
             LibrosMensual();
         }
 
@@ -40,12 +43,34 @@ namespace PupuseriaSalvadorena.Controllers
             }
 
             var registroLibro = await _registroLibroRep.ConsultarRegistrosLibros(id);
+            var transacciones = await _detallesTransacRep.ConsultarTransacciones(id);
+            var totales = transacciones.Count();
+
+            var Ingresos = transacciones.Where(dt => dt.IdMovimiento == 1).Sum(dt => dt.Monto);
+            var cantIngresos = transacciones.Where(dt => dt.IdMovimiento == 1).Count();
+
+            var Egresos = transacciones.Where(dt => dt.IdMovimiento == 2).Sum(dt => dt.Monto);
+            var cantEgresos = transacciones.Where(dt => dt.IdMovimiento == 2).Count();
+
             if (registroLibro == null)
             {
                 return NotFound();
             }
 
-            return View(registroLibro);
+            DetallesLibros detallesLibros = new DetallesLibros
+            {
+                RegistroLibro = registroLibro,
+                DetallesTransacciones = transacciones
+            };
+
+            ViewBag.Totales = totales;
+            ViewBag.Ingresos = Ingresos;
+            ViewBag.cantIngresos = cantIngresos;
+            ViewBag.Egresos = Egresos;
+            ViewBag.cantEgresos = cantEgresos;
+            ViewBag.Saldo = registroLibro.MontoTotal;
+
+            return View(detallesLibros);
         }
 
         // POST: RegistroLibroes/Create
@@ -133,7 +158,7 @@ namespace PupuseriaSalvadorena.Controllers
             CultureInfo cultura = new CultureInfo("es-ES");
             DateTime fechaMes = FechaResgistro.AddMonths(1);
             string Mes = fechaMes.ToString("MMMM", cultura);
-            string Libro = "Libro " + Mes;
+            string Libro = "Libro de " + Mes;
 
             _registroLibroRep.CrearRegistroLibros(FechaResgistro, 0, Libro, false);
         }

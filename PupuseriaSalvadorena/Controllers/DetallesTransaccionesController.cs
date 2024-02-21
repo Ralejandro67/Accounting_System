@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Globalization;
 using Hangfire;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using PupuseriaSalvadorena.Conexion;
 using PupuseriaSalvadorena.Models;
 using PupuseriaSalvadorena.Repositorios.Interfaces;
@@ -34,7 +36,47 @@ namespace PupuseriaSalvadorena.Controllers
         // GET: DetallesTransacciones
         public async Task<IActionResult> Index()
         {
+            var cultura = new CultureInfo("es-ES");
+            var fechaInicio = DateTime.Today.AddMonths(-4);
+            var fechaActual = DateTime.Today;
+            var añoActual = fechaActual.Year;
+            var mesActual = fechaActual.Month;
+
+            var IdLibro = await _detallesTransacRep.ObtenerIdLibroMasReciente();
             var detalleTransaccion = await _detallesTransacRep.MostrarDetallesTransacciones();
+            var Libro = await _registroLibrosRep.ConsultarRegistrosLibros(IdLibro);
+
+            var IngresosActuales = detalleTransaccion.Where(dt => dt.IdMovimiento == 1 && dt.FechaTrans.Year == añoActual && dt.FechaTrans.Month == mesActual).Sum(dt => dt.Monto);
+            var EgresosActuales = detalleTransaccion.Where(dt => dt.IdMovimiento == 2 && dt.FechaTrans.Year == añoActual && dt.FechaTrans.Month == mesActual).Sum(dt => dt.Monto);
+
+            var transacciones4Meses = detalleTransaccion.Where(t => t.FechaTrans >= fechaInicio).ToList();
+            var ingresos = transacciones4Meses.Where(dt => dt.IdMovimiento == 1).GroupBy(dt => new { dt.FechaTrans.Year, dt.FechaTrans.Month })
+                                              .Select(group => new
+                                              {
+                                                  Año = group.Key.Year,
+                                                  MesNumero = group.Key.Month,
+                                                  Mes = cultura.DateTimeFormat.GetMonthName(group.Key.Month),
+                                                  TotalMonto = group.Sum(dt => dt.Monto)
+                                              }).OrderBy(x => x.Año).ThenBy(x => x.MesNumero).ToList();
+
+            var egresos = transacciones4Meses.Where(dt => dt.IdMovimiento == 2).GroupBy(dt => new { dt.FechaTrans.Year, dt.FechaTrans.Month })
+                                             .Select(group => new
+                                             {
+                                                 Año = group.Key.Year,
+                                                 MesNumero = group.Key.Month,
+                                                 Mes = cultura.DateTimeFormat.GetMonthName(group.Key.Month),
+                                                 TotalMonto = group.Sum(dt => dt.Monto)
+                                             }).OrderBy(x => x.Año).ThenBy(x => x.MesNumero).ToList();
+
+            ViewBag.Libro = Libro.Descripcion;
+            ViewBag.Mes = cultura.DateTimeFormat.GetMonthName(mesActual);
+            ViewBag.MontoTotal = Libro.MontoTotal;
+            ViewBag.IngresosActuales = IngresosActuales;
+            ViewBag.EgresosActuales = EgresosActuales;
+
+            ViewBag.Ingresos = JsonConvert.SerializeObject(ingresos);
+            ViewBag.Egresos = JsonConvert.SerializeObject(egresos);
+
             return View(detalleTransaccion);
         }
 

@@ -46,6 +46,9 @@ builder.Services.AddScoped<ITipoVentaRep, TipoVentaRep>();
 builder.Services.AddScoped<IPronosticoRep, PronosticoRep>();
 builder.Services.AddScoped<ITipoMovimientoRep, TipoMovimientoRep>();
 builder.Services.AddScoped<IAlertaCuentaPagarRep, AlertaCuentaPagarRep>();
+builder.Services.AddScoped<IDetallesPronosticoRep, DetallesPronosticoRep>();
+
+builder.Services.AddScoped<ServicioPronosticos>();
 builder.Services.AddHostedService<AlertaCuentaPagarServ>();
 
 builder.Services.AddHangfire(config => config.UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -77,6 +80,6 @@ app.UseHangfireDashboard();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Correos}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

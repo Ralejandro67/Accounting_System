@@ -1,0 +1,34 @@
+﻿@model PupuseriaSalvadorena.Models.Pronostico
+
+@{
+    Model.FechaInicio = Model.FechaInicio.Date == default ? DateTime.Now : Model.FechaInicio;
+    Model.FechaFinal = Model.FechaFinal.Date == default ? DateTime.Now.AddDays(1) : Model.FechaInicio;
+}
+
+<form id="PronosticoForm" asp-action="Create" asp-controller="Pronosticos" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input asp-for="FechaInicio" class="form-control" type="hidden" />
+    <input asp-for="CantTotalProd" class="form-control" type="hidden" />
+    <input asp-for="TotalVentas" class="form-control" type="hidden" />
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="control-label">Platillo</label>
+                <select asp-for="IdPlatillo" asp-items="@ViewBag.IdPlatillos" class="form-control" id="IdImpuesto">
+                    <option value="">Selecciona el Platillo</option>
+                </select>
+                <span asp-validation-for="IdPlatillo" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="control-label">Fecha Final del Pronostico</label>
+                <input asp-for="FechaFinal" type="date" class="form-control" id="fechaFinal" />
+                <span asp-validation-for="FechaFinal" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="form-group text-right">
+        <button type="button" id="submitPronostico" class="btn btn-primary agregar-boton">Agregar</button>
+    </div>
+</form>

@@ -1,31 +1,41 @@
 ﻿@model PupuseriaSalvadorena.Models.ConciliacionBancaria
 
-@{
-    Model.FechaConciliacion = Model.FechaConciliacion == default ? DateTime.Now : Model.FechaConciliacion;
-}
-
 <form id="conciliacionForm" asp-action="Create" asp-controller="ConciliacionBancarias" method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="form-group">
-        <label asp-for="SaldoBancario" class="control-label"></label>
-        <input asp-for="SaldoBancario" class="form-control" />
-        <span asp-validation-for="SaldoBancario" class="text-danger"></span>
+        <label class="control-label">Saldo en la Cuenta Bancaria</label>
+        <div class="input-group">
+            <span class="input-group-text">₡</span>
+            <input asp-for="SaldoBancario" class="form-control" />
+            <span asp-validation-for="SaldoBancario" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="control-label">Cuenta Bancaria</label>
+                <select asp-for="IdRegistro" asp-items="@ViewBag.RegistrosBancarios" class="form-control">
+                    <option value="">Seleccione la cuenta</option>
+                </select>
+                <span asp-validation-for="IdRegistro" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="control-label">Libro Contable</label>
+                <select asp-for="IdRegistroLibros" asp-items="@ViewBag.RegistrosLibros" class="form-control">
+                    <option value="">Seleccione el libro</option>
+                </select>
+                <span asp-validation-for="IdRegistroLibros" class="text-danger"></span>
+            </div>
+        </div>
     </div>
     <div class="form-group">
-        <label asp-for="IdRegistro" class="control-label"></label>
-        <select asp-for="IdRegistro" asp-items="@ViewBag.RegistrosBancarios" class="form-control">
-            <option value="">Seleccione un impuesto</option>
-        </select>
-        <span asp-validation-for="IdRegistro" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="IdRegistroLibros" class="control-label"></label>
-        <select asp-for="IdRegistroLibros" asp-items="@ViewBag.RegistrosLibros" class="form-control">
-            <option value="">Seleccione un impuesto</option>
-        </select>
-        <span asp-validation-for="IdRegistroLibros" class="text-danger"></span>
+        <label class="control-label">Observaciones</label>
+        <textarea asp-for="Observaciones" class="form-control" id="CampoArea"></textarea>
+        <span asp-validation-for="Observaciones" class="text-danger"></span>
     </div>
     <div class="form-group text-right">
-        <button type="button" id="submitConciliacionForm" class="btn btn-primary">Agregar</button>
+        <button type="button" id="submitConciliacionForm" class="btn btn-primary agregar-boton">Agregar</button>
     </div>
 </form>

@@ -5,19 +5,26 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using PupuseriaSalvadorena.Conexion;
 using PupuseriaSalvadorena.Models;
+using PupuseriaSalvadorena.Repositorios.Implementaciones;
 using PupuseriaSalvadorena.Repositorios.Interfaces;
+using PupuseriaSalvadorena.ViewModels;
 
 namespace PupuseriaSalvadorena.Controllers
 {
     public class DeclaracionImpuestoesController : Controller
     {
         private readonly IDeclaracionTaxRep _declaracionTaxRep;
+        private readonly IDetallesTransacRep _detallesTransacRep;
+        private readonly INegociosRep _negociosRep;
 
-        public DeclaracionImpuestoesController(IDeclaracionTaxRep context)
+        public DeclaracionImpuestoesController(IDeclaracionTaxRep declaracionTaxRep, IDetallesTransacRep detallesTransacRep, INegociosRep negociosRep)
         {
-            _declaracionTaxRep = context;
+            _declaracionTaxRep = declaracionTaxRep;
+            _detallesTransacRep = detallesTransacRep;
+            _negociosRep = negociosRep;
         }
 
         // GET: DeclaracionImpuestoes
@@ -32,37 +39,68 @@ namespace PupuseriaSalvadorena.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return Json(new { success = false, message = "Error al crear la declaracion." });
             }
 
             var declaracionImpuesto = await _declaracionTaxRep.ConsultarDeclaracionesImpuestos(id);
+            var trimestre = declaracionImpuesto.Trimestre.Split(' ');
+            var nTrimestre = int.Parse(trimestre[1]);
+            var year = int.Parse(trimestre[2]);
+
+            int mesInicio = (nTrimestre - 1) * 3 + 1;
+            int mesFinal = nTrimestre * 3;
+
+            var transacciones = (await _detallesTransacRep.MostrarDetallesTransaccionesYear())
+                                .Where(t => t.FechaTrans.Year == year && t.FechaTrans.Month >= mesInicio && t.FechaTrans.Month <= mesFinal).ToList();
+
             if (declaracionImpuesto == null)
             {
-                return NotFound();
+                return Json(new { success = false, message = "Error al crear la declaracion." });
             }
 
-            return View(declaracionImpuesto);
+            var viewModel = new Declaraciones
+            {
+                DeclaracionImpuesto = declaracionImpuesto,
+                DetallesTransacciones = transacciones
+            };
+
+            return View(viewModel);
         }
 
         // GET: DeclaracionImpuestoes/Create
         public IActionResult Create()
         {
-            return View();
+            return PartialView("_newDeclaracionPartial", new Presupuesto());
         }
 
         // POST: DeclaracionImpuestoes/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdDeclaracionImpuesto,CedulaJuridica,FechaInicio,FechaFinal,MontoTotalIngresos,MontoTotalEgresos,MontoTotalImpuestos,Observaciones")] DeclaracionImpuesto declaracionImpuesto)
+        public async Task<IActionResult> Create([Bind("IdDeclaracionImpuesto,CedulaJuridica,FechaInicio,Trimestre,MontoRenta,MontoIVA,MontoTotalImpuestos,MontoTotal,Observaciones")] DeclaracionImpuesto declaracionImpuesto)
         {
             if (ModelState.IsValid)
             {
-                await _declaracionTaxRep.CrearDeclaracionTax(declaracionImpuesto.CedulaJuridica, declaracionImpuesto.FechaInicio, declaracionImpuesto.FechaFinal, declaracionImpuesto.MontoTotalIngresos, declaracionImpuesto.MontoTotalEgresos, declaracionImpuesto.MontoTotalImpuestos, declaracionImpuesto.Observaciones);
-                return RedirectToAction(nameof(Index));
+                var trimestre = declaracionImpuesto.Trimestre.Split(' ');
+                var nTrimestre = int.Parse(trimestre[1]);
+                var year = int.Parse(trimestre[2]);
+
+                int mesInicio = (nTrimestre - 1) * 3 + 1;
+                int mesFinal = nTrimestre * 3;
+
+                var transacciones = (await _detallesTransacRep.MostrarDetallesTransaccionesYear())
+                                    .Where(t => t.FechaTrans.Year == year && t.FechaTrans.Month >= mesInicio && t.FechaTrans.Month <= mesFinal).ToList();
+
+                decimal montoTotal = transacciones.Sum(t => t.Monto);
+                decimal montoRenta = montoTotal * 0.02m;
+                decimal montoIVA = montoTotal * 0.04m;
+                decimal montoTotalImpuestos = montoRenta + montoIVA;
+
+                var negocio = await _negociosRep.ConsultarNegocio();
+                var IdDeclaracion = await _declaracionTaxRep.CrearDeclaracionTax(negocio, declaracionImpuesto.FechaInicio, declaracionImpuesto.Trimestre, montoRenta, montoIVA, montoTotalImpuestos, montoTotal, declaracionImpuesto.Observaciones);
+
+                return RedirectToAction(nameof(Details), new { id = IdDeclaracion });
             }
-            return View(declaracionImpuesto);
+            return Json(new { success = false, message = "Error al crear la declaracion." });
         }
 
         // GET: DeclaracionImpuestoes/Edit/5
@@ -82,11 +120,9 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // POST: DeclaracionImpuestoes/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("IdDeclaracionImpuesto,CedulaJuridica,FechaInicio,FechaFinal,MontoTotalIngresos,MontoTotalEgresos,MontoTotalImpuestos,Observaciones")] DeclaracionImpuesto declaracionImpuesto)
+        public async Task<IActionResult> Edit(string id, [Bind("IdDeclaracionImpuesto,CedulaJuridica,FechaInicio,Trimestre,MontoRenta,MontoIVA,MontoTotalImpuestos,MontoTotal,Observaciones")] DeclaracionImpuesto declaracionImpuesto)
         {
             if (id != declaracionImpuesto.IdDeclaracionImpuesto)
             {
@@ -95,7 +131,7 @@ namespace PupuseriaSalvadorena.Controllers
 
             if (ModelState.IsValid)
             {
-                await _declaracionTaxRep.ActualizarDeclaracionTax(declaracionImpuesto.IdDeclaracionImpuesto, declaracionImpuesto.FechaInicio, declaracionImpuesto.FechaFinal, declaracionImpuesto.MontoTotalIngresos, declaracionImpuesto.MontoTotalEgresos, declaracionImpuesto.MontoTotalImpuestos, declaracionImpuesto.Observaciones);
+                await _declaracionTaxRep.ActualizarDeclaracionTax(declaracionImpuesto.IdDeclaracionImpuesto, declaracionImpuesto.FechaInicio, declaracionImpuesto.Trimestre, declaracionImpuesto.MontoRenta, declaracionImpuesto.MontoIVA, declaracionImpuesto.MontoTotalImpuestos, declaracionImpuesto.MontoTotal, declaracionImpuesto.Observaciones);
                 return RedirectToAction(nameof(Index));
             }
             return View(declaracionImpuesto);

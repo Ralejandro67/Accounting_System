@@ -15,7 +15,7 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             _context = context;
         }
 
-        public async Task CrearRegistroBancario(DateTime FechaRegistro, decimal SaldoInicial, int NumeroCuenta, string Observaciones, long CedulaJuridica)
+        public async Task CrearRegistroBancario(DateTime FechaRegistro, decimal SaldoInicial, string NumeroCuenta, string Observaciones, long CedulaJuridica)
         {
             var FechaRegistroParam = new SqlParameter("@FechaRegistro", FechaRegistro);
             var SaldoInicialParam = new SqlParameter("@SaldoInicial", SaldoInicial);
@@ -25,7 +25,7 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             await _context.Database.ExecuteSqlRawAsync("CrearRegistroBancario @FechaRegistro, @SaldoInicial, @NumeroCuenta, @Observaciones, @CedulaJuridica", FechaRegistroParam, SaldoInicialParam, NumeroCuentaParam, ObservacionesParam, CedulaJuridicaParam);
         }
 
-        public async Task ActualizarRegistroBancario(string IdRegistro, DateTime FechaRegistro, decimal SaldoInicial, int NumeroCuenta, string Observaciones)
+        public async Task ActualizarRegistroBancario(string IdRegistro, DateTime FechaRegistro, decimal SaldoInicial, string NumeroCuenta, string Observaciones)
         {
             var IdRegistroParam = new SqlParameter("@IdRegistro", IdRegistro);
             var FechaRegistroParam = new SqlParameter("@FechaRegistro", FechaRegistro);

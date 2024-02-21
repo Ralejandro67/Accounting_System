@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using PupuseriaSalvadorena.Conexion;
 using PupuseriaSalvadorena.Models;
@@ -138,6 +139,21 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
                                           .ToListAsync();
 
             return resultado.FirstOrDefault();
+        }
+
+        public async Task<List<DetalleTransaccion>> MostrarDetallesTransaccionesYear()
+        {
+            var detallesTransaccion = await _context.DetalleTransaccion
+                                        .FromSqlRaw("EXEC MostrarDetallesTransaccionesYear")
+                                        .ToListAsync();
+            return detallesTransaccion;
+        }
+
+        public async Task ActualizarConciliado(string IdRegistroLibros, bool Conciliado)
+        {
+            var IdRegistroLibrosParam = new SqlParameter("@IdRegistroLibros", IdRegistroLibros);
+            var ConciliadoParam = new SqlParameter("@Conciliado", Conciliado);
+            await _context.Database.ExecuteSqlRawAsync("ActualizarConciliado @IdRegistroLibros, @Conciliado", IdRegistroLibrosParam, ConciliadoParam);
         }
     }
 }

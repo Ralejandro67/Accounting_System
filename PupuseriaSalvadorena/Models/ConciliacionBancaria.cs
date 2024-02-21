@@ -24,7 +24,11 @@ namespace PupuseriaSalvadorena.Models
         [Required(ErrorMessage = "El registro bancario es obligatorio")]
         public string? IdRegistro { get; set; }
 
+        public string? NumeroCuenta { get; set; }
+
         [Required(ErrorMessage = "El registro de libro es obligatorio")]
         public string? IdRegistroLibros { get; set; }
+
+        public string? Descripcion { get; set; }
     }
 }

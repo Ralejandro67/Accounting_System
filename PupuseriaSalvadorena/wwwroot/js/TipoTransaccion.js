@@ -31,7 +31,8 @@ document.addEventListener('click', function (e) {
                     Swal.fire({
                         title: '¡Éxito!',
                         text: data.message,
-                        icon: 'success'
+                        icon: 'success',
+                        confirmButtonColor: '#0DBCB5'
                     }).then((result) => {
                         if (result.isConfirmed || result.isDismissed) {
                             window.location.reload();
@@ -41,7 +42,8 @@ document.addEventListener('click', function (e) {
                     Swal.fire({
                         title: 'Error',
                         text: data.message,
-                        icon: 'error'
+                        icon: 'error',
+                        confirmButtonColor: '#0DBCB5'
                     });
                 }
             })
@@ -49,7 +51,8 @@ document.addEventListener('click', function (e) {
                 Swal.fire({
                     title: 'Error',
                     text: 'Hubo un problema con la solicitud.',
-                    icon: 'error'
+                    icon: 'error',
+                    confirmButtonColor: '#0DBCB5'
                 });
             });
     }
@@ -84,7 +87,8 @@ document.querySelectorAll('.edit-tipot').forEach(button => {
                                 Swal.fire({
                                     title: '¡Éxito!',
                                     text: data.message,
-                                    icon: 'success'
+                                    icon: 'success',
+                                    confirmButtonColor: '#0DBCB5'
                                 }).then(() => {
                                     window.location.reload();
                                 });
@@ -92,7 +96,8 @@ document.querySelectorAll('.edit-tipot').forEach(button => {
                                 Swal.fire({
                                     title: 'Error',
                                     text: data.message,
-                                    icon: 'error'
+                                    icon: 'error',
+                                    confirmButtonColor: '#0DBCB5'
                                 });
                             }
                         })
@@ -101,7 +106,8 @@ document.querySelectorAll('.edit-tipot').forEach(button => {
                             Swal.fire({
                                 title: 'Error',
                                 text: 'Hubo un problema con la solicitud.',
-                                icon: 'error'
+                                icon: 'error',
+                                confirmButtonColor: '#0DBCB5'
                             });
                         });
                 });
@@ -117,11 +123,11 @@ document.querySelectorAll('.delete-tipot').forEach(button => {
 
         Swal.fire({
             title: '¿Estás seguro?',
-            text: "¡No podrás revertir esto!",
+            text: "¡No podrás revertir este cambio!",
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
+            confirmButtonColor: '#0DBCB5',
+            cancelButtonColor: '#9DB2BF',
             confirmButtonText: 'Sí, elimínalo!',
             cancelButtonText: 'Cancelar'
         }).then((result) => {
@@ -135,27 +141,30 @@ document.querySelectorAll('.delete-tipot').forEach(button => {
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        Swal.fire(
-                            '¡Eliminado!',
-                            'El impuesto ha sido eliminado.',
-                            'success'
-                        ).then(() => {
+                        Swal.fire({
+                            title: '¡Eliminado!',
+                            text: 'El impuesto ha sido eliminado.',
+                            icon: 'success',
+                            confirmButtonColor: '#0DBCB5'
+                        }).then(() => {
                             window.location.reload();
                         });
                     } else {
-                        Swal.fire(
-                            'Error',
-                            'Hubo un problema al eliminar el impuesto.',
-                            'error'
-                        );
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Hubo un problema al eliminar el impuesto.',
+                            icon: 'error',
+                            confirmButtonColor: '#0DBCB5'
+                        });
                     }
                 })
                 .catch(error => {
-                    Swal.fire(
-                        'Error',
-                        'Hubo un problema con la solicitud.',
-                        'error'
-                    );
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Hubo un problema con la solicitud.',
+                        icon: 'error',
+                        confirmButtonColor: '#0DBCB5'
+                    });
                 });
             }
         })

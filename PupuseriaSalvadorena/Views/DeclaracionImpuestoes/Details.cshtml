@@ -1,60 +1,92 @@
-﻿@model PupuseriaSalvadorena.Models.DeclaracionImpuesto
+﻿@using System.Globalization;
+
+@model PupuseriaSalvadorena.ViewModels.Declaraciones
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Declaracion";
 }
 
-<h1>Details</h1>
+@section Scripts {
+    <script src="~/js/declaracionimpuesto.js" asp-append-version="true"></script>
+}
 
-<div>
-    <h4>DeclaracionImpuesto</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CedulaJuridica)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CedulaJuridica)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FechaInicio)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FechaInicio)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FechaFinal)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FechaFinal)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MontoTotalIngresos)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MontoTotalIngresos)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MontoTotalEgresos)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MontoTotalEgresos)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MontoTotalImpuestos)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MontoTotalImpuestos)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Observaciones)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Observaciones)
-        </dd>
-    </dl>
+<div class="card-body table-body-custom pt-4 pb-4">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2>
+                <img src="~/images/documento.png" alt="Icono Documento" style="height: 60px;" />
+                Declaracion: @Model.DeclaracionImpuesto.Trimestre
+            </h2>
+            <button type="button" class="btn btn-primary nav-link-icon agregar-boton" id="ExpDeclaracion">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-spreadsheet-fill" viewBox="0 0 16 16">
+                    <path d="M6 12v-2h3v2z" />
+                    <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0M9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1M3 9h10v1h-3v2h3v1h-3v2H9v-2H6v2H5v-2H3v-1h2v-2H3z" />
+                </svg> Exportar Declaracion
+            </button>
+        </div>
+    </div>
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+            @Model.DeclaracionImpuesto.Observaciones
+            <button type="button" class="btn btn-primary nav-link-icon delete-Declaracion agregar-boton" data-id="@Model.DeclaracionImpuesto.IdDeclaracionImpuesto">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+                    <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
+                </svg> Eliminar Declaracion
+            </button>
+        </div>
+    </div>
+    <hr>
+    <div class="container">
+        <div id="Titulo">
+            <h5 class="mt-1 mb-3">Resumen Declaracion de Impuestos</h5>
+        </div>
+        <div class="card-body table-body-custom" style="height: auto; margin-top: 0 !important; margin-bottom: 0 !important">
+            <div class="d-flex justify-content-between align-items-center" style="text-align:center">
+                <div class="card-body justify-content-center item">
+                    <strong>Total de Compras</strong>
+                    <p class="mt-2 mb-0">@Model.DeclaracionImpuesto.MontoTotal.ToString("C", new CultureInfo("es-CR"))</p>
+                </div>
+                <div class="card-body justify-content-center item">
+                    <strong>Impuesto de Renta (2%)</strong>
+                    <p class="mt-2 mb-0">@Model.DeclaracionImpuesto.MontoRenta.ToString("C", new CultureInfo("es-CR"))</p>
+                </div>
+                <div class="card-body justify-content-center item">
+                    <strong>Impuesto IVA (4%)</strong>
+                    <p class="mt-2 mb-0">@Model.DeclaracionImpuesto.MontoIVA.ToString("C", new CultureInfo("es-CR"))</p>
+                </div>
+                <div class="card-body justify-content-center item">
+                    <strong>Impuestos a Pagar</strong>
+                    <p class="mt-2 mb-0">@Model.DeclaracionImpuesto.MontoTotalImpuestos.ToString("C", new CultureInfo("es-CR"))</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.IdDeclaracionImpuesto">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+<div class="card-body pt-4 pb-4 table-body-custom">
+    <h5>Transacciones:</h5>
+    <table class="table table-hover mt-4">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Fecha</th>
+                <th>Descripcion</th>
+                <th>Cantidad</th>
+                <th>Debito</th>
+                <th>Tipo</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var transacciones in Model.DetallesTransacciones)
+            {
+                <tr>
+                    <td>@transacciones.IdTransaccion</td>
+                    <td>@transacciones.FechaTrans.ToString("dd/MM/yyyy")</td>
+                    <td>@transacciones.DescripcionTransaccion</td>
+                    <td>@transacciones.Cantidad</td>
+                    <td>@transacciones.Monto.ToString("C", new CultureInfo("es-CR"))</td>
+                    <td>@transacciones.TipoTransac</td>
+                </tr>
+            }
+        </tbody>
+    </table>
 </div>

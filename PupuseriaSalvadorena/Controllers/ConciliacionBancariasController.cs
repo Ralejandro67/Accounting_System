@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PupuseriaSalvadorena.Conexion;
 using PupuseriaSalvadorena.Models;
+using PupuseriaSalvadorena.ViewModels;
 using PupuseriaSalvadorena.Repositorios.Interfaces;
 using System.Text.RegularExpressions;
 using System.Globalization;
@@ -44,12 +45,24 @@ namespace PupuseriaSalvadorena.Controllers
             }
 
             var conciliacionBancaria = await _conciliacionRep.ConsultarConciliacionesBancarias(id);
+            var transacciones = await _detallesTransacRep.ConsultarTransacciones(conciliacionBancaria.IdRegistroLibros);
+            var libro = await _registrosLibrosRep.ConsultarRegistrosLibros(conciliacionBancaria.IdRegistroLibros);
+
             if (conciliacionBancaria == null)
             {
                 return NotFound();
             }
 
-            return View(conciliacionBancaria);
+            ViewBag.totalTransacciones = transacciones.Count();
+
+            DetallesConciliacion detallesConciliacion = new DetallesConciliacion
+            {
+                ConciliacionBancaria = conciliacionBancaria,
+                RegistroLibro = libro,
+                DetallesTransacciones = transacciones
+            };
+
+            return View(detallesConciliacion);
         }
 
         // GET: ConciliacionBancarias/Create
@@ -59,8 +72,11 @@ namespace PupuseriaSalvadorena.Controllers
             var registrosBancarios = await _registrosBancariosRep.MostrarRegistrosBancarios();
             var registrosLibros = await _registrosLibrosRep.MostrarRegistrosLibros();
 
-            ViewBag.RegistrosBancarios = new SelectList(registrosBancarios, "IdRegistro", "IdRegistro");
-            ViewBag.RegistrosLibros = new SelectList(registrosLibros, "IdRegistroLibros", "IdRegistroLibros");
+            var libros = registrosLibros.Where(x => x.Conciliado == false).ToList();
+
+            ViewBag.RegistrosBancarios = new SelectList(registrosBancarios, "IdRegistro", "NumeroCuenta");
+            ViewBag.RegistrosLibros = new SelectList(libros, "IdRegistroLibros", "Descripcion");
+
             return PartialView("_newConciliacionPartial", new ConciliacionBancaria());
         }
 
@@ -90,55 +106,21 @@ namespace PupuseriaSalvadorena.Controllers
                 }
 
                 var diferencia = SaldoConciliacion - SaldoLibro;
-                var Conciliacion = new ConciliacionBancaria
-                {
-                    FechaConciliacion = DateTime.Now,
-                    SaldoBancario = conciliacionBancaria.SaldoBancario,
-                    SaldoLibro = SaldoLibro,
-                    Diferencia = diferencia,
-                    Observaciones = "Prueba",
-                    IdRegistro = conciliacionBancaria.IdRegistro,
-                    IdRegistroLibros = conciliacionBancaria.IdRegistroLibros
-                };
 
-                await _conciliacionRep.CrearConciliacion(Conciliacion.FechaConciliacion, Conciliacion.SaldoBancario, Conciliacion.SaldoLibro, Conciliacion.Diferencia, Conciliacion.Observaciones, Conciliacion.IdRegistro, Conciliacion.IdRegistroLibros);
-                return Json(new { success = true, message = "Conciliacion creada correctamente."});
+                if(diferencia == 0)
+                {
+                    await _conciliacionRep.CrearConciliacion(DateTime.Now, conciliacionBancaria.SaldoBancario, SaldoLibro, diferencia, conciliacionBancaria.Observaciones, conciliacionBancaria.IdRegistro, conciliacionBancaria.IdRegistroLibros);
+                    await _registrosBancariosRep.ActualizarRegistroBancario(registrosBancarios.IdRegistro, registrosBancarios.FechaRegistro, conciliacionBancaria.SaldoBancario, registrosBancarios.NumeroCuenta, registrosBancarios.Observaciones);
+                    await _detallesTransacRep.ActualizarConciliado(registrosLibros.IdRegistroLibros, true);
+                    await _registrosLibrosRep.ActualizarRegistroLibros(registrosLibros.IdRegistroLibros, registrosLibros.MontoTotal, registrosLibros.Descripcion, true);
+                    return Json(new { success = true, message = "La conciliacion fue creda con exito." });
+                }
+                else
+                {
+                    return Json(new { success = false, message = "La diferencia no es 0, por favor verifica el saldo de la cuenta y el libro contable." });
+                }
             }
             return Json(new { success = false, message = "Error al crear la conciliacion." });
-        }
-
-        // GET: ConciliacionBancarias/Edit/5
-        public async Task<IActionResult> Edit(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var conciliacionBancaria = await _conciliacionRep.ConsultarConciliacionesBancarias(id);
-            if (conciliacionBancaria == null)
-            {
-                return NotFound();
-            }
-            return View(conciliacionBancaria);
-        }
-
-        // POST: ConciliacionBancarias/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("IdConciliacion,FechaConciliacion,SaldoBancario,SaldoLibro,Diferencia,Observaciones,IdRegistro,IdRegistroLibros")] ConciliacionBancaria conciliacionBancaria)
-        {
-            if (id != conciliacionBancaria.IdConciliacion)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                await _conciliacionRep.ActualizarConciliacion(conciliacionBancaria.IdConciliacion, conciliacionBancaria.SaldoBancario, conciliacionBancaria.SaldoLibro, conciliacionBancaria.Diferencia, conciliacionBancaria.Observaciones);
-                return RedirectToAction(nameof(Index));
-            }
-            return View(conciliacionBancaria);
         }
 
         // GET: ConciliacionBancarias/Delete/5
@@ -163,7 +145,18 @@ namespace PupuseriaSalvadorena.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            await _conciliacionRep.EliminarConciliacion(id);
+            var conciliacion = await _conciliacionRep.ConsultarConciliacionesBancarias(id);
+            var libro = await _registrosLibrosRep.ConsultarRegistrosLibros(conciliacion.IdRegistroLibros);
+            var cuenta = await _registrosBancariosRep.ConsultarRegistrosBancarios(conciliacion.IdRegistro);
+            var detallesTransac = await _detallesTransacRep.ConsultarTransacciones(conciliacion.IdRegistroLibros);
+
+            var SaldoBancario = conciliacion.SaldoBancario - libro.MontoTotal;
+
+            await _registrosBancariosRep.ActualizarRegistroBancario(conciliacion.IdRegistro, cuenta.FechaRegistro, SaldoBancario, cuenta.NumeroCuenta, cuenta.Observaciones);
+            await _registrosLibrosRep.ActualizarRegistroLibros(conciliacion.IdRegistroLibros, libro.MontoTotal, libro.Descripcion, false);
+            await _detallesTransacRep.ActualizarConciliado(conciliacion.IdRegistroLibros, false);
+
+            await _conciliacionRep.EliminarConciliacion(id); 
             return RedirectToAction(nameof(Index));
         }
     }

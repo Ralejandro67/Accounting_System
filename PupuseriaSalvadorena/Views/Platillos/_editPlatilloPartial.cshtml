@@ -8,15 +8,27 @@
         <input asp-for="NombrePlatillo" class="form-control" />
         <span asp-validation-for="NombrePlatillo" class="text-danger"></span>
     </div>
-    <div class="form-group">
-        <label asp-for="CostoProduccion" class="control-label"></label>
-        <input asp-for="CostoProduccion" class="form-control" />
-        <span asp-validation-for="CostoProduccion" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="PrecioVenta" class="control-label"></label>
-        <input asp-for="PrecioVenta" class="form-control" />
-        <span asp-validation-for="PrecioVenta" class="text-danger"></span>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="control-label">Costo de Produccion</label>
+                <div class="input-group">
+                    <span class="input-group-text">₡</span>
+                    <input asp-for="CostoProduccion" class="form-control" placeholder="0.00" />
+                    <span asp-validation-for="CostoProduccion" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="control-label">Precio de Venta</label>
+                <div class="input-group">
+                    <span class="input-group-text">₡</span>
+                    <input asp-for="PrecioVenta" class="form-control" placeholder="0.00" />
+                    <span asp-validation-for="PrecioVenta" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="form-group text-right">
         <button type="submit" id="submitEditForm" class="btn btn-primary">Editar</button>

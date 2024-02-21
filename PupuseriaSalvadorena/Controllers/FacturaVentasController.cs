@@ -19,6 +19,8 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Routing.Constraints;
 using Microsoft.VisualBasic;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using PupuseriaSalvadorena.Repositorios.Implementaciones;
+using System.Globalization;
 
 namespace PupuseriaSalvadorena.Controllers
 {
@@ -32,10 +34,13 @@ namespace PupuseriaSalvadorena.Controllers
         private readonly INegociosRep _negociosRep;
         private readonly IEnvioFacturaRep _envioFacturaRep;
         private readonly IHistorialVentaRep _historialVentaRep;
+        private readonly IDetallesTransacRep _detallesTransacRep;
+        private readonly IRegistroLibrosRep _registroLibrosRep;
 
         public FacturaVentasController(IFacturaVentaRep context, IPlatilloRep platilloRep, ITipoFacturaRep tipoFacturaRep, 
                                        ITipoPagoRep tipoPagoRep, ITipoVentaRep tipoVentaRep, INegociosRep negociosRep, 
-                                       IEnvioFacturaRep envioFacturaRep, IHistorialVentaRep historialVentaRep)
+                                       IEnvioFacturaRep envioFacturaRep, IHistorialVentaRep historialVentaRep,
+                                       IDetallesTransacRep detallesTransacRep, IRegistroLibrosRep registroLibrosRep)
         {
             _facturaVentaRep = context;
             _platilloRep = platilloRep;
@@ -45,12 +50,32 @@ namespace PupuseriaSalvadorena.Controllers
             _negociosRep = negociosRep;
             _envioFacturaRep = envioFacturaRep;
             _historialVentaRep = historialVentaRep;
+            _detallesTransacRep = detallesTransacRep;
+            _registroLibrosRep = registroLibrosRep;
         }
 
         // GET: FacturaVentas
         public async Task<IActionResult> Index()
         {
+            CultureInfo cultura = new CultureInfo("es-ES");
+            DateTime fecha = DateTime.Now;
+
             var facturaVentas = await _facturaVentaRep.MostrarFacturasVentas();
+            var facturasPorMes = facturaVentas.GroupBy(f => new { Año = f.FechaFactura.Year, Mes = f.FechaFactura.Month })
+                                               .Select(group => new { Año = group.Key.Año, Mes = group.Key.Mes, Cantidad = group.Count(), TotalVentasMes = group.Sum(f => f.TotalVenta) })
+                                               .OrderByDescending(x => x.Año).ThenByDescending(x => x.Mes)
+                                               .ToList();
+
+            var facturasInvertidas = facturasPorMes.AsEnumerable().Reverse().ToList();
+            ViewBag.Meses = facturasInvertidas.Select(x => new DateTime(x.Año, x.Mes, 1).ToString("MMM yyyy", cultura)).ToList();
+            ViewBag.ventasPorMes = facturasInvertidas.Select(x => x.TotalVentasMes).ToList();
+
+            ViewBag.totalVentas = facturaVentas.Sum(f => f.TotalVenta);
+            ViewBag.totalVentasMes = facturasPorMes.FirstOrDefault()?.TotalVentasMes ?? 0;
+            ViewBag.facturasMes = facturasPorMes.FirstOrDefault()?.Cantidad ?? 0;
+            ViewBag.mesActual = cultura.DateTimeFormat.GetMonthName(fecha.Month);
+            ViewBag.facturas = facturaVentas.Count();
+
             return View(facturaVentas); 
         }
 
@@ -102,9 +127,13 @@ namespace PupuseriaSalvadorena.Controllers
                 int[] idPlatillos = facturaVenta.IdPlatillo;
                 int[] cantidades = facturaVenta.CantVenta;
 
+                var IdLibro = await _detallesTransacRep.ObtenerIdLibroMasReciente();
+                var Libro = await _registroLibrosRep.ConsultarRegistrosLibros(IdLibro);
                 var empresa = await _negociosRep.ConsultarNegocio();
                 var Pago = MetodosPago(facturaVenta.IdTipoPago);
+
                 int ContactoFactura = await CrearContacto(facturaVenta.TipoId, facturaVenta.Identificacion, facturaVenta.NombreCliente, facturaVenta.CorreoElectronico, facturaVenta.Telefono);
+
                 dynamic[] items = await ListaPlatillos(idPlatillos, cantidades);
 
                 var factura = new
@@ -134,13 +163,20 @@ namespace PupuseriaSalvadorena.Controllers
 
                             facturaVenta.Consecutivo = (decimal)jsonObject["numberTemplate"]["fullNumber"];
                             int idfactura = (int)jsonObject["id"];
-                            
+
                             var facturaId = await _facturaVentaRep.CrearFacturaVenta(empresa, facturaVenta.Consecutivo, facturaVenta.FechaFactura, facturaVenta.SubTotal, facturaVenta.TotalVenta, facturaVenta.IdTipoPago, facturaVenta.IdTipoFactura);
+
+                            int cantTotal = 0;
+                            decimal montoTotal = Libro.MontoTotal + facturaVenta.TotalVenta;
+                            await _registroLibrosRep.ActualizarRegistroLibros(IdLibro, montoTotal, Libro.Descripcion, Libro.Conciliado);
 
                             for (int i = 0; i < idPlatillos.Length; i++)
                             {
+                                cantTotal += cantidades[i];
                                 await _historialVentaRep.CrearHistorialVenta(idfactura, cantidades[i], facturaVenta.FechaFactura, idPlatillos[i], facturaId, facturaVenta.IdTipoVenta);
                             }
+
+                            await _detallesTransacRep.CrearDetalleTransaccion(IdLibro, $"Factura de Venta: {facturaVenta.Consecutivo}", cantTotal, facturaVenta.TotalVenta, facturaVenta.FechaFactura, 2, "TAX002", false, facturaVenta.FechaFactura, "No Recurrente", false);
 
                             if (ContactoFactura != 2)
                             {

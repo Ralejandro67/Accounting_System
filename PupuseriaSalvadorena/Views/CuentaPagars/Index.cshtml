@@ -1,110 +1,129 @@
-﻿@model IEnumerable<PupuseriaSalvadorena.Models.CuentaPagar>
+﻿@using System.Globalization;
+
+@model IEnumerable<PupuseriaSalvadorena.Models.CuentaPagar>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Cuentas por Pagar";
 }
 
 @section Scripts {
     <script src="~/js/cuentapagar.js" asp-append-version="true"></script>
 }
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center">
-        <h1 class="mb-0">
-            <img src="~/images/facturacompra.png" alt="Icono Factura de Compra" style="height: 60px;" />
-            Cuentas por Pagar
-        </h1>
-        <button type="button" class="btn btn-primary nav-link-icon" id="AddCuentaPagar">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
-                <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2" />
-            </svg> Nueva Cuenta por Pagar
-        </button>
+<div class="card-body table-body-custom pb-4">
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1 class="mb-0">
+                <img src="~/images/facturacompra.png" alt="Icono Factura de Compra" style="height: 60px;" />
+                Cuentas por Pagar
+            </h1>
+            <button type="button" class="btn btn-primary nav-link-icon" id="AddCuentaPagar">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
+                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
+                </svg> Nueva Cuenta por Pagar
+            </button>
+        </div>
+    </div>
+    <div class="container mt-4">
+        Registro de cuentas por pagar sobre las facturas de compra realizadas a los proveedores. Realiza el pago sobre las cuentas por pagar al seleccionar la opcion de pagar.
+    </div>
+    <hr/>
+    <div class="card-body table-body-custom" style="height: auto; margin-top: 0 !important; margin-bottom: 0 !important">
+        <div class="d-flex justify-content-between align-items-center" style="text-align:center">
+            <div class="card-body justify-content-center item">
+                <strong>Cuentas Pagadas</strong>
+                <p class="mt-2 mb-0">@ViewBag.cuentasPagadas</p>
+            </div>
+            <div class="card-body justify-content-center item">
+                <strong>Cuentas por Pagar</strong>
+                <p class="mt-2 mb-0">@ViewBag.cuentasPorPagar</p>
+            </div>
+        </div>
     </div>
 </div>
-<div class="container mt-4">
-    Registro de las compras de materia prima para la elaboracion de los platillos.
-</div>
-<table class="table table-hover mt-4">
-    <thead>
-        <tr>
-            <th>
-                Fecha de Creacion
-            </th>
-            <th>
-                Fecha de Expiracion
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TotalPagado)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdFacturaCompra)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdProveedor)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Estado)
-            </th>
-            <th>
-                Acciones
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model) {
+<div class="card-body table-body-custom">
+    <table class="table table-hover mt-4">
+        <thead>
             <tr>
-                <td>
-                    @item.FechaCreacion.ToString("dd/MM/yyyy")
-                </td>
-                <td>
-                    @item.FechaVencimiento.ToString("dd/MM/yyyy")
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TotalPagado)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.IdFacturaCompra)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.IdProveedor)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Estado)
-                </td>
-                <td>
-                    <button type="button" class="btn btn-primary details-CuentaPagar nav-link-btn-icons" id="BtnDetalles" data-id="@item.IdCuentaPagar">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">
-                            <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0" />
-                            <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7" />
-                        </svg>
-                    </button>
-                    <button type="button" class="btn btn-primary print-CuentaPagar nav-link-btn-icons" id="BtnImprimir" data-id="@item.IdCuentaPagar">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-printer-fill" viewBox="0 0 16 16">
-                            <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2zm6 8H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1" />
-                            <path d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1" />
-                        </svg>
-                    </button>
-                    <button type="button" class="btn btn-primary pay-CuentaPagar nav-link-btn-icons" id="BtnPagar" onclick="location.href='@Url.Action("Details", "DetalleCuentas", new { id = item.IdCuentaPagar })'">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cash-stack" viewBox="0 0 16 16">
-                            <path d="M1 3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1zm7 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4" />
-                            <path d="M0 5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1zm3 0a2 2 0 0 1-2 2v4a2 2 0 0 1 2 2h10a2 2 0 0 1 2-2V7a2 2 0 0 1-2-2z" />
-                        </svg>
-                    </button>
-                    <button type="button" class="btn btn-primary edit-CuentaPagar nav-link-btn-icons" id="BtnEditar" data-id="@item.IdCuentaPagar">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
-                            <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z" />
-                        </svg>
-                    </button>
-                    <button type="button" class="btn btn-primary delete-CuentaPagar nav-link-btn-icons" id="BtnEliminar" data-id="@item.IdCuentaPagar">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
-                            <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
-                        </svg>
-                    </button>
-                </td>
+                <th>
+                    ID Factura
+                </th>
+                <th>
+                    Fecha de Creacion
+                </th>
+                <th>
+                    Fecha de Expiracion
+                </th>
+                <th>
+                    Monto Total
+                </th>
+                <th>
+                    Proveedor
+                </th>
+                <th>
+                    Estado
+                </th>
+                <th>
+                    Acciones
+                </th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model) {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IdFacturaCompra)
+                    </td>
+                    <td>
+                        @item.FechaCreacion.ToString("dd/MM/yyyy")
+                    </td>
+                    <td>
+                        @item.FechaVencimiento.ToString("dd/MM/yyyy")
+                    </td>
+                    <td>
+                        @(item.TotalPagado.ToString("C", new CultureInfo("es-CR")))
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ProveedorCompleto)
+                    </td>
+                    <td>
+                        @(item.Estado ? "Activo" : "Inactivo")
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-primary details-CuentaPagar nav-link-btn-icons" id="BtnDetalles" data-id="@item.IdCuentaPagar">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">
+                                <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0" />
+                                <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7" />
+                            </svg>
+                        </button>
+                        <button type="button" class="btn btn-primary print-CuentaPagar nav-link-btn-icons" id="BtnImprimir" data-id="@item.IdCuentaPagar">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-printer-fill" viewBox="0 0 16 16">
+                                <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2zm6 8H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1" />
+                                <path d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1" />
+                            </svg>
+                        </button>
+                        <button type="button" class="btn btn-primary pay-CuentaPagar nav-link-btn-icons" id="BtnPagar" onclick="location.href='@Url.Action("Details", "DetalleCuentas", new { id = item.IdCuentaPagar })'">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cash-stack" viewBox="0 0 16 16">
+                                <path d="M1 3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1zm7 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4" />
+                                <path d="M0 5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1zm3 0a2 2 0 0 1-2 2v4a2 2 0 0 1 2 2h10a2 2 0 0 1 2-2V7a2 2 0 0 1-2-2z" />
+                            </svg>
+                        </button>
+                        <button type="button" class="btn btn-primary edit-CuentaPagar nav-link-btn-icons" id="BtnEditar" data-id="@item.IdCuentaPagar">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
+                                <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z" />
+                            </svg>
+                        </button>
+                        <button type="button" class="btn btn-primary delete-CuentaPagar nav-link-btn-icons" id="BtnEliminar" data-id="@item.IdCuentaPagar">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+                                <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
+                            </svg>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 <div class="modal fade" id="newCuentaPagarModal" tabindex="-1" role="dialog" aria-labelledby="newCuentaPagarModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">

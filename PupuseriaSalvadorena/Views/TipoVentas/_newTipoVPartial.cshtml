@@ -5,10 +5,10 @@
     <input type="hidden" asp-for="Estado" class="form-control" value="true"/>
     <div class="form-group">
         <label asp-for="NombreVenta" class="control-label"></label>
-        <input asp-for="NombreVenta" class="form-control" />
+        <input asp-for="NombreVenta" class="form-control" placeholder="Introduce el nombre de la categoria"/>
         <span asp-validation-for="NombreVenta" class="text-danger"></span>
     </div>
     <div class="form-group text-right">
-        <button type="button" id="submitTipoVForm" class="btn btn-primary">Agregar</button>
+        <button type="button" id="submitTipoVForm" class="btn btn-primary agregar-boton">Agregar</button>
     </div>
 </form>

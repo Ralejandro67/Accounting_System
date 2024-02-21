@@ -13,5 +13,7 @@ namespace PupuseriaSalvadorena.Repositorios.Interfaces
         Task<List<DetalleTransaccion>> ConsultarTransacciones(string IdRegistroLibros);
         Task<string> ObtenerIdLibroMasReciente();
         Task<DetalleTransaccion> ConsultarTransaccionesDetalles(string DescripcionTransaccion);
+        Task<List<DetalleTransaccion>> MostrarDetallesTransaccionesYear();
+        Task ActualizarConciliado(string IdRegistroLibros, bool Conciliado);
     }
 }

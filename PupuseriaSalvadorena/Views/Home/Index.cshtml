@@ -1,8 +1,77 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Pagina de Inicio";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="card-body table-body-custom pb-4">
+    <div class="container mt-4">
+        <h3 class="mb-0">
+            <img src="~/Images/Logo3.png" alt="Icono Pronosticos" style="height: 80px;" />
+            Acciones Rapidas
+        </h3>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="CartasAcciones" onclick="location.href='@Url.Action("Create", "FacturaVentas")'">
+                <h4 style="text-align: left !important;">Nueva Venta</h4>
+                <div class="go-corner" href="#">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="CartasAcciones" onclick="location.href='@Url.Action("Create", "FacturaCompras")'">
+                <h4 style="text-align: left !important;">Nueva Compra</h4>
+                <div class="go-corner" href="#">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="CartasAcciones" onclick="location.href='@Url.Action("Create", "DetallesTransacciones")'">
+                <h4 style="text-align: left !important;">Nueva Transaccion</h4>
+                <div class="go-corner" href="#">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="CartasAcciones" onclick="location.href='@Url.Action("Create", "FacturaVentas")'">
+                <h4 style="text-align: left !important;">Pronosticos</h4>
+                <div class="go-corner" href="#">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="CartasAcciones" onclick="location.href='@Url.Action("Create", "FacturaCompras")'">
+                <h4 style="text-align: left !important;">Presupuestos</h4>
+                <div class="go-corner" href="#">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="CartasAcciones" onclick="location.href='@Url.Action("Create", "DetallesTransacciones")'">
+                <h4 style="text-align: left !important;">Cuentas por Pagar</h4>
+                <div class="go-corner" href="#">
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+<div class="card-body table-body-custom pb-4">
+    <div class="row">
+        <div class="col-md-7">
+
+        </div>
+        <div class="col-md-5">
+
+        </div>
+    </div>
+</div>
+
+<script>
+    var ingresos = @Html.Raw(ViewBag.Ingresos);
+    var egresos = @Html.Raw(ViewBag.Egresos);
+    var ventas = @Html.Raw(ViewBag.Ventas);
+    var compras = @Html.Raw(ViewBag.Compras);
+    var pronosticos = @Html.Raw(ViewBag.Pronosticos);
+</script>

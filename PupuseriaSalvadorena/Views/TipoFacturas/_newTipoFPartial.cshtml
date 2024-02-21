@@ -2,17 +2,13 @@
 
 <form id="TipoFForm" asp-action="Create" asp-controller="TipoFacturas" method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="Estado" class="form-control" value="true" />
     <div class="form-group">
         <label asp-for="NombreFactura" class="control-label"></label>
         <input asp-for="NombreFactura" class="form-control" />
         <span asp-validation-for="NombreFactura" class="text-danger"></span>
     </div>
-    <div class="form-group form-check">
-        <label class="form-check-label">
-            <input class="form-check-input" asp-for="Estado" /> @Html.DisplayNameFor(model => model.Estado)
-        </label>
-    </div>
     <div class="form-group text-right">
-        <button type="button" id="submitTipoFForm" class="btn btn-primary">Agregar</button>
+        <button type="button" id="submitTipoFForm" class="btn btn-primary agregar-boton">Agregar</button>
     </div>
 </form>

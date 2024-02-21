@@ -9,6 +9,8 @@ namespace PupuseriaSalvadorena.Models
 
         public int IdPlatillo { get; set; }
 
+        public string? NombrePlatillo { get; set; }
+
         public DateTime FechaInicio { get; set; }
 
         public DateTime FechaFinal { get; set; }
@@ -16,7 +18,5 @@ namespace PupuseriaSalvadorena.Models
         public int CantTotalProd { get; set; }
 
         public decimal TotalVentas { get; set; }
-
-        public string? PronosticoDoc { get; set; }
     }
 }

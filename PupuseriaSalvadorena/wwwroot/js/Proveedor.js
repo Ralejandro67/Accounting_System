@@ -20,7 +20,8 @@ document.getElementById('submitProveedor').addEventListener('click', function ()
                 Swal.fire({
                     title: '¡Éxito!',
                     text: data.message,
-                    icon: 'success'
+                    icon: 'success',
+                    confirmButtonColor: '#0DBCB5'
                 }).then((result) => {
                     if (result.isConfirmed || result.isDismissed) {
                         window.location.reload();
@@ -30,7 +31,8 @@ document.getElementById('submitProveedor').addEventListener('click', function ()
                 Swal.fire({
                     title: 'Error',
                     text: data.message,
-                    icon: 'error'
+                    icon: 'error',
+                    confirmButtonColor: '#0DBCB5'
                 });
             }
         })
@@ -38,7 +40,8 @@ document.getElementById('submitProveedor').addEventListener('click', function ()
             Swal.fire({
                 title: 'Error',
                 text: 'Hubo un problema con la solicitud.',
-                icon: 'error'
+                icon: 'error',
+                confirmButtonColor: '#0DBCB5'
             });
         });
 });
@@ -72,7 +75,8 @@ document.querySelectorAll('.edit-Proveedor').forEach(button => {
                                 Swal.fire({
                                     title: '¡Éxito!',
                                     text: data.message,
-                                    icon: 'success'
+                                    icon: 'success',
+                                    confirmButtonColor: '#0DBCB5'
                                 }).then(() => {
                                     window.location.reload();
                                 });
@@ -80,7 +84,8 @@ document.querySelectorAll('.edit-Proveedor').forEach(button => {
                                 Swal.fire({
                                     title: 'Error',
                                     text: data.message,
-                                    icon: 'error'
+                                    icon: 'error',
+                                    confirmButtonColor: '#0DBCB5'
                                 });
                             }
                         })
@@ -89,7 +94,8 @@ document.querySelectorAll('.edit-Proveedor').forEach(button => {
                             Swal.fire({
                                 title: 'Error',
                                 text: 'Hubo un problema con la solicitud.',
-                                icon: 'error'
+                                icon: 'error',
+                                confirmButtonColor: '#0DBCB5'
                             });
                         });
                 });
@@ -108,8 +114,8 @@ document.querySelectorAll('.delete-Proveedor').forEach(button => {
             text: "¡No podrás revertir esto!",
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
+            confirmButtonColor: '#0DBCB5',
+            cancelButtonColor: '#9DB2BF',
             confirmButtonText: 'Sí, elimínalo!',
             cancelButtonText: 'Cancelar'
         }).then((result) => {
@@ -123,27 +129,30 @@ document.querySelectorAll('.delete-Proveedor').forEach(button => {
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            Swal.fire(
-                                '¡Eliminado!',
-                                'El impuesto ha sido eliminado.',
-                                'success'
-                            ).then(() => {
+                            Swal.fire({
+                                title: '¡Eliminado!',
+                                text: 'El impuesto ha sido eliminado.',
+                                icon: 'success',
+                                confirmButtonColor: '#0DBCB5'
+                            }).then(() => {
                                 window.location.reload();
                             });
                         } else {
-                            Swal.fire(
-                                'Error',
-                                'Hubo un problema al eliminar el impuesto.',
-                                'error'
-                            );
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Hubo un problema al eliminar el impuesto.',
+                                icon: 'error',
+                                confirmButtonColor: '#0DBCB5'
+                            });
                         }
                     })
                     .catch(error => {
-                        Swal.fire(
-                            'Error',
-                            'Hubo un problema con la solicitud.',
-                            'error'
-                        );
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Hubo un problema con la solicitud.',
+                            icon: 'error',
+                            confirmButtonColor: '#0DBCB5'
+                        });
                     });
             }
         })

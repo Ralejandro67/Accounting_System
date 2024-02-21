@@ -7,27 +7,16 @@
 
 <form id="FacturaCForm" asp-action="Create" asp-controller="FacturaCompras" method="post" enctype="multipart/form-data">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="row">
-        <div class="col-md-6">
-            <div class="form-group d-flex align-items-center link-icon">
-                <label class="theme-switch me-2" for="checkbox" id="themeswitch">
-                    @Html.CheckBoxFor(model => model.Activo, new { id = "checkbox" })
-                    <div class="slider round"></div>
-                    <span class="name"></span>
-                    <div class="back"></div>
-                </label>
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-question-circle" viewBox="0 0 16 16" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="¿El pago de esta compra ya se efectuo?">
-                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-                    <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286m1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94" />
-                </svg>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="form-group" id="campoFechaVencimiento">
-                <label class="control-label">Fecha de Vencimiento</label>
-                <input asp-for="FechaVencimiento" class="form-control" type="date" id="FechaVencimiento" />
-                <span asp-validation-for="FechaVencimiento" class="text-danger"></span>
-            </div>
+    <input asp-for="Activo" class="form-control" id="cuentaPorPagar" type="hidden" />
+    <input asp-for="IdTipoFactura" value="1" class="form-control" type="hidden" />
+    <div class="form-group">
+        <div class="btn-group btn-group-toggle d-flex factura-switch" data-toggle="buttons">
+            <label class="btn btn-secondary flex-fill active">
+                <input type="radio" name="EstadoFactura" id="FacturaPagada" autocomplete="off" value="Pagada" checked> Factura Pagada
+            </label>
+            <label class="btn btn-secondary flex-fill">
+                <input type="radio" name="EstadoFactura" id="FacturaPorPagar" autocomplete="off" value="porPagar"> Factura por Pagar
+            </label>
         </div>
     </div>
     <div class="row">
@@ -39,70 +28,10 @@
             </div>
         </div>
         <div class="col-md-6">
-            <div class="form-group">
-                <label class="control-label">Cantidad</label>
-                <input asp-for="Cantidad" class="form-control" />
-                <span asp-validation-for="Cantidad" class="text-danger"></span>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            <div class="form-group">
-                <label class="control-label">Monto de la Compra</label>
-                <div class="input-group">
-                    <span class="input-group-text">₡</span>
-                    <input asp-for="TotalCompra" class="form-control" />
-                    <span asp-validation-for="TotalCompra" class="text-danger"></span>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="form-group">
-                <label class="control-label">Peso</label>
-                <div class="input-group">
-                    <span class="input-group-text">Kg.</span>
-                    <input asp-for="Peso" class="form-control" />
-                    <span asp-validation-for="Peso" class="text-danger"></span>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            <div class="form-group">
-                <label class="control-label">Tipo de Pago</label>
-                <select asp-for="IdTipoPago" asp-items="@ViewBag.TipoPagos" class="form-control">
-                    <option value="">Seleccione el tipo de pago</option>
-                </select>
-                <span asp-validation-for="IdTipoPago" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="form-group">
-                <label class="control-label">Tipo de Factura</label>
-                <select asp-for="IdTipoFactura" asp-items="@ViewBag.TipoFacturas" class="form-control">
-                    <option value="">Seleccione el tipo de factura</option>
-                </select>
-                <span asp-validation-for="IdTipoFactura" class="text-danger"></span>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            <div class="form-group" id="campoProveedor">
-                <label class="control-label">Proveedor</label>
-                @Html.DropDownListFor(model => model.IdProveedor, (SelectList)ViewBag.Proveedores, "Seleccione el proveedor", new { @class = "form-control", id = "IdProveedor" })
-                @Html.ValidationMessageFor(model => model.IdProveedor, "", new { @class = "text-danger" })
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="form-group">
-                <label class="control-label">Materia Prima</label>
-                <select asp-for="IdMateriaPrima" class="form-control" id="IdMateriaPrima">
-                    <option value="">Seleccione la materia prima</option>
-                </select>
-                <span asp-validation-for="IdMateriaPrima" class="text-danger"></span>
+            <div class="form-group" id="campoFechaVencimiento" style="display: none;">
+                <label class="control-label">Fecha de Vencimiento</label>
+                <input asp-for="FechaVencimiento" class="form-control" type="date" id="FechaVencimiento" />
+                <span asp-validation-for="FechaVencimiento" class="text-danger"></span>
             </div>
         </div>
     </div>
@@ -111,12 +40,69 @@
         <input asp-for="FacturaDoc" type="file" class="form-control" />
         <span asp-validation-for="FacturaDoc" class="text-danger"></span>
     </div>
+    <fieldset id="CamposProducto">
+        <legend id="productoCampos">Producto</legend>
+        <div class="row">
+            <div class="col-md-5">
+                <div class="form-group" id="campoProveedor">
+                    <label class="control-label">Proveedor</label>
+                    @Html.DropDownListFor(model => model.IdProveedor, (SelectList)ViewBag.Proveedores, "Seleccione el proveedor", new { @class = "form-control", id = "IdProveedor" })
+                    @Html.ValidationMessageFor(model => model.IdProveedor, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Materia Prima</label>
+                    <select asp-for="IdMateriaPrima" class="form-control" id="IdMateriaPrima">
+                        <option value="">Materias Primas</option>
+                    </select>
+                    <span asp-validation-for="IdMateriaPrima" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="control-label">Cant.</label>
+                    <input asp-for="Cantidad" class="form-control" />
+                    <span asp-validation-for="Cantidad" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label">Monto de la Compra</label>
+                    <div class="input-group">
+                        <span class="input-group-text">₡</span>
+                        <input asp-for="TotalCompra" class="form-control" />
+                        <span asp-validation-for="TotalCompra" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label">Peso</label>
+                    <div class="input-group">
+                        <span class="input-group-text">Kg.</span>
+                        <input asp-for="Peso" class="form-control" />
+                        <span asp-validation-for="Peso" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <div class="form-group">
+        <label class="control-label">Tipo de Pago</label>
+        <select asp-for="IdTipoPago" asp-items="@ViewBag.TipoPagos" class="form-control">
+            <option value="">Seleccione el tipo de pago</option>
+        </select>
+        <span asp-validation-for="IdTipoPago" class="text-danger"></span>
+    </div>
     <div class="form-group">
         <label class="control-label">Observaciones</label>
         <textarea asp-for="DetallesCompra" class="form-control" id="CampoArea"></textarea>
         <span asp-validation-for="DetallesCompra" class="text-danger"></span>
     </div>
     <div class="form-group text-right">
-        <button type="button" id="submitFacturaC" class="btn btn-primary">Agregar</button>
+        <button type="button" id="submitFacturaC" class="btn btn-primary agregar-boton">Agregar</button>
     </div>
 </form>

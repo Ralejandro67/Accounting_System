@@ -1,23 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using PupuseriaSalvadorena.Conexion;
 using PupuseriaSalvadorena.Models;
+using PupuseriaSalvadorena.Repositorios.Implementaciones;
 using PupuseriaSalvadorena.Repositorios.Interfaces;
+using PupuseriaSalvadorena.ViewModels;
 
 namespace PupuseriaSalvadorena.Controllers
 {
     public class ProveedoresController : Controller
     {
         private readonly IProveedorRep _proveedorRep;
+        private readonly IMateriaPrimaRep _materiaPrimaRep;
+        private readonly ICuentaPagarRep _cuentaPagarRep;
+        private readonly IFacturaCompraRep _facturaCompraRep;
 
-        public ProveedoresController(IProveedorRep context)
+        public ProveedoresController(IProveedorRep context, IMateriaPrimaRep materiaPrimaRep, ICuentaPagarRep cuentaPagarRep, IFacturaCompraRep facturaCompraRep)
         {
             _proveedorRep = context;
+            _materiaPrimaRep = materiaPrimaRep;
+            _cuentaPagarRep = cuentaPagarRep;
+            _facturaCompraRep = facturaCompraRep;
         }
 
         // GET: Proveedores
@@ -30,18 +40,56 @@ namespace PupuseriaSalvadorena.Controllers
         // GET: Proveedores/Details/5
         public async Task<IActionResult> Details(string id)
         {
+            CultureInfo cultura = new CultureInfo("es-ES");
+            DateTime fecha = DateTime.Now;
+
             if (id == null)
             {
                 return NotFound();
             }
 
             var proveedor = await _proveedorRep.ConsultarProveedores(id);
+            var materiasPrimas = await _materiaPrimaRep.ConsultarMateriasPrimasProveedor(id);
+            var cuentasPagar = await _cuentaPagarRep.MostrarCuentasPagar();
+            var facturasCompra = await _facturaCompraRep.MostrarFacturasCompras();
+            var primerDiaDelMes = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+            var ultimoDiaDelMes = primerDiaDelMes.AddMonths(1).AddDays(-1);
+
+            var cuentasPagarProveedor = cuentasPagar.Where(c => c.IdProveedor == id)
+                                                    .OrderByDescending(cp => cp.FechaCreacion)
+                                                    .ToList();
+
+            var conteoComprasPorMateria = materiasPrimas.Where(mp => mp.IdProveedor == id)
+                                                        .GroupJoin(facturasCompra.Where(f => f.FechaFactura >= primerDiaDelMes && f.FechaFactura <= ultimoDiaDelMes),
+                                                        materiaPrima => materiaPrima.IdMateriaPrima,
+                                                        factura => factura.IdMateriaPrima,
+                                                        (materiaPrima, facturasGrupo) => new
+                                                        {
+                                                            NombreMateriaPrima = materiaPrima.NombreMateriaPrima,
+                                                            ConteoCompras = facturasGrupo.Count()
+                                                        })
+                                                        .ToList();
+
+            var JsonConteo = JsonConvert.SerializeObject(conteoComprasPorMateria);
+
             if (proveedor == null)
             {
                 return NotFound();
             }
 
-            return View(proveedor);
+            ViewBag.MateriasPrimasConteo = JsonConteo;
+            ViewBag.TotalCuentas = cuentasPagarProveedor.Count();
+            ViewBag.TotalMateriasPrimas = materiasPrimas.Count();
+            ViewBag.mesActual = cultura.DateTimeFormat.GetMonthName(fecha.Month);
+
+            var detallesProveedor = new DetallesProveedor
+            {
+                Proveedor = proveedor,
+                MateriasPrimas = materiasPrimas,
+                CuentasPagar = cuentasPagarProveedor
+            };
+
+            return View(detallesProveedor);
         }
 
         // GET: Proveedores/Create

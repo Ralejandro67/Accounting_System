@@ -1,4 +1,6 @@
-﻿@model IEnumerable<PupuseriaSalvadorena.Models.FacturaVenta>
+﻿@using System.Globalization;
+
+@model IEnumerable<PupuseriaSalvadorena.Models.FacturaVenta>
 
 @{
     ViewData["Title"] = "Facturas de Venta";
@@ -18,12 +20,41 @@
             <button type="button" class="btn btn-primary nav-link-icon" id="AddFacturaVenta">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
                     <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
-                </svg> Nuevo Factura de Venta
+                </svg> Nueva Factura
             </button>
         </div>
     </div>
     <div class="container mt-4">
-        Historial de facturas de venta efectuadas.
+        Realiza tu facturacion de ventas de forma sencilla y rapida. Puedes ver el detalle de tus facturas, editarlas, imprimirlas y realizar el envio de las mismas a tus clientes.
+    </div>
+</div>
+<div class="card-body table-body-custom pt-4 pb-4">
+    <div class="container mt-2">
+        <div id="Titulo">
+            <h4 class="mt-1 mb-3">Ventas de @ViewBag.facturas</h4>
+            <canvas id="FacturasChart"></canvas>
+        </div>
+        <hr />
+        <div class="card-body table-body-custom" style="height: auto; margin-top: 0 !important; margin-bottom: 0 !important">
+            <div class="d-flex justify-content-between align-items-center" style="text-align:center">
+                <div class="card-body justify-content-center item">
+                    <strong>Total Facturas</strong>
+                    <p class="mt-2 mb-0">@ViewBag.facturas</p>
+                </div>
+                <div class="card-body justify-content-center item">
+                    <strong>Facturas de @ViewBag.mesActual</strong>
+                    <p class="mt-2 mb-0">@ViewBag.facturasMes</p>
+                </div>
+                <div class="card-body justify-content-center item">
+                    <strong>Valor Total</strong>
+                    <p class="mt-2 mb-0">@ViewBag.totalVentas.ToString("C", new CultureInfo("es-CR"))</p>
+                </div>
+                <div class="card-body justify-content-center item">
+                    <strong>Valor de @ViewBag.mesActual</strong>
+                    <p class="mt-2 mb-0">@ViewBag.totalVentasMes.ToString("C", new CultureInfo("es-CR"))</p>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <div class="card-body table-body-custom">
@@ -54,16 +85,16 @@
             @foreach (var item in Model) {
                 <tr>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Consecutivo)
+                        @Convert.ToInt32(Math.Floor(item.Consecutivo))
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.FechaFactura)
+                        @item.FechaFactura.ToString("dd/MM/yyyy")
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.SubTotal)
+                        @item.SubTotal.ToString("C", new CultureInfo("es-CR"))
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.TotalVenta)
+                        @item.TotalVenta.ToString("C", new CultureInfo("es-CR"))
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.NombrePago)
@@ -127,3 +158,8 @@
         </div>
     </div>
 </div>
+
+<script>
+    var Meses = @Html.Raw(Json.Serialize(ViewBag.Meses));
+    var ventasPorMes = @Html.Raw(Json.Serialize(ViewBag.ventasPorMes));
+</script>

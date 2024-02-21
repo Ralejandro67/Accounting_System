@@ -15,7 +15,7 @@
                 <img src="~/images/tipos.png" alt="Icono Factura de Compra" style="height: 60px;" />
                 Tipos de Ventas
             </h1>
-            <button type="button" class="btn btn-primary nav-link-icon" id="AddTipoV">
+            <button type="button" class="btn btn-primary nav-link-icon agregar-boton" id="AddTipoV">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
                     <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
                 </svg> Nuevo Tipo de Venta
@@ -54,7 +54,7 @@
                         @Html.DisplayFor(modelItem => item.NombreVenta)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Estado)
+                        @(item.Estado ? "Activo" : "Inactivo")
                     </td>
                     <td>
                         <button type="button" class="btn btn-primary edit-tipov" id="BtnEditar" data-id="@item.IdTipoVenta">

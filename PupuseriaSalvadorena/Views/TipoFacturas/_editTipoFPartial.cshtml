@@ -8,12 +8,11 @@
         <input asp-for="NombreFactura" class="form-control" />
         <span asp-validation-for="NombreFactura" class="text-danger"></span>
     </div>
-    <div class="form-group form-check">
-        <label class="form-check-label">
-            <input class="form-check-input" asp-for="Estado" /> @Html.DisplayNameFor(model => model.Estado)
-        </label>
+    <div class="form-group form-check" style="padding-left: 0; margin-bottom: 0.5rem;">
+        <input asp-for="Estado" type="checkbox" id="check" class="form-check-input" />
+        <label asp-for="Estado" for="check" class="form-check-label CheckboxTransac"><span></span></label>@Html.DisplayNameFor(model => model.Estado)
     </div>
     <div class="form-group text-right">
-        <button type="submit" id="submitEditTipoFForm" class="btn btn-primary">Agregar</button>
+        <button type="submit" id="submitEditTipoFForm" class="btn btn-primary agregar-boton">Editar</button>
     </div>
 </form>

@@ -1,4 +1,39 @@
-﻿$(document).ready(function () {
+﻿
+//Grafico Barras
+document.addEventListener('DOMContentLoaded', function () {
+    var ctx = document.getElementById('FacturasChart').getContext('2d');
+
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: Meses,
+            datasets: [{
+                label: 'Facturas de Venta',
+                data: ventasPorMes,
+                backgroundColor: ['rgba(114, 221, 217, 1)'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 50000 
+                    }
+                }
+            },
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+}); 
+
+$(document).ready(function () {
     $("#AddFacturaVenta").on("click", function () {
         $.ajax({
             url: '/FacturaVentas/Create',

@@ -10,6 +10,7 @@ using PupuseriaSalvadorena.Conexion;
 using PupuseriaSalvadorena.Models;
 using PupuseriaSalvadorena.Repositorios.Interfaces;
 using System.Text;
+using PupuseriaSalvadorena.Repositorios.Implementaciones;
 
 namespace PupuseriaSalvadorena.Controllers
 {
@@ -95,15 +96,15 @@ namespace PupuseriaSalvadorena.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return Json(new { success = false, message = "Error al editar el platillo." });
             }
 
             var platillo = await _platilloRep.ConsultarPlatillos(id.Value);
             if (platillo == null)
             {
-                return NotFound();
+                return Json(new { success = false, message = "No se encontro el platillo seleccionado." });
             }
-            return View(platillo);
+            return PartialView("_editPlatilloPartial", platillo);
         }
 
         // POST: Platillos/Edit/5
@@ -115,32 +116,22 @@ namespace PupuseriaSalvadorena.Controllers
         {
             if (id != platillo.IdPlatillo)
             {
-                return NotFound();
+                return Json(new { success = false, message = "Error al editar el platillo." });
             }
 
             if (ModelState.IsValid)
             {
                 await _platilloRep.ActualizarPlatillo(platillo.IdPlatillo, platillo.NombrePlatillo, platillo.CostoProduccion, platillo.PrecioVenta);
-                return RedirectToAction(nameof(Index));
+                return Json(new { success = true, message = "Platillo editado correctamente." });
             }
-            return View(platillo);
+            return Json(new { success = false, message = "Error al editar el platillo." });
         }
 
         // GET: Platillos/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var platillo = await _platilloRep.ConsultarPlatillos(id.Value);
-            if (platillo == null)
-            {
-                return NotFound();
-            }
-
-            return View(platillo);
+            return Json(new { exists = platillo != null });
         }
 
         // POST: Platillos/Delete/5
@@ -148,8 +139,15 @@ namespace PupuseriaSalvadorena.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _platilloRep.EliminarPlatillo(id);
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await _platilloRep.EliminarPlatillo(id);
+                return Json(new { success = true, message = "Platillo eliminado correctamente." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Error al eliminar el platillo." });
+            }
         }
     }
 }

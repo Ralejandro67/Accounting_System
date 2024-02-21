@@ -76,7 +76,7 @@ namespace PupuseriaSalvadorena.Controllers
             {
                 return Json(new { success = false, message = "No se encontro el tipo de venta." });
             }
-            return View(tipoVenta);
+            return PartialView("_editTipoVPartial", tipoVenta);
         }
 
         // POST: TipoVentas/Edit/5

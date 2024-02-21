@@ -20,7 +20,8 @@ document.getElementById('submitTipoFForm').addEventListener('click', function ()
                 Swal.fire({
                     title: '¡Éxito!',
                     text: data.message,
-                    icon: 'success'
+                    icon: 'success',
+                    confirmButtonColor: '#0DBCB5'
                 }).then((result) => {
                     if (result.isConfirmed || result.isDismissed) {
                         window.location.reload();
@@ -30,7 +31,8 @@ document.getElementById('submitTipoFForm').addEventListener('click', function ()
                 Swal.fire({
                     title: 'Error',
                     text: data.message,
-                    icon: 'error'
+                    icon: 'error',
+                    confirmButtonColor: '#0DBCB5'
                 });
             }
         })
@@ -38,7 +40,8 @@ document.getElementById('submitTipoFForm').addEventListener('click', function ()
             Swal.fire({
                 title: 'Error',
                 text: 'Hubo un problema con la solicitud.',
-                icon: 'error'
+                icon: 'error',
+                confirmButtonColor: '#0DBCB5'
             });
         });
 });
@@ -72,7 +75,8 @@ document.querySelectorAll('.edit-TipoF').forEach(button => {
                                 Swal.fire({
                                     title: '¡Éxito!',
                                     text: data.message,
-                                    icon: 'success'
+                                    icon: 'success',
+                                    confirmButtonColor: '#0DBCB5'
                                 }).then(() => {
                                     window.location.reload();
                                 });
@@ -80,7 +84,8 @@ document.querySelectorAll('.edit-TipoF').forEach(button => {
                                 Swal.fire({
                                     title: 'Error',
                                     text: data.message,
-                                    icon: 'error'
+                                    icon: 'error',
+                                    confirmButtonColor: '#0DBCB5'
                                 });
                             }
                         })
@@ -89,7 +94,8 @@ document.querySelectorAll('.edit-TipoF').forEach(button => {
                             Swal.fire({
                                 title: 'Error',
                                 text: 'Hubo un problema con la solicitud.',
-                                icon: 'error'
+                                icon: 'error',
+                                confirmButtonColor: '#0DBCB5'
                             });
                         });
                 });
@@ -105,11 +111,11 @@ document.querySelectorAll('.delete-TipoF').forEach(button => {
 
         Swal.fire({
             title: '¿Estás seguro?',
-            text: "¡No podrás revertir esto!",
+            text: "¡No podrás revertir este cambio!",
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
+            confirmButtonColor: '#0DBCB5',
+            cancelButtonColor: '#9DB2BF',
             confirmButtonText: 'Sí, elimínalo!',
             cancelButtonText: 'Cancelar'
         }).then((result) => {
@@ -120,31 +126,34 @@ document.querySelectorAll('.delete-TipoF').forEach(button => {
                         'RequestVerificationToken': document.getElementsByName('__RequestVerificationToken')[0].value
                     }
                 })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            Swal.fire(
-                                '¡Eliminado!',
-                                'El impuesto ha sido eliminado.',
-                                'success'
-                            ).then(() => {
-                                window.location.reload();
-                            });
-                        } else {
-                            Swal.fire(
-                                'Error',
-                                'Hubo un problema al eliminar el impuesto.',
-                                'error'
-                            );
-                        }
-                    })
-                    .catch(error => {
-                        Swal.fire(
-                            'Error',
-                            'Hubo un problema con la solicitud.',
-                            'error'
-                        );
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            title: '¡Eliminado!',
+                            text: data.message,
+                            icon: 'success',
+                            confirmButtonColor: '#0DBCB5'
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Hubo un problema al eliminar el tipo de factura.',
+                            icon: 'error',
+                            confirmButtonColor: '#0DBCB5'
+                        });
+                    }
+                })
+                .catch(error => {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Hubo un problema con la solicitud.',
+                        icon: 'error',
+                        confirmButtonColor: '#0DBCB5'
                     });
+                });
             }
         })
     });

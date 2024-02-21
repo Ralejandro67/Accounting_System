@@ -2,9 +2,7 @@
 
 <form id="editLibroForm" asp-action="Edit" asp-controller="RegistroLibroes" method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="form-group">
-        <input type="hidden" asp-for="IdRegistroLibros" />
-    </div>
+    <input type="hidden" asp-for="IdRegistroLibros" />
     <div class="form-group">
         <label asp-for="MontoTotal" class="control-label"></label>
         <input asp-for="MontoTotal" class="form-control" />
@@ -21,6 +19,6 @@
         <span asp-validation-for="Conciliado" class="text-danger"></span>
     </div>
     <div class="form-group text-right">
-        <button type="submit" id="submitEditLibroForm" class="btn btn-primary">Editar</button>
+        <button type="submit" id="submitEditLibroForm" class="btn btn-primary agregar-boton">Editar</button>
     </div>
 </form>

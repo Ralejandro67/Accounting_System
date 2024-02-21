@@ -1,51 +1,62 @@
 ﻿using System;
 using System.Linq;
-using MathNet.Numerics;
-using MathNet.Numerics.Statistics;
-using MathNet.Numerics.LinearAlgebra;
+using System.Collections.Generic;
 using PupuseriaSalvadorena.Models;
 
 namespace PupuseriaSalvadorena.Services
 {
     public class ServicioPronosticos
     {
-        public DescomposicionEstacional DescomposicionMutiplicativa(HistorialVenta[] ventasHistoricas)
+        public List<PronosticoDiario> CalcularPronosticoHoltWinters(HistorialVenta[] ventasHistoricas)
         {
-            var ventasDiarias = ventasHistoricas
-                                .GroupBy(v => v.FechaVenta.Date)
-                                .Select(g => new { Fecha = g.Key, TotalVentas = g.Sum(v => v.CantVenta) })
-                                .ToList();
+            double alpha = 0.5;
+            double beta = 0.5;
+            double gamma = 0.5;
+            int estacionalidad = 7;
 
-            var ventasTotales = ventasDiarias.Select(v => (double)v.TotalVentas).ToArray();
+            var ventasPorDia = ventasHistoricas
+                            .GroupBy(v => v.FechaVenta.Date)
+                            .Select(g => new { Fecha = g.Key, TotalVentas = g.Sum(v => v.CantVenta)})
+                            .OrderBy(v => v.Fecha)
+                            .ToList();
+            
+            var pronosticosDiarios = new List<PronosticoDiario>();
 
-            var trend = Fit.Line(Generate.LinearRange(0, ventasTotales.Length, 1), ventasTotales).Item2;
-
-            var seasonal = new double[ventasTotales.Length];
-            for (int i = 0; i < ventasTotales.Length; i++)
+            if (ventasPorDia.Count < estacionalidad)
             {
-                seasonal[i] = ventasTotales[i] / trend;
+                return pronosticosDiarios;
             }
 
-            var residuals = new double[ventasTotales.Length];
-            for (int i = 0; i < ventasTotales.Length; i++)
+            double nivel = ventasPorDia[0].TotalVentas;
+            double tendencia = ventasPorDia[1].TotalVentas - ventasPorDia[0].TotalVentas;
+
+            var estacionalidades = new double[estacionalidad];
+            for (int i = 0; i < estacionalidad; i++)
             {
-                residuals [i] = ventasTotales[i] / (trend * seasonal[i]);
+                estacionalidades[i] = ventasPorDia[i].TotalVentas / nivel;
             }
 
-
-            return new DescomposicionEstacional
+            for (int i = estacionalidad; i < ventasPorDia.Count; i++)
             {
-                Trend = trend,
-                Seasonal = seasonal,
-                Residuals = residuals
-            };
+                var ventaActual = ventasPorDia[i].TotalVentas;
+
+                double valorDesestacionalizado = ventaActual / estacionalidades[i % estacionalidad];
+                double nivelAnterior = nivel;
+
+                nivel = alpha * valorDesestacionalizado + (1 - alpha) * (nivel + tendencia);
+                tendencia = beta * (nivel - nivelAnterior) + (1 - beta) * tendencia;
+                estacionalidades[i % estacionalidad] = gamma * (ventaActual / nivel) + (1 - gamma) * estacionalidades[i % estacionalidad];
+                
+                double pronostico = (nivel + tendencia) * estacionalidades[i % estacionalidad];
+                pronosticosDiarios.Add(new PronosticoDiario { CantVenta = (int)Math.Round(pronostico) });
+            }
+
+            return pronosticosDiarios;
         }
     }
 
-    public class DescomposicionEstacional
+    public class PronosticoDiario
     {
-        public double Trend { get; set; }
-        public double[] Seasonal { get; set; }
-        public double[] Residuals { get; set; }
+        public int CantVenta { get; set; }
     }
 }
