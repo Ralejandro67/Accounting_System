@@ -50,7 +50,6 @@ namespace PupuseriaSalvadorena.Controllers
         public async Task<IActionResult> Create()
         {
             var negocios = await _negociosRep.MostrarNegocio();
-            ViewBag.Negocio = new SelectList(negocios, "CedulaJuridica", "NombreEmpresa");
             return PartialView("_newEstadoBPartial", new RegistroBancario());
         }
 
@@ -61,7 +60,8 @@ namespace PupuseriaSalvadorena.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _registrosBancariosRep.CrearRegistroBancario(registroBancario.FechaRegistro, registroBancario.SaldoInicial, registroBancario.NumeroCuenta, registroBancario.Observaciones, registroBancario.CedulaJuridica);
+                var cedula = await _negociosRep.ConsultarNegocio();
+                await _registrosBancariosRep.CrearRegistroBancario(registroBancario.FechaRegistro, registroBancario.SaldoInicial, registroBancario.NumeroCuenta, registroBancario.Observaciones, cedula);
                 return Json(new { success = true, message = "Estado Bancario agregado correctamente."});
 
             }

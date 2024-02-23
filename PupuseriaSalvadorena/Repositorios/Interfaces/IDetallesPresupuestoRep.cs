@@ -10,5 +10,6 @@ namespace PupuseriaSalvadorena.Repositorios.Interfaces
         Task<List<DetallePresupuesto>> MostrarDetallesPresupuesto();
         Task<DetallePresupuesto> ConsultarDetallesPresupuestos(string IdPresupuesto, int IdTransaccion);
         Task<List<DetallePresupuesto>> ConsultarTransacPresupuestos(string IdPresupuesto);
+        Task EliminarDetallesPresupuestoPorIdP(string IdPresupuesto);
     }
 }

@@ -1,0 +1,156 @@
+﻿html, body {
+    height: 100% !important;
+    margin: 0 !important;
+}
+
+body {
+    line-height: 1.6 !important;
+    background-color: #F5F7F8 !important;
+    font-size: 16px !important;
+}
+
+header .navbar {
+    width: 100% !important;
+    z-index: 1000 !important;
+}
+
+#topbar {
+    background-color: white !important;
+    border-bottom: 1px solid #A9A9A9 !important;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: auto;
+    margin-top: 6rem;
+    text-align: center;
+}
+
+.table-body-custom {
+    background-color: #ffffff;
+    border: 1px solid #ddd !important;
+    border-radius: 0.5rem;
+    padding: 1rem !important;
+    margin-top: 1.25rem !important;
+    margin-bottom: 1.25rem !important;
+    height: 100%;
+    width: 40%;
+    box-shadow: 2px 2px 10px 0 rgba(0, 0, 0, 0.25);
+    text-align: center;
+    justify-content: center;
+}
+
+/* ----------------------------------- */
+/*          Campos Formulario          */
+/* ----------------------------------- */
+.input-container {
+    position: relative;
+    margin: 2.2rem auto;
+    width: 70%;
+}
+
+.input-container input[type="email"] {
+    font-size: 16px;
+    width: 100%;
+    border: none;
+    border-bottom: 2px solid #ccc;
+    padding: 5px 0;
+    background-color: transparent;
+    outline: none;
+}
+
+.input-container .label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: #ccc;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.input-container input[type="email"]:focus ~ .label,
+.input-container input[type="email"]:valid ~ .label {
+    top: -20px;
+    font-size: 14px;
+    color: rgba(13, 188, 181, 1);
+}
+
+.input-container .underline {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    width: 100%;
+    background-color: rgba(13, 188, 181, 1);
+    transform: scaleX(0);
+    transition: all 0.3s ease;
+}
+
+.input-container input[type="email"]:focus ~ .underline,
+.input-container input[type="email"]:valid ~ .underline {
+    transform: scaleX(1);
+}
+
+/*--------------------------------- */
+
+.input-container input[type="password"] {
+    font-size: 16px;
+    width: 100%;
+    border: none;
+    border-bottom: 2px solid #ccc;
+    padding: 5px 0;
+    background-color: transparent;
+    outline: none;
+}
+
+.input-container .label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: #ccc;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.input-container input[type="password"]:focus ~ .label,
+.input-container input[type="password"]:valid ~ .label {
+    top: -20px;
+    font-size: 14px;
+    color: rgba(13, 188, 181, 1);
+}
+
+.input-container .underline {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    width: 100%;
+    background-color: rgba(13, 188, 181, 1);
+    transform: scaleX(0);
+    transition: all 0.3s ease;
+}
+
+.input-container input[type="password"]:focus ~ .underline,
+.input-container input[type="password"]:valid ~ .underline {
+    transform: scaleX(1);
+}
+
+.campoBoton{
+    margin-top: 2.5rem;
+}
+
+.agregar-boton {
+    font-size: 18px !important;
+    background-color: #0DBCB5 !important;
+    border-color: #0DBCB5 !important;
+    border-radius: 0.5rem !important;
+    width: 50% !important;
+}
+
+.agregar-boton:hover {
+    background-color: #72DDD9 !important;
+    border-color: #72DDD9 !important;
+}

@@ -9,6 +9,9 @@ using PupuseriaSalvadorena.Conexion;
 using PupuseriaSalvadorena.Models;
 using PupuseriaSalvadorena.ViewModels;
 using PupuseriaSalvadorena.Repositorios.Interfaces;
+using PupuseriaSalvadorena.Services;
+using System.Composition;
+using Rotativa.AspNetCore;
 
 namespace PupuseriaSalvadorena.Controllers
 {
@@ -19,14 +22,18 @@ namespace PupuseriaSalvadorena.Controllers
         private readonly IRegistroLibrosRep _registroLibrosRep;
         private readonly IDetallesTransacRep _detallesTransacRep;
         private readonly IDetallesPresupuestoRep _detallesPresupuestoRep;
+        private readonly INegociosRep _negociosRep;
 
-        public PresupuestoesController(IPresupuestoRep context, ICatPresupuestoRep categoriaPresupuestoRep, IRegistroLibrosRep registroLibrosRep, IDetallesTransacRep detallesTransacRep, IDetallesPresupuestoRep detallesPresupuestoRep)
+
+        public PresupuestoesController(IPresupuestoRep context, ICatPresupuestoRep categoriaPresupuestoRep, IRegistroLibrosRep registroLibrosRep, 
+                                       IDetallesTransacRep detallesTransacRep, IDetallesPresupuestoRep detallesPresupuestoRep, INegociosRep negociosRep)
         {
             _presupuestoRep = context;
             _categoriaPresupuestoRep = categoriaPresupuestoRep;
             _registroLibrosRep = registroLibrosRep;
             _detallesTransacRep = detallesTransacRep;
             _detallesPresupuestoRep = detallesPresupuestoRep;
+            _negociosRep = negociosRep;
         }
 
         // GET: Presupuestoes
@@ -169,13 +176,52 @@ namespace PupuseriaSalvadorena.Controllers
         {
             try
             {
+                await _detallesPresupuestoRep.EliminarDetallesPresupuestoPorIdP(id);
                 await _presupuestoRep.EliminarPresupuesto(id);
                 return Json(new { success = true, message = "Presupuesto eliminado correctamente." });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return Json(new { success = false, message = "Error al eliminar el presupuesto." });
             }
+        }
+
+        // Presupuestoes/DecargarPresupuesto/5
+        public async Task<IActionResult> DecargarPresupuesto(string id)
+        {
+            if (id == null)
+            {
+                return Json(new { success = false, message = "Error al descargar el presupuesto." });
+            }
+
+            var negocio = await _negociosRep.MostrarNegocio();
+            var presupuesto = await _presupuestoRep.ConsultarPresupuestos(id);
+            var transaccionesPresupuesto = await _detallesPresupuestoRep.ConsultarTransacPresupuestos(id);
+            
+            int totaltransacciones = transaccionesPresupuesto.Count();
+            decimal saldoRestante = presupuesto.SaldoPresupuesto - presupuesto.SaldoUsado;
+
+            if (presupuesto == null)
+            {
+                return Json(new { success = false, message = "Error al descargar el presupuesto." });
+            }
+
+            var viewModel = new PresupuestoPDF
+            {
+                SaldoUsado = presupuesto.SaldoUsado,
+                SaldoRestante = saldoRestante,
+                TotalTransacciones = totaltransacciones,
+                Negocio = negocio,
+                Presupuesto = presupuesto,
+                DetallesP = transaccionesPresupuesto
+            };
+
+            return new ViewAsPdf("DecargarPresupuesto", viewModel)
+            {
+                FileName = $"Presupuesto_{id}.pdf",
+                PageSize = Rotativa.AspNetCore.Options.Size.Letter,
+                PageMargins = new Rotativa.AspNetCore.Options.Margins(15, 12, 12, 12)
+            };
         }
     }
 }

@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 }); 
 
-// Agrgegar transacciones seleccionadas
+// Agregar transacciones seleccionadas
 document.getElementById('DetallesPresupuestoForm').addEventListener('submit', function (event) {
     event.preventDefault();
 

@@ -4,12 +4,15 @@ using PupuseriaSalvadorena.Repositorios.Interfaces;
 using PupuseriaSalvadorena.Repositorios.Implementaciones;
 using Hangfire;
 using PupuseriaSalvadorena.Services;
+using Rotativa.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<MiDbContext>(option => option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+//Repositorios
 builder.Services.AddScoped<ICorreosRep, CorreosRep>();
 builder.Services.AddScoped<IProvinciasRep, ProvinciasRep>();
 builder.Services.AddScoped<ICantonesRep, CantonesRep>();
@@ -48,12 +51,13 @@ builder.Services.AddScoped<ITipoMovimientoRep, TipoMovimientoRep>();
 builder.Services.AddScoped<IAlertaCuentaPagarRep, AlertaCuentaPagarRep>();
 builder.Services.AddScoped<IDetallesPronosticoRep, DetallesPronosticoRep>();
 
+//Servicios
 builder.Services.AddScoped<ServicioPronosticos>();
 builder.Services.AddHostedService<AlertaCuentaPagarServ>();
 
+//Hangfire
 builder.Services.AddHangfire(config => config.UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddHangfireServer();
-
 
 builder.Services.AddSession(options =>
 {
@@ -63,6 +67,8 @@ builder.Services.AddSession(options =>
 });
 
 var app = builder.Build();
+
+RotativaConfiguration.Setup(app.Environment.WebRootPath, "../Rotativa/Windows");
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -80,6 +86,6 @@ app.UseHangfireDashboard();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=IniciarSesion}/{id?}");
 
 app.Run();

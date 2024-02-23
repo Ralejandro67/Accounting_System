@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using PupuseriaSalvadorena.Conexion;
 using PupuseriaSalvadorena.Models;
 using PupuseriaSalvadorena.Repositorios.Interfaces;
+using Microsoft.AspNetCore.Authentication;
 
 namespace PupuseriaSalvadorena.Controllers
 {
@@ -100,6 +101,17 @@ namespace PupuseriaSalvadorena.Controllers
             ViewBag.Pronosticos = JsonConvert.SerializeObject(pronosticos);
 
             return View();
+        }
+
+        public IActionResult IniciarSesion()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> CerrarSesion()
+        {
+            await HttpContext.SignOutAsync();
+            return RedirectToAction("Index", "Login");
         }
 
         public IActionResult Privacy()

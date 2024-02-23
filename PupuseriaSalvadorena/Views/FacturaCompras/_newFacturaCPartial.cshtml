@@ -46,8 +46,10 @@
             <div class="col-md-5">
                 <div class="form-group" id="campoProveedor">
                     <label class="control-label">Proveedor</label>
-                    @Html.DropDownListFor(model => model.IdProveedor, (SelectList)ViewBag.Proveedores, "Seleccione el proveedor", new { @class = "form-control", id = "IdProveedor" })
-                    @Html.ValidationMessageFor(model => model.IdProveedor, "", new { @class = "text-danger" })
+                    <select class="form-control" id="IdProveedor" name="IdProveedor" asp-items="@ViewBag.Proveedores">
+                        <option value="">Proveedores</option>
+                    </select>
+                    <span asp-validation-for="IdProveedor" class="text-danger"></span>
                 </div>
             </div>
             <div class="col-md-4">

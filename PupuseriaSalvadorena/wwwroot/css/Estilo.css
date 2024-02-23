@@ -419,6 +419,31 @@
     justify-content: center;
 }
 
+.table-body-custom3 {
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    padding: 0 !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    margin-bottom: 1.25rem !important;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.table-body-custom4 {
+    background-color: #ffffff;
+    border: 1px solid #ddd !important;
+    border-radius: 0.5rem;
+    padding: 0 !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    margin-top: 1.25rem !important;
+    margin-bottom: 1.25rem !important;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
 
 .row.no-gutters {
     display: flex;
@@ -807,6 +832,7 @@ input[type="checkbox"]:checked + label:hover span:after {
 
 /* ----------------------------------- */
 /* Graficos */
+
 #DoughnutChart {
     max-width: 280px;
     max-height: 210px;
@@ -831,6 +857,30 @@ input[type="checkbox"]:checked + label:hover span:after {
 #ComprasMatChart {
     max-width: auto;
     max-height: 200px;
+    aspect-ratio: 1 / 1;
+}
+
+#TransaccionesChart {
+    max-width: auto;
+    max-height: 220px;
+    aspect-ratio: 1 / 1;
+}
+
+#VentasChart {
+    max-width: auto;
+    max-height: 220px;
+    aspect-ratio: 1 / 1;
+}
+
+#PronosticosChart {
+    max-width: auto;
+    max-height: 220px;
+    aspect-ratio: 1 / 1;
+}
+
+#ComprasChart {
+    max-width: auto;
+    max-height: 220px;
     aspect-ratio: 1 / 1;
 }
 
@@ -924,4 +974,22 @@ legend {
 
 #agregarPlatillo {
     cursor: pointer;
+}
+
+.DescripcionP {
+    margin-top: -0.75rem;
+}
+
+.TituloReporte{
+    margin-bottom: 0;
+}
+
+.ReporteCampos{
+    margin-bottom: 0.3rem;
+}
+
+.TablaReporte {
+    border-collapse: collapse;
+    border-color: white !important;
+    border: 0px !important;
 }

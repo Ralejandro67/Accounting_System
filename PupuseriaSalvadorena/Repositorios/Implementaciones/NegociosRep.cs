@@ -38,12 +38,13 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             await _context.Database.ExecuteSqlRawAsync("EliminarNegocio @CedulaJuridica", CedulaJuridicaParam);
         }
 
-        public async Task<List<Negocio>> MostrarNegocio()
+        public async Task<Negocio> MostrarNegocio()
         {
             var negocios = await _context.Negocio
                                         .FromSqlRaw("EXEC MostrarNegocio")
                                         .ToListAsync();
-            return negocios;
+
+            return negocios.FirstOrDefault();
         }
 
         public async Task<Negocio> ConsultarNegocio(long CedulaJuridica)

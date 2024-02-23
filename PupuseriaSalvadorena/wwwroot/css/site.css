@@ -121,6 +121,15 @@ header .navbar {
     background-color: #F5F7F8;
 }
 
+#content2 {
+    flex-grow: 1;
+    padding: 1rem;
+    padding-top: 0;
+    overflow-y: auto;
+    background-color: white;
+    align-items: center;
+}
+
 .nav-link-icon svg {
     margin-bottom: 0.2em;
     margin-right: 0.5em;

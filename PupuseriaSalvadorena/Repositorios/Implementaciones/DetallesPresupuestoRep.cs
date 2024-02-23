@@ -69,5 +69,11 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
 
             return resultado;
         }
+
+        public async Task EliminarDetallesPresupuestoPorIdP(string IdPresupuesto)
+        {
+            var IdPresupuestoParam = new SqlParameter("@IdPresupuesto", IdPresupuesto);
+            await _context.Database.ExecuteSqlRawAsync("EliminarDetallesPresupuestoPorIdP @IdPresupuesto", IdPresupuestoParam);
+        }
     }
 }
