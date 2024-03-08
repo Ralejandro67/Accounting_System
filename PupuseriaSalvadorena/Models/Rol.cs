@@ -12,6 +12,6 @@ namespace PupuseriaSalvadorena.Models
         public string? NombreRol { get; set; }
 
         [Required(ErrorMessage = "El estado del rol es obligatorio")]
-        public bool Estado { get; set; }
+        public bool Activo { get; set; }
     }
 }

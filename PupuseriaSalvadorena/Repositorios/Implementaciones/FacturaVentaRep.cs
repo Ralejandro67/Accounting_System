@@ -16,7 +16,7 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             _context = context;
         }
 
-        public async Task<int> CrearFacturaVenta(long CedulaJuridica, decimal Consecutivo, DateTime FechaFactura, decimal SubTotal, decimal TotalVenta, int IdTipoPago, int IdTipoFactura)
+        public async Task<int> CrearFacturaVenta(long CedulaJuridica, decimal Consecutivo, DateTime FechaFactura, decimal SubTotal, decimal TotalVenta, int IdTipoPago, int IdTipoFactura, bool Estado)
         {
             using (var command = _context.Database.GetDbConnection().CreateCommand())
             {
@@ -30,6 +30,7 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
                 command.Parameters.Add(new SqlParameter("@TotalVenta", TotalVenta));
                 command.Parameters.Add(new SqlParameter("@IdTipoPago", IdTipoPago));
                 command.Parameters.Add(new SqlParameter("@IdTipoFactura", IdTipoFactura));
+                command.Parameters.Add(new SqlParameter("@Estado", Estado));
                 
                 var IdFactura = new SqlParameter("@IdFactura", SqlDbType.Int)
                 {
@@ -44,12 +45,11 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             }
         }
 
-        public async Task ActualizarFacturaVenta(int IdFacturaVenta, int IdTipoPago, int IdTipoFactura)
+        public async Task ActualizarFacturaVenta(int IdFacturaVenta, bool Estado)
         {
             var IdFacturaVentaParam = new SqlParameter("@IdFacturaVenta", IdFacturaVenta);
-            var IdTipoPagoParam = new SqlParameter("@IdTipoPago", IdTipoPago);
-            var IdTipoFacturaParam = new SqlParameter("@IdTipoFactura", IdTipoFactura);
-            await _context.Database.ExecuteSqlRawAsync("ActualizarFacturaVenta @IdFacturaVenta, @IdTipoPago, @IdTipoFactura", IdFacturaVentaParam, IdTipoPagoParam, IdTipoFacturaParam);
+            var EstadoParam = new SqlParameter("@Estado", Estado);
+            await _context.Database.ExecuteSqlRawAsync("ActualizarFacturaVenta @IdFacturaVenta, @Estado", IdFacturaVentaParam, EstadoParam);
         }
 
         public async Task EliminarFacturaVenta(int IdFacturaVenta)

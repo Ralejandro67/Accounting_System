@@ -60,7 +60,11 @@ namespace PupuseriaSalvadorena.Controllers
                 await _categoriaPresupuestoRep.CrearCatPresupuesto(categoriaPresupuesto.Nombre, categoriaPresupuesto.Estado);
                 return Json(new { success = true, message = "Categoria agregada correctamente." });
             }
-            return Json(new { success = false, message = "Error al agregar la categoria." });
+            else
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                return Json(new { success = false, errors = errors });
+            }
         }
 
         // GET: CategoriaPresupuestoes/Edit/5
@@ -94,7 +98,11 @@ namespace PupuseriaSalvadorena.Controllers
                 await _categoriaPresupuestoRep.ActualizarCatPresupuestos(categoriaPresupuesto.IdCategoriaP, categoriaPresupuesto.Nombre, categoriaPresupuesto.Estado);
                 return Json(new { success = true, message = "Categoria editada correctamente." });
             }
-            return Json(new { success = false, message = "Error al editar la categoria." });
+            else
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                return Json(new { success = false, errors = errors });
+            }
         }
 
         // GET: CategoriaPresupuestoes/Delete/5

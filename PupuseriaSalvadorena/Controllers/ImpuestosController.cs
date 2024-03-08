@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BCrypt.Net;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -58,10 +59,14 @@ namespace PupuseriaSalvadorena.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _impuestosRep.CrearImpuesto(impuesto.NombreImpuesto, impuesto.Tasa, impuesto.Estado, impuesto.Descripcion);
+                await _impuestosRep.CrearImpuesto(impuesto.NombreImpuesto, impuesto.Tasa.Value, impuesto.Estado, impuesto.Descripcion);
                 return Json(new { success = true, message = "Impuesto agregado correctamente." });
             }
-            return Json(new { success = false, message = "Error al agregar impuesto." });
+            else
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                return Json(new { success = false, errors = errors });
+            }
         }
 
         // GET: Impuestos/Edit/5
@@ -69,14 +74,14 @@ namespace PupuseriaSalvadorena.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return Json(new { success = false, message = "Impuesto no encontrado." });
             }
 
             var impuesto = await _impuestosRep.ConsultarImpuestos(id);
 
             if (impuesto == null)
             {
-                return NotFound();
+               return Json(new { success = false, message = "Impuesto no encontrado." });
             }
             return PartialView("_EditImpuestoPartial", impuesto);
         }
@@ -93,10 +98,14 @@ namespace PupuseriaSalvadorena.Controllers
 
             if (ModelState.IsValid)
             {
-                await _impuestosRep.ActualizarImpuesto(impuesto.IdImpuesto, impuesto.NombreImpuesto, impuesto.Tasa, impuesto.Estado, impuesto.Descripcion);
+                await _impuestosRep.ActualizarImpuesto(impuesto.IdImpuesto, impuesto.NombreImpuesto, impuesto.Tasa.Value, impuesto.Estado, impuesto.Descripcion);
                 return Json(new { success = true, message = "Impuesto actualizado correctamente." });
             }
-            return Json(new { success = false, message = "Datos inválidos." });
+            else
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                return Json(new { success = false, errors = errors });
+            }
         }
 
         // GET: Impuestos/Delete/5
@@ -108,7 +117,7 @@ namespace PupuseriaSalvadorena.Controllers
 
         // POST: Impuestos/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken] 
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
             try
@@ -118,7 +127,7 @@ namespace PupuseriaSalvadorena.Controllers
             }
             catch
             {
-                return Json(new { success = false, message = "Error al eliminar el impuesto." });
+                return Json(new { success = false, message = "Error al eliminar el impuesto, hay transaciones asociadas a este metodo de pago." });
             }
         }
     }

@@ -37,7 +37,7 @@ namespace PupuseriaSalvadorena.Controllers
                 return NotFound();
             }
 
-            var canton = await _cantonesRep.ConsultarCantones(id.Value);
+            var canton = await _cantonesRep.ConsultarCanton(id.Value);
             if (canton == null)
             {
                 return NotFound();
@@ -75,7 +75,7 @@ namespace PupuseriaSalvadorena.Controllers
                 return NotFound();
             }
 
-            var canton = await _cantonesRep.ConsultarCantones(id.Value);
+            var canton = await _cantonesRep.ConsultarCanton(id.Value);
             if (canton == null)
             {
                 return NotFound();
@@ -109,7 +109,7 @@ namespace PupuseriaSalvadorena.Controllers
                 return NotFound();
             }
 
-            var canton = await _cantonesRep.ConsultarCantones(id.Value);
+            var canton = await _cantonesRep.ConsultarCanton(id.Value);
             if (canton == null)
             {
                 return NotFound();

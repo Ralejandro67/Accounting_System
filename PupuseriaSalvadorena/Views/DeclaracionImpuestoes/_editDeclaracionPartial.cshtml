@@ -1,0 +1,16 @@
+﻿@model PupuseriaSalvadorena.Models.DeclaracionImpuesto
+
+<form id="editDeclaracionImpuestoForm" asp-action="Edit" asp-controller="DeclaracionImpuestoes" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="IdDeclaracionImpuesto" />
+    <input type="hidden" asp-for="FechaInicio" />
+    <input type="hidden" asp-for="Trimestre" />
+    <div class="form-group">
+        <label class="control-label">Descripción</label>
+        <textarea asp-for="Observaciones" class="form-control" id="CampoArea"></textarea>
+        <span asp-validation-for="Observaciones" class="text-danger"></span>
+    </div>
+    <div class="form-group text-right">
+        <button type="submit" id="submitEditDeclaracionImpuesto" class="btn btn-primary agregar-boton">Editar</button>
+    </div>
+</form>

@@ -56,7 +56,7 @@ namespace PupuseriaSalvadorena.Controllers
         // POST: RegistroBancarios/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdRegistroBancario,FechaRegistro,SaldoInicial,NumeroCuenta,Observaciones,CedulaJuridica")] RegistroBancario registroBancario)
+        public async Task<IActionResult> Create([Bind("IdRegistro,FechaRegistro,SaldoInicial,NumeroCuenta,Observaciones,CedulaJuridica")] RegistroBancario registroBancario)
         {
             if (ModelState.IsValid)
             {
@@ -65,7 +65,12 @@ namespace PupuseriaSalvadorena.Controllers
                 return Json(new { success = true, message = "Estado Bancario agregado correctamente."});
 
             }
-            return Json(new { success = false, message = "Error al agregar el estado bancario.", errors = ModelState.Values.SelectMany(v => v.Errors.Select(b => b.ErrorMessage)) });
+            else
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+
+                return Json(new { success = false, errors = errors });
+            }
         }
 
         // GET: RegistroBancarios/Edit/5
@@ -77,17 +82,19 @@ namespace PupuseriaSalvadorena.Controllers
             }
 
             var registroBancario = await _registrosBancariosRep.ConsultarRegistrosBancarios(id);
+
             if (registroBancario == null)
             {
                 return NotFound();
             }
-            return View(registroBancario);
+
+            return PartialView("_editEstadoBPartial", registroBancario);
         }
 
         // POST: RegistroBancarios/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("IdRegistroBancario,EstadoBancario,FechaRegistro,SaldoInicial,NumeroCuenta,Observaciones,CedulaJuridica,ArchivoEstado")] RegistroBancario registroBancario)
+        public async Task<IActionResult> Edit(string id, [Bind("IdRegistro,EstadoBancario,FechaRegistro,SaldoInicial,NumeroCuenta,Observaciones,CedulaJuridica")] RegistroBancario registroBancario)
         {
             if (id != registroBancario.IdRegistro)
             {
@@ -97,26 +104,20 @@ namespace PupuseriaSalvadorena.Controllers
             if (ModelState.IsValid)
             {
                 await _registrosBancariosRep.ActualizarRegistroBancario(registroBancario.IdRegistro, registroBancario.FechaRegistro, registroBancario.SaldoInicial, registroBancario.NumeroCuenta, registroBancario.Observaciones);
-                return RedirectToAction(nameof(Index));
+                return Json(new { success = true, message = "Cuenta Bancaria actualizada correctamente." });
             }
-            return View(registroBancario);
+            else
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                return Json(new { success = false, errors = errors });
+            }
         }
 
         // GET: RegistroBancarios/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var registroBancario = await _registrosBancariosRep.ConsultarRegistrosBancarios(id);
-            if (registroBancario == null)
-            {
-                return NotFound();
-            }
-
-            return View(registroBancario);
+            return Json(new { exists = registroBancario != null });
         }
 
         // POST: RegistroBancarios/Delete/5
@@ -124,8 +125,15 @@ namespace PupuseriaSalvadorena.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            await _registrosBancariosRep.EliminarRegistroBancario(id);
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await _registrosBancariosRep.EliminarRegistroBancario(id);
+                return Json(new { success = true, message = "Cuenta bancaria eliminada correctamente." });
+            }
+            catch
+            {
+                return Json(new { success = false, message = "No se puede eliminar la cuenta bancaria." });
+            }
         }
     }
 }

@@ -1,4 +1,88 @@
-﻿#AddPronostico {
+﻿/*Tablas*/
+/*----------------------------*/
+th {
+    cursor: pointer;
+}
+
+#busquedaImpuestos {
+    width: 20%;
+}
+
+#busqueda {
+    width: 20%;
+}
+
+#busquedaF {
+    width: 20%;
+}
+
+#busquedaCuentas {
+    width: 20%;
+}
+
+#busquedaMaterias {
+    width: 20%;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(121, 242, 238, 0.75) !important;
+}
+
+.anterior {
+    background-color: transparent !important;
+    border-color: transparent !important;
+    box-shadow: none;
+    color: black !important;
+    padding: 0.25rem !important;
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+    margin: 0 !important;
+    margin-right: 0.5rem !important;
+}
+
+.anterior:hover {
+    color: #0DBCB5 !important;
+}
+
+.siguiente {
+    background-color: transparent !important;
+    border-color: transparent !important;
+    box-shadow: none;
+    color: black !important;
+    padding: 0.25rem !important;
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+    margin: 0 !important;
+    margin-left: 0.5rem !important;
+}
+
+.siguiente:hover {
+    color: #0DBCB5 !important;
+}
+
+#pageIndicator {
+    padding: 0.25rem !important;
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+    margin: 0 !important;
+}
+
+#pageIndicatorM {
+    padding: 0.25rem !important;
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+    margin: 0 !important;
+}
+
+#pageIndicatorC {
+    padding: 0.25rem !important;
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+    margin: 0 !important;
+}
+
+/*----------------------------*/
+#AddPronostico {
     background-color: #0DBCB5;
     border-color: #0DBCB5;
     border-radius: 0.5rem;
@@ -599,6 +683,11 @@ card-body2 {
     color: #ffffff;
 }
 
+.CartasPresupuestos:hover strong {
+    transition: all 0.3s ease-out;
+    color: #ffffff;
+}
+
 .CartasPresupuestos:hover {
     cursor: pointer;
 }
@@ -966,6 +1055,10 @@ legend {
 
 #productoCampos {
     width: 18% !important;
+}
+
+#usuarioCampos {
+    width: 30% !important;
 }
 
 #FECampos {

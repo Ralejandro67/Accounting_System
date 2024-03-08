@@ -109,7 +109,7 @@ namespace PupuseriaSalvadorena.Controllers
 
                 if(diferencia == 0)
                 {
-                    await _conciliacionRep.CrearConciliacion(DateTime.Now, conciliacionBancaria.SaldoBancario, SaldoLibro, diferencia, conciliacionBancaria.Observaciones, conciliacionBancaria.IdRegistro, conciliacionBancaria.IdRegistroLibros);
+                    await _conciliacionRep.CrearConciliacion(DateTime.Now, SaldoConciliacion, SaldoLibro, diferencia, conciliacionBancaria.Observaciones, conciliacionBancaria.IdRegistro, conciliacionBancaria.IdRegistroLibros);
                     await _registrosBancariosRep.ActualizarRegistroBancario(registrosBancarios.IdRegistro, registrosBancarios.FechaRegistro, conciliacionBancaria.SaldoBancario, registrosBancarios.NumeroCuenta, registrosBancarios.Observaciones);
                     await _detallesTransacRep.ActualizarConciliado(registrosLibros.IdRegistroLibros, true);
                     await _registrosLibrosRep.ActualizarRegistroLibros(registrosLibros.IdRegistroLibros, registrosLibros.MontoTotal, registrosLibros.Descripcion, true);
@@ -117,10 +117,14 @@ namespace PupuseriaSalvadorena.Controllers
                 }
                 else
                 {
-                    return Json(new { success = false, message = "La diferencia no es 0, por favor verifica el saldo de la cuenta y el libro contable." });
+                    return Json(new { success = false, errors = "La diferencia no es 0, por favor verifica el saldo de la cuenta y el libro contable." });
                 }
             }
-            return Json(new { success = false, message = "Error al crear la conciliacion." });
+            else
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                return Json(new { success = false, errors = errors });
+            }
         }
 
         // GET: ConciliacionBancarias/Delete/5
@@ -145,19 +149,26 @@ namespace PupuseriaSalvadorena.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var conciliacion = await _conciliacionRep.ConsultarConciliacionesBancarias(id);
-            var libro = await _registrosLibrosRep.ConsultarRegistrosLibros(conciliacion.IdRegistroLibros);
-            var cuenta = await _registrosBancariosRep.ConsultarRegistrosBancarios(conciliacion.IdRegistro);
-            var detallesTransac = await _detallesTransacRep.ConsultarTransacciones(conciliacion.IdRegistroLibros);
+            try
+            {
+                var conciliacion = await _conciliacionRep.ConsultarConciliacionesBancarias(id);
+                var libro = await _registrosLibrosRep.ConsultarRegistrosLibros(conciliacion.IdRegistroLibros);
+                var cuenta = await _registrosBancariosRep.ConsultarRegistrosBancarios(conciliacion.IdRegistro);
+                var detallesTransac = await _detallesTransacRep.ConsultarTransacciones(conciliacion.IdRegistroLibros);
 
-            var SaldoBancario = conciliacion.SaldoBancario - libro.MontoTotal;
+                var SaldoBancario = conciliacion.SaldoBancario - libro.MontoTotal;
 
-            await _registrosBancariosRep.ActualizarRegistroBancario(conciliacion.IdRegistro, cuenta.FechaRegistro, SaldoBancario, cuenta.NumeroCuenta, cuenta.Observaciones);
-            await _registrosLibrosRep.ActualizarRegistroLibros(conciliacion.IdRegistroLibros, libro.MontoTotal, libro.Descripcion, false);
-            await _detallesTransacRep.ActualizarConciliado(conciliacion.IdRegistroLibros, false);
+                await _registrosBancariosRep.ActualizarRegistroBancario(conciliacion.IdRegistro, cuenta.FechaRegistro, SaldoBancario, cuenta.NumeroCuenta, cuenta.Observaciones);
+                await _registrosLibrosRep.ActualizarRegistroLibros(conciliacion.IdRegistroLibros, libro.MontoTotal, libro.Descripcion, false);
+                await _detallesTransacRep.ActualizarConciliado(conciliacion.IdRegistroLibros, false);
 
-            await _conciliacionRep.EliminarConciliacion(id); 
-            return RedirectToAction(nameof(Index));
+                await _conciliacionRep.EliminarConciliacion(id); 
+                return Json(new { success = true, message = "La conciliacion fue eliminada con exito." });
+            }
+            catch
+            {
+                return Json(new { success = false, message = "Error al eliminar el impuesto." });
+            }
         }
     }
 }

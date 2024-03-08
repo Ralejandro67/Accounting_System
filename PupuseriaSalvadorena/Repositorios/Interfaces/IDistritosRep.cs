@@ -8,6 +8,7 @@ namespace PupuseriaSalvadorena.Repositorios.Interfaces
         Task ActualizarDistrito(int IdDistrito, string NombreDistrito, int IdCanton);
         Task EliminarDistrito(int IdDistrito);
         Task<List<Distrito>> MostrarDistritos();
-        Task<Distrito> ConsultarDistritos(int IdDistrito);
+        Task<List<Distrito>> ConsultarDistritos(int IdDistrito);
+        Task<Distrito> ConsultarDistrito(int IdDistrito);
     }
 }

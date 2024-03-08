@@ -7,7 +7,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label asp-for="NombreImpuesto" class="control-label"></label>
-                <input asp-for="NombreImpuesto" class="form-control" />
+                <input asp-for="NombreImpuesto" class="form-control" placeholder="Nombre del impuesto" />
                 <span asp-validation-for="NombreImpuesto" class="text-danger"></span>
             </div>
         </div>
@@ -16,7 +16,7 @@
                 <label class="control-label">Tasa Porcentual</label>
                 <div class="input-group">
                     <span class="input-group-text">%</span>
-                    <input asp-for="Tasa" class="form-control" />
+                    <input asp-for="Tasa" class="form-control" id="Value"/>
                     <span asp-validation-for="Tasa" class="text-danger"></span>
                 </div>
             </div>
@@ -24,7 +24,7 @@
     </div>
     <div class="form-group">
         <label asp-for="Descripcion" class="control-label"></label>
-        <textarea asp-for="Descripcion" class="form-control" id="CampoArea"></textarea>
+        <textarea asp-for="Descripcion" class="form-control" id="CampoArea" placeholder="Descripcion del impuesto"></textarea>
         <span asp-validation-for="Descripcion" class="text-danger"></span>
     </div>
     <div class="form-group form-check" style="padding-left: 0; margin-bottom: 0.5rem;">

@@ -21,12 +21,12 @@ namespace PupuseriaSalvadorena.Models
 
         public string? Observaciones { get; set; }
 
-        [Required(ErrorMessage = "El registro bancario es obligatorio")]
+        [Required(ErrorMessage = "La cuenta bancaria es obligatoria.")]
         public string? IdRegistro { get; set; }
 
         public string? NumeroCuenta { get; set; }
 
-        [Required(ErrorMessage = "El registro de libro es obligatorio")]
+        [Required(ErrorMessage = "El libro contable es obligatorio.")]
         public string? IdRegistroLibros { get; set; }
 
         public string? Descripcion { get; set; }

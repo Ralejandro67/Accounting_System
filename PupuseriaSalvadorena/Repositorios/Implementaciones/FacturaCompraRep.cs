@@ -16,16 +16,31 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             _context = context;
         }
 
-        public async Task CrearFacturaCompra(byte[] FacturaCom, DateTime FechaFactura, decimal TotalCompra, string DetallesCompra, int IdTipoPago, int IdTipoFactura, int IdMateriaPrima)
+        public async Task<string> CrearFacturaCompra(DateTime FechaFactura, decimal TotalCompra, string DetallesCompra, int IdTipoPago, int IdTipoFactura, int IdMateriaPrima)
         {
-            var FacturaCompraParam = new SqlParameter("@FacturaCom", FacturaCom);
-            var FechaFacturaParam = new SqlParameter("@FechaFactura", FechaFactura);
-            var TotalCompraParam = new SqlParameter("@TotalCompra", TotalCompra);
-            var DetallesCompraParam = new SqlParameter("@DetallesCompra", DetallesCompra);
-            var IdTipoPagoParam = new SqlParameter("@IdTipoPago", IdTipoPago);
-            var IdTipoFacturaParam = new SqlParameter("@IdTipoFactura", IdTipoFactura);
-            var IdMateriaPrimaParam = new SqlParameter("@IdMateriaPrima", IdMateriaPrima);
-            await _context.Database.ExecuteSqlRawAsync("CrearFacturaCompra @FacturaCom, @FechaFactura, @TotalCompra, @DetallesCompra, @IdTipoPago, @IdTipoFactura, @IdMateriaPrima", FacturaCompraParam, FechaFacturaParam, TotalCompraParam, DetallesCompraParam, IdTipoPagoParam, IdTipoFacturaParam, IdMateriaPrimaParam);
+            using (var command = _context.Database.GetDbConnection().CreateCommand())
+            {
+                command.CommandText = "CrearFacturaId";
+                command.CommandType = CommandType.StoredProcedure;
+
+                command.Parameters.Add(new SqlParameter("@FechaFactura", FechaFactura));
+                command.Parameters.Add(new SqlParameter("@TotalCompra", TotalCompra));
+                command.Parameters.Add(new SqlParameter("@DetallesCompra", DetallesCompra ?? (object)DBNull.Value));
+                command.Parameters.Add(new SqlParameter("@IdTipoPago", IdTipoPago));
+                command.Parameters.Add(new SqlParameter("@IdTipoFactura", IdTipoFactura));
+                command.Parameters.Add(new SqlParameter("@IdMateriaPrima", IdMateriaPrima));
+
+                var IdFactura = new SqlParameter("@IdFactura", SqlDbType.VarChar, 10)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                command.Parameters.Add(IdFactura);
+
+                await _context.Database.OpenConnectionAsync();
+                await command.ExecuteNonQueryAsync();
+
+                return (string)IdFactura.Value;
+            }
         }
 
         public async Task ActualizarFacturaCompra(string IdFacturaCompra, byte[] FacturaCom, DateTime FechaFactura, decimal TotalCompra, string DetallesCompra, int IdTipoPago, int IdTipoFactura, int IdMateriaPrima)
@@ -72,10 +87,10 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
                 command.CommandText = "CrearFacturaId";
                 command.CommandType = CommandType.StoredProcedure;
 
-                command.Parameters.Add(new SqlParameter("@FacturaCom", FacturaCom));
+                command.Parameters.Add(new SqlParameter("@FacturaCom", FacturaCom ?? (object)DBNull.Value));
                 command.Parameters.Add(new SqlParameter("@FechaFactura", FechaFactura));
                 command.Parameters.Add(new SqlParameter("@TotalCompra", TotalCompra));
-                command.Parameters.Add(new SqlParameter("@DetallesCompra", DetallesCompra));
+                command.Parameters.Add(new SqlParameter("@DetallesCompra", DetallesCompra ?? (object)DBNull.Value));
                 command.Parameters.Add(new SqlParameter("@IdTipoPago", IdTipoPago));
                 command.Parameters.Add(new SqlParameter("@IdTipoFactura", IdTipoFactura));
                 command.Parameters.Add(new SqlParameter("@IdMateriaPrima", IdMateriaPrima));

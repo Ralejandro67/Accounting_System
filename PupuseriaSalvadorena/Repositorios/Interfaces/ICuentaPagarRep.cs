@@ -9,5 +9,6 @@ namespace PupuseriaSalvadorena.Repositorios.Interfaces
         Task EliminarCuentaPagar(string IdCuentaPagar);
         Task<List<CuentaPagar>> MostrarCuentasPagar();
         Task<CuentaPagar> ConsultarCuentasPagar(string IdCuentaPagar);
+        Task<CuentaPagar> ConsultarCuentasPagarporFactura(string IdFacturaCompra);
     }
 }

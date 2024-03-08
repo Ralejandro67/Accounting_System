@@ -7,96 +7,113 @@
 }
 
 @section Scripts {
+    <script src="~/js/compras.js" asp-append-version="true"></script>
     <script src="~/js/facturacompra.js" asp-append-version="true"></script>
 }
 
 <div class="card-body table-body-custom pb-4">
     <div class="container mt-4">
         <div class="d-flex justify-content-between align-items-center">
-            <h1 class="mb-0">
-                <img src="~/images/facturacompra.png" alt="Icono Factura de Compra" style="height: 60px;" />
-                Facturas de Compra
-            </h1>
-            <button type="button" class="btn btn-primary nav-link-icon" id="AddFacturaC">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
-                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
-                </svg> Nueva Factura de Compra
-            </button>
+            <div style="width: 70%;">
+                <h1 class="mb-0">
+                    <img src="~/images/facturacompra.png" alt="Icono Factura de Compra" style="height: 60px;" />
+                    Facturas de Compra
+                </h1>
+                <br />
+                <p>Registro de las facturas sobre las compras de materia prima para la elaboracion de los platillos.</p>
+            </div>
+            <div class="text-right" style="width: 30%;">
+                <button type="button" class="btn btn-primary nav-link-icon agregar-boton" id="NewReporte" data-idReporte="Excel">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-spreadsheet-fill" viewBox="0 0 16 16">
+                        <path d="M6 12v-2h3v2z" />
+                        <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0M9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1M3 9h10v1h-3v2h3v1h-3v2H9v-2H6v2H5v-2H3v-1h2v-2H3z" />
+                    </svg> Exportar Reporte
+                </button>
+                <br />
+                <button type="button" class="btn btn-primary mt-2 nav-link-icon agregar-boton" id="NewReporte" data-idReporte="Pdf">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-pdf-fill" viewBox="0 0 16 16">
+                        <path d="M5.523 12.424q.21-.124.459-.238a8 8 0 0 1-.45.606c-.28.337-.498.516-.635.572l-.035.012a.3.3 0 0 1-.026-.044c-.056-.11-.054-.216.04-.36.106-.165.319-.354.647-.548m2.455-1.647q-.178.037-.356.078a21 21 0 0 0 .5-1.05 12 12 0 0 0 .51.858q-.326.048-.654.114m2.525.939a4 4 0 0 1-.435-.41q.344.007.612.054c.317.057.466.147.518.209a.1.1 0 0 1 .026.064.44.44 0 0 1-.06.2.3.3 0 0 1-.094.124.1.1 0 0 1-.069.015c-.09-.003-.258-.066-.498-.256M8.278 6.97c-.04.244-.108.524-.2.829a5 5 0 0 1-.089-.346c-.076-.353-.087-.63-.046-.822.038-.177.11-.248.196-.283a.5.5 0 0 1 .145-.04c.013.03.028.092.032.198q.008.183-.038.465z" />
+                        <path fill-rule="evenodd" d="M4 0h5.293A1 1 0 0 1 10 .293L13.707 4a1 1 0 0 1 .293.707V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2m5.5 1.5v2a1 1 0 0 0 1 1h2zM4.165 13.668c.09.18.23.343.438.419.207.075.412.04.58-.03.318-.13.635-.436.926-.786.333-.401.683-.927 1.021-1.51a11.7 11.7 0 0 1 1.997-.406c.3.383.61.713.91.95.28.22.603.403.934.417a.86.86 0 0 0 .51-.138c.155-.101.27-.247.354-.416.09-.181.145-.37.138-.563a.84.84 0 0 0-.2-.518c-.226-.27-.596-.4-.96-.465a5.8 5.8 0 0 0-1.335-.05 11 11 0 0 1-.98-1.686c.25-.66.437-1.284.52-1.794.036-.218.055-.426.048-.614a1.24 1.24 0 0 0-.127-.538.7.7 0 0 0-.477-.365c-.202-.043-.41 0-.601.077-.377.15-.576.47-.651.823-.073.34-.04.736.046 1.136.088.406.238.848.43 1.295a20 20 0 0 1-1.062 2.227 7.7 7.7 0 0 0-1.482.645c-.37.22-.699.48-.897.787-.21.326-.275.714-.08 1.103" />
+                    </svg> Descargar Reporte
+                </button>
+                <br />
+                <button type="button" class="btn btn-primary mt-2 nav-link-icon" id="AddFacturaC">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
+                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
+                    </svg> Nueva Factura de Compra
+                </button>
+            </div>
         </div>
-    </div>
-    <div class="container mt-4">
-        Registro de las facturas sobre las compras de materia prima para la elaboracion de los platillos.
     </div>
 </div>
 <div class="card-body table-body-custom">
-    <table class="table table-hover mt-4">
+    <div class="d-flex justify-content-between align-items-center mt-4">
+        <h4>Facturas Actuales:</h4>
+        <input type="text" class="form-control" id="busquedaF" placeholder="Filtrar" />
+    </div>
+    <table class="table table-hover table-sm mt-4" id="tablaFacturas">
         <thead>
             <tr>
                 <th>
                     Producto
                 </th>
-                <th>
+                <th id="Fecha">
                     Fecha
                 </th>
                 <th>
                     Valor
                 </th>
                 <th>
-                    Pago
+                    Tipo de Pago
                 </th>
                 <th>
-                    Observaciones
+                    Descripcion
                 </th>
-                <th>
+                <th id="acciones">
                     Acciones
                 </th>
             </tr>
         </thead>
         <tbody>
-        @foreach (var item in Model) {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.NombreMateriaPrima)
-                </td>
-                <td>
-                    @item.FechaFactura.ToString("dd/MM/yyyy")
-                </td>
-                <td>
-                    @item.TotalCompra.ToString("C", new CultureInfo("es-CR"))
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.NombrePago)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DetallesCompra)
-                </td>
-                <td>
-                    <button type="button" class="btn btn-primary download-Factura nav-link-btn-icons" id="BtnDetalles" onclick="location.href='@Url.Action("DescargarFactura", new { IdFacturaCompra = item.IdFacturaCompra })'">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cloud-arrow-down-fill" viewBox="0 0 16 16">
-                            <path d="M8 2a5.53 5.53 0 0 0-3.594 1.342c-.766.66-1.321 1.52-1.464 2.383C1.266 6.095 0 7.555 0 9.318 0 11.366 1.708 13 3.781 13h8.906C14.502 13 16 11.57 16 9.773c0-1.636-1.242-2.969-2.834-3.194C12.923 3.999 10.69 2 8 2m2.354 6.854-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 1 1 .708-.708L7.5 9.293V5.5a.5.5 0 0 1 1 0v3.793l1.146-1.147a.5.5 0 0 1 .708.708" />
-                        </svg>
-                    </button>
-                    <button type="button" class="btn btn-primary print-Factura nav-link-btn-icons" id="BtnImprimir" data-id="@item.IdFacturaCompra">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-printer-fill" viewBox="0 0 16 16">
-                            <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2zm6 8H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1" />
-                            <path d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1" />
-                        </svg>
-                    </button>
-                        <button type="button" class="btn btn-primary edit-Factura nav-link-btn-icons" id="BtnEditar" data-id="@item.IdFacturaCompra">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
-                            <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z" />
-                        </svg>
-                    </button>
+            @foreach (var item in Model) {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NombreMateriaPrima)
+                    </td>
+                    <td>
+                        @item.FechaFactura.ToString("dd/MM/yyyy")
+                    </td>
+                    <td>
+                        @item.TotalCompra.ToString("C", new CultureInfo("es-CR"))
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NombrePago)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DetallesCompra)
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-primary download-Factura nav-link-btn-icons" id="BtnDetalles" data-id="@item.IdFacturaCompra">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-pdf-fill" viewBox="0 0 16 16">
+                                <path d="M5.523 12.424q.21-.124.459-.238a8 8 0 0 1-.45.606c-.28.337-.498.516-.635.572l-.035.012a.3.3 0 0 1-.026-.044c-.056-.11-.054-.216.04-.36.106-.165.319-.354.647-.548m2.455-1.647q-.178.037-.356.078a21 21 0 0 0 .5-1.05 12 12 0 0 0 .51.858q-.326.048-.654.114m2.525.939a4 4 0 0 1-.435-.41q.344.007.612.054c.317.057.466.147.518.209a.1.1 0 0 1 .026.064.44.44 0 0 1-.06.2.3.3 0 0 1-.094.124.1.1 0 0 1-.069.015c-.09-.003-.258-.066-.498-.256M8.278 6.97c-.04.244-.108.524-.2.829a5 5 0 0 1-.089-.346c-.076-.353-.087-.63-.046-.822.038-.177.11-.248.196-.283a.5.5 0 0 1 .145-.04c.013.03.028.092.032.198q.008.183-.038.465z" />
+                                <path fill-rule="evenodd" d="M4 0h5.293A1 1 0 0 1 10 .293L13.707 4a1 1 0 0 1 .293.707V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2m5.5 1.5v2a1 1 0 0 0 1 1h2zM4.165 13.668c.09.18.23.343.438.419.207.075.412.04.58-.03.318-.13.635-.436.926-.786.333-.401.683-.927 1.021-1.51a11.7 11.7 0 0 1 1.997-.406c.3.383.61.713.91.95.28.22.603.403.934.417a.86.86 0 0 0 .51-.138c.155-.101.27-.247.354-.416.09-.181.145-.37.138-.563a.84.84 0 0 0-.2-.518c-.226-.27-.596-.4-.96-.465a5.8 5.8 0 0 0-1.335-.05 11 11 0 0 1-.98-1.686c.25-.66.437-1.284.52-1.794.036-.218.055-.426.048-.614a1.24 1.24 0 0 0-.127-.538.7.7 0 0 0-.477-.365c-.202-.043-.41 0-.601.077-.377.15-.576.47-.651.823-.073.34-.04.736.046 1.136.088.406.238.848.43 1.295a20 20 0 0 1-1.062 2.227 7.7 7.7 0 0 0-1.482.645c-.37.22-.699.48-.897.787-.21.326-.275.714-.08 1.103" />
+                            </svg>
+                        </button>
                         <button type="button" class="btn btn-primary delete-Factura nav-link-btn-icons" id="BtnEliminar" data-id="@item.IdFacturaCompra">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
-                            <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
-                        </svg>
-                    </button>
-                </td>
-            </tr>
-        }
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+                                <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
+                            </svg>
+                        </button>
+                    </td>
+                </tr>
+            }
         </tbody>
     </table>
+    <div id="pagination" class="pagination justify-content-center align-content-end pb-4">
+        <button class="btn btn-primary anterior" onclick="changePage(-1)"><i class="fas fa-angle-left"></i></button>
+        <span id="pageIndicator">1</span>
+        <button class="btn btn-primary siguiente" onclick="changePage(1)"><i class="fas fa-angle-right"></i></button>
+    </div>
 </div>
 <div class="modal fade" id="newFacturaCModal" tabindex="-1" role="dialog" aria-labelledby="newFacturaCModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -113,17 +130,17 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="editFacturaCModal" tabindex="-1" role="dialog" aria-labelledby="editFacturaCModalLabel" aria-hidden="true">
+<div class="modal fade" id="ReporteModal" tabindex="-1" role="dialog" aria-labelledby="ReporteModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="editFacturaCModalLabel">Editar Transaccion</h5>
+                <h5 class="modal-title" id="ReporteModalLabel">Generar Reporte</h5>
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                @Html.Partial("_editFacturaCPartial", new PupuseriaSalvadorena.Models.FacturaCompra())
+                @Html.Partial("_Reporte", new PupuseriaSalvadorena.Models.FacturaCompra())
             </div>
         </div>
     </div>

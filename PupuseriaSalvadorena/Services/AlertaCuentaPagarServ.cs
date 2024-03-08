@@ -35,7 +35,13 @@ namespace PupuseriaSalvadorena.Services
                 {
                     if (cuenta.Estado && DateTime.Now < cuenta.FechaVencimiento && cuenta.FechaVencimiento <= DateTime.Now.AddDays(2))
                     {
-                        var mensaje = "La cuenta por pagar " + cuenta.IdCuentaPagar + " esta proxima a vencer.";
+                        var mensaje = "Cuenta: " + cuenta.IdCuentaPagar + " esta proxima a vencer.";
+                        alertaCuentaPagarRep.CrearAlertaCuentaPagar(mensaje, DateTime.Now, cuenta.IdCuentaPagar, false).Wait();
+                    }
+
+                    if (cuenta.Estado && DateTime.Now > cuenta.FechaVencimiento)
+                    {
+                        var mensaje = "Cuenta: " + cuenta.IdCuentaPagar + " aun no se ha pagado.";
                         alertaCuentaPagarRep.CrearAlertaCuentaPagar(mensaje, DateTime.Now, cuenta.IdCuentaPagar, false).Wait();
                     }
                 }

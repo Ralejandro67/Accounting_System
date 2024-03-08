@@ -45,17 +45,11 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             }   
         }
 
-        public async Task ActualizarDeclaracionTax(string IdDeclaracionImpuesto, DateTime FechaInicio, string Trimestre, decimal MontoRenta, decimal MontoIVA, decimal MontoTotalImpuestos, decimal MontoTotal, string Observaciones)
+        public async Task ActualizarDeclaracionTax(string IdDeclaracionImpuesto, string Observaciones)
         {
             var IdDeclaracionImpuestoParam = new SqlParameter("@IdDeclaracionImpuesto", IdDeclaracionImpuesto);
-            var FechaInicioParam = new SqlParameter("@FechaInicio", FechaInicio);
-            var TrimestreParam = new SqlParameter("@Trimestre", Trimestre);
-            var MontoRentaParam = new SqlParameter("@MontoRenta", MontoRenta);
-            var MontoIVAParam = new SqlParameter("@MontoIVA", MontoIVA);
-            var MontoTotalImpuestosParam = new SqlParameter("@MontoTotalImpuestos", MontoTotalImpuestos);
-            var MontoTotalParam = new SqlParameter("@MontoTotal", MontoTotal);
             var ObservacionesParam = new SqlParameter("@Observaciones", Observaciones);
-            await _context.Database.ExecuteSqlRawAsync("ActualizarDeclaracionesTax @IdDeclaracionImpuesto, @FechaInicio, @FechaFinal, @MontoTotalIngresos, @MontoTotalEgresos, @MontoTotalImpuestos, @MontoTotal, @Observaciones", IdDeclaracionImpuestoParam, FechaInicioParam, TrimestreParam, MontoRentaParam, MontoIVAParam, MontoTotalImpuestosParam, MontoTotalParam, ObservacionesParam);
+            await _context.Database.ExecuteSqlRawAsync("ActualizarDeclaracionesTax @IdDeclaracionImpuesto, @Observaciones", IdDeclaracionImpuestoParam, ObservacionesParam);
         }
 
         public async Task EliminarDeclaracionTax(string IdDeclaracionImpuesto)

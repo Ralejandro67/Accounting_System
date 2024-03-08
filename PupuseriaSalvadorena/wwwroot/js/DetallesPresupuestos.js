@@ -85,7 +85,8 @@ document.getElementById('DetallesPresupuestoForm').addEventListener('submit', fu
         Swal.fire({
             title: 'Error',
             text: 'Debes seleccionar al menos una transacción.',
-            icon: 'warning'
+            icon: 'warning',
+            confirmButtonColor: '#0DBCB5'
         });
         return;
     }
@@ -105,7 +106,8 @@ document.getElementById('DetallesPresupuestoForm').addEventListener('submit', fu
                 Swal.fire({
                     title: '¡Éxito!',
                     text: data.message,
-                    icon: 'success'
+                    icon: 'success',
+                    confirmButtonColor: '#0DBCB5'
                 }).then((result) => {
                     if (result.isConfirmed || result.isDismissed) {
                         window.location.reload();
@@ -115,7 +117,8 @@ document.getElementById('DetallesPresupuestoForm').addEventListener('submit', fu
                 Swal.fire({
                     title: 'Error',
                     text: data.message,
-                    icon: 'error'
+                    icon: 'error',
+                    confirmButtonColor: '#0DBCB5'
                 });
             }
         })
@@ -123,7 +126,8 @@ document.getElementById('DetallesPresupuestoForm').addEventListener('submit', fu
             Swal.fire({
                 title: 'Error',
                 text: 'Hubo un problema con la solicitud.',
-                icon: 'error'
+                icon: 'error',
+                confirmButtonColor: '#0DBCB5'
             });
         });
 });

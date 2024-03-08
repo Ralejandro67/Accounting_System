@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using ClosedXML.Excel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +11,8 @@ using PupuseriaSalvadorena.Conexion;
 using PupuseriaSalvadorena.Models;
 using PupuseriaSalvadorena.Repositorios.Implementaciones;
 using PupuseriaSalvadorena.Repositorios.Interfaces;
+using PupuseriaSalvadorena.ViewModels;
+using Rotativa.AspNetCore;
 
 namespace PupuseriaSalvadorena.Controllers
 {
@@ -23,11 +27,10 @@ namespace PupuseriaSalvadorena.Controllers
         private readonly IDetallesTransacRep _detallesTransacRep;
         private readonly IHistorialCompraRep _historialCompraRep;
         private readonly IRegistroLibrosRep _registroLibrosRep;
+        private readonly INegociosRep _negociosRep;
+        private readonly IDetallesCuentaRep _detallesCuentaRep;
 
-        public FacturaComprasController(IFacturaCompraRep context, IMateriaPrimaRep materiaPrimaRep, ITipoPagoRep tipoPagoRep, 
-                                        ITipoFacturaRep tipoFacturaRep, IProveedorRep proveedorRep, ICuentaPagarRep cuentaPagarRep, 
-                                        IDetallesTransacRep detallesTransacRep, IHistorialCompraRep historialCompraRep,
-                                        IRegistroLibrosRep registroLibrosRep)
+        public FacturaComprasController(IFacturaCompraRep context, IMateriaPrimaRep materiaPrimaRep, ITipoPagoRep tipoPagoRep, ITipoFacturaRep tipoFacturaRep, IProveedorRep proveedorRep, ICuentaPagarRep cuentaPagarRep, IDetallesTransacRep detallesTransacRep, IHistorialCompraRep historialCompraRep, IRegistroLibrosRep registroLibrosRep, INegociosRep negociosRep, IDetallesCuentaRep detallesCuentaRep)
         {
             _facturaCompraRep = context;
             _materiaPrimaRep = materiaPrimaRep;
@@ -38,16 +41,25 @@ namespace PupuseriaSalvadorena.Controllers
             _detallesTransacRep = detallesTransacRep;
             _historialCompraRep = historialCompraRep;
             _registroLibrosRep = registroLibrosRep;
+            _negociosRep = negociosRep;
+            _detallesCuentaRep = detallesCuentaRep;
         }
 
         // GET: FacturaCompras
         public async Task<IActionResult> Index()
         {
+            var fechaActual = DateTime.Today;
+            var añoActual = fechaActual.Year;
+            var mesActual = fechaActual.Month;
+
             var facturaCompras = await _facturaCompraRep.MostrarFacturasCompras();
             var proveedores = await _proveedorRep.MostrarProveedores();
+
+            var facturasActuales = facturaCompras.Where(f => f.FechaFactura.Year == añoActual && f.FechaFactura.Month == mesActual).ToList();
+
             ViewBag.Proveedores = new SelectList(proveedores, "IdProveedor", "ProveedorCompleto");
 
-            return View(facturaCompras);
+            return View(facturasActuales);
         }
 
         // GET: FacturaCompras/Details/5
@@ -83,17 +95,21 @@ namespace PupuseriaSalvadorena.Controllers
         // POST: FacturaCompras/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdFacturaCompra,FacturaCom,FechaFactura,TotalCompra,DetallesCompra,IdTipoPago,IdTipoFactura,IdMateriaPrima,FacturaDoc,Activo,IdProveedor,FechaVencimiento,Peso,Cantidad")] FacturaCompra facturaCompra, IFormFile facturaDoc)
+        public async Task<IActionResult> Create([Bind("IdFacturaCompra,FacturaCom,FechaFactura,TotalCompra,DetallesCompra,IdTipoPago,IdTipoFactura,IdMateriaPrima,FacturaDoc,Activo,IdProveedor,FechaVencimiento,Peso,Cantidad,TipoReporte,FechaReporte")] FacturaCompra facturaCompra)
         {
             if (ModelState.IsValid)
             {
-                if (facturaDoc != null && facturaDoc.Length > 0)
+                if (facturaCompra.FacturaDoc != null && facturaCompra.FacturaDoc.Length > 0)
                 {
                     using (var memoryStream = new MemoryStream())
                     {
-                        await facturaDoc.CopyToAsync(memoryStream);
+                        await facturaCompra.FacturaDoc.CopyToAsync(memoryStream);
                         facturaCompra.FacturaCom = memoryStream.ToArray();
                     }
+                }
+                else 
+                {                     
+                    facturaCompra.FacturaCom = new byte[0];
                 }
 
                 var IdLibro = await _detallesTransacRep.ObtenerIdLibroMasReciente();
@@ -103,7 +119,7 @@ namespace PupuseriaSalvadorena.Controllers
                 decimal montoTotal = Libro.MontoTotal - facturaCompra.TotalCompra;
 
                 await _registroLibrosRep.ActualizarRegistroLibros(IdLibro, montoTotal, Libro.Descripcion, Libro.Conciliado);
-                await _detallesTransacRep.CrearDetalleTransaccion(IdLibro, facturaCompra.DetallesCompra, facturaCompra.Cantidad, facturaCompra.TotalCompra, facturaCompra.FechaFactura, 1, "TAX001", false, facturaCompra.FechaFactura, "No Recurrente", false);
+                await _detallesTransacRep.CrearDetalleTransaccion(IdLibro, $"Factura de Compra: {IdFactura}", facturaCompra.Cantidad, facturaCompra.TotalCompra, facturaCompra.FechaFactura, 1, "TAX001", false, facturaCompra.FechaFactura, "No Recurrente", false);
                 await _historialCompraRep.CrearHistorialCompra(facturaCompra.IdMateriaPrima, facturaCompra.Cantidad, facturaCompra.TotalCompra, facturaCompra.Peso, facturaCompra.FechaFactura, IdFactura);
 
 
@@ -114,79 +130,26 @@ namespace PupuseriaSalvadorena.Controllers
 
                 return Json(new { success = true, message = "Factura de Compra agregada correctamente." });
             }
-            return Json(new { success = false, message = "Error al agregar la factura de compra." });
-        }
-
-        // GET: FacturaCompras/Edit/5
-        public async Task<IActionResult> Edit(string id)
-        {
-            if (id == null)
+            else
             {
-                return NotFound();
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                return Json(new { success = false, errors = errors });
             }
-
-            var facturaCompra = await _facturaCompraRep.ConsultarFacturasCompras(id);
-
-            var materiasPrimas = await _materiaPrimaRep.MostrarMateriaPrima();
-            var tipoPagos = await _tipoPagoRep.MostrarTipoPagos();
-            var tipoFacturas = await _tipoFacturaRep.MostrarTipoFacturas();
-
-            ViewBag.MateriasPrimas = new SelectList(materiasPrimas, "IdMateriaPrima", "NombreMateriaPrima");
-            ViewBag.TipoPagos = new SelectList(tipoPagos, "IdTipoPago", "NombrePago");
-            ViewBag.TipoFacturas = new SelectList(tipoFacturas, "IdTipoFactura", "NombreFactura");
-
-            if (facturaCompra == null)
-            {
-                return NotFound();
-            }
-            return PartialView("_editFacturaCPartial", facturaCompra);
-        }
-
-        // POST: FacturaCompras/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("IdFacturaCompra,FacturaCom,FechaFactura,TotalCompra,DetallesCompra,IdTipoPago,IdTipoFactura,IdMateriaPrima,FacturaDoc")] FacturaCompra facturaCompra, IFormFile? facturaDoc)
-        {
-            if (id != facturaCompra.IdFacturaCompra)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                var factura = await _facturaCompraRep.ConsultarFacturasCompras(id);
-                var transaccion = await _detallesTransacRep.ConsultarTransaccionesDetalles(factura.DetallesCompra);
-                var historialCompra = await _historialCompraRep.ConsultarHistorialComprasporFactura(id);
-                var Libro = await _registroLibrosRep.ConsultarRegistrosLibros(transaccion.IdRegistroLibros);
-                decimal montoTotal = (Libro.MontoTotal + factura.TotalCompra) - facturaCompra.TotalCompra;
-
-                if (facturaDoc != null && facturaDoc.Length > 0)
-                {
-                    using (var memoryStream = new MemoryStream())
-                    {
-                        await facturaDoc.CopyToAsync(memoryStream);
-                        facturaCompra.FacturaCom = memoryStream.ToArray();
-                    }
-                }
-                else
-                {
-                    facturaCompra.FacturaCom = factura.FacturaCom;
-                }
-
-                await _registroLibrosRep.ActualizarRegistroLibros(transaccion.IdRegistroLibros, montoTotal, Libro.Descripcion, Libro.Conciliado);
-                await _detallesTransacRep.ActualizarDetalleTransaccion(transaccion.IdTransaccion, facturaCompra.DetallesCompra, facturaCompra.Cantidad, facturaCompra.TotalCompra, 1, "TAX001", transaccion.Conciliado);
-                await _historialCompraRep.ActualizarHistorialCompra(historialCompra.IdCompra, facturaCompra.IdMateriaPrima, facturaCompra.Cantidad, facturaCompra.TotalCompra, facturaCompra.Peso, facturaCompra.FechaFactura, facturaCompra.IdFacturaCompra);
-                await _facturaCompraRep.ActualizarFacturaCompra(facturaCompra.IdFacturaCompra, facturaCompra.FacturaCom, facturaCompra.FechaFactura, facturaCompra.TotalCompra, facturaCompra.DetallesCompra, facturaCompra.IdTipoPago, facturaCompra.IdTipoFactura, facturaCompra.IdMateriaPrima);
-                return Json(new { success = true, message = "Factura de compra actualizada correctamente." });
-            }
-            return Json(new { success = false, message = "Error al actualizar la factura de compra." });
         }
 
         // GET: FacturaCompras/Delete/5
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> DeleteConfirmation(string id)
         {
-            var facturaCompra = await _facturaCompraRep.ConsultarFacturasCompras(id);
-            return Json(new { exists = facturaCompra != null });
+            var cuentapagar = await _cuentaPagarRep.ConsultarCuentasPagarporFactura(id);
+
+            if(cuentapagar != null && cuentapagar.TotalPagado != 0)
+            {
+                return Json(new { success = true });
+            }
+            else
+            {
+                return Json(new { success = false });
+            }
         }
 
         // POST: FacturaCompras/Delete/5
@@ -199,10 +162,30 @@ namespace PupuseriaSalvadorena.Controllers
                 var IdLibro = await _detallesTransacRep.ObtenerIdLibroMasReciente();
                 var Libro = await _registroLibrosRep.ConsultarRegistrosLibros(IdLibro);
                 var facturaCompra = await _facturaCompraRep.ConsultarFacturasCompras(id);
+                var cuentapagar = await _cuentaPagarRep.ConsultarCuentasPagarporFactura(id);
+                var transaccion = await _detallesTransacRep.ConsultarTransaccionesDetalles($"Factura de Compra: {facturaCompra.IdFacturaCompra}");
+
+                if (cuentapagar != null)
+                {
+                    var detalleCuenta = await _detallesCuentaRep.ConsultarCuentaDetalles(cuentapagar.IdCuentaPagar);
+                    decimal Pagado = detalleCuenta.Sum(x => x.Pago);
+                    decimal PorPagar = cuentapagar.TotalPagado - Pagado;
+
+                    if (cuentapagar.TotalPagado == facturaCompra.TotalCompra || PorPagar == 0)
+                    {
+                        await _cuentaPagarRep.EliminarCuentaPagar(cuentapagar.IdCuentaPagar);
+                    }
+                    else
+                    {
+                       return Json(new { success = false, message = "La cuenta por pagar asociada debe pagarse en su totalidad para proceder con la eliminacion." });
+                    }
+                }
 
                 decimal montoTotal = Libro.MontoTotal + facturaCompra.TotalCompra;
 
                 await _registroLibrosRep.ActualizarRegistroLibros(IdLibro, montoTotal, Libro.Descripcion, Libro.Conciliado);
+                await _detallesTransacRep.EliminarDetallesTransaccion(transaccion.IdTransaccion);
+                await _historialCompraRep.EliminarHistorialCompraFactura(id);
                 await _facturaCompraRep.EliminarFacturaCompra(id);
                 return Json(new { success = true, message = "Factura de compra eliminada correctamente." });
             }
@@ -212,20 +195,25 @@ namespace PupuseriaSalvadorena.Controllers
             }
         }
 
-        public async Task<IActionResult> DescargarFactura(string IdFacturaCompra)
+        [HttpGet("FacturaCompras/DescargarFactura/{IdFactura}")]
+        public async Task<IActionResult> DescargarFactura(string IdFactura)
         {
-            var facturaCompra = await _facturaCompraRep.ConsultarFacturasCompras(IdFacturaCompra);
+            var facturaCompra = await _facturaCompraRep.ConsultarFacturasCompras(IdFactura);
 
-            if (facturaCompra != null && facturaCompra.FacturaCom != null)
+            if (facturaCompra != null && facturaCompra.FacturaCom != null && facturaCompra.FacturaCom.Length > 0)
             {
                 string fechaFormato = facturaCompra.FechaFactura.ToString("yyyyMMdd");
                 string nombreArchivo = $"Factura_{fechaFormato}.pdf";
 
                 return File(facturaCompra.FacturaCom, "application/pdf", nombreArchivo);
             }
+            else if (facturaCompra != null && (facturaCompra.FacturaCom == null || facturaCompra.FacturaCom.Length == 0))
+            {
+                return Json(new { success = false, message = "Esta factura no tiene una documento adjunto." });
+            }
             else
             {
-                return NotFound();
+                return Json(new { success = false, message = "No se encontro la factura de compra." });
             }
         }
 
@@ -234,6 +222,82 @@ namespace PupuseriaSalvadorena.Controllers
         {
             var materiasPrimas = await _materiaPrimaRep.ConsultarMateriasPrimasProveedor(IdProveedor);
             return Json(new SelectList(materiasPrimas, "IdMateriaPrima", "NombreMateriaPrima"));
+        }
+
+        public async Task<IActionResult> ReporteFacturas(FacturaCompra facturaCompra)
+        {
+            var facturas = await _facturaCompraRep.MostrarFacturasCompras();
+            var negocio = await _negociosRep.MostrarNegocio();
+
+            string mes = facturaCompra.FechaReporte.ToString("MMMM", new CultureInfo("es-ES"));
+            string year = facturaCompra.FechaReporte.Year.ToString();
+
+            var facturasMes = facturas.Where(f => f.FechaFactura.Year == facturaCompra.FechaReporte.Year && f.FechaFactura.Month == facturaCompra.FechaReporte.Month).ToList();
+            decimal totalVentas = facturasMes.Sum(f => f.TotalCompra);
+            int totalFacturas = facturasMes.Count();
+
+            var viewModel = new FacturaComprasPDF
+            {
+                Mes = mes,
+                Year = year,
+                Negocio = negocio,
+                Facturas = facturasMes,
+                TotalVentas = totalVentas,
+                TotalFacturas = totalFacturas
+            };
+
+            if (facturaCompra.TipoReporte == "Pdf")
+            {
+                return new ViewAsPdf("DescargarFacturaCompras", viewModel)
+                {
+                    FileName = $"Reporte_Compras_{mes}.pdf",
+                    PageSize = Rotativa.AspNetCore.Options.Size.Letter,
+                    PageMargins = new Rotativa.AspNetCore.Options.Margins(15, 12, 12, 12)
+                };
+            }
+            else
+            {
+                try
+                {
+                    using (var workbook = new XLWorkbook())
+                    {
+                        var worksheet = workbook.Worksheets.Add("Reporte de Compras");
+                        var currentRow = 1;
+                        worksheet.Cell(currentRow, 1).Value = "ID";
+                        worksheet.Cell(currentRow, 2).Value = "Producto";
+                        worksheet.Cell(currentRow, 3).Value = "Fecha";
+                        worksheet.Cell(currentRow, 4).Value = "Pago";
+                        worksheet.Cell(currentRow, 5).Value = "Total Compra";
+                        worksheet.Cell(currentRow, 6).Value = "Detalles";
+
+                        foreach (var factura in viewModel.Facturas)
+                        {
+                            currentRow++;
+                            worksheet.Cell(currentRow, 1).Value = factura.IdFacturaCompra;
+                            worksheet.Cell(currentRow, 2).Value = factura.NombreMateriaPrima;
+                            worksheet.Cell(currentRow, 3).Value = factura.FechaFactura.ToString("dd/MM/yyyy");
+                            worksheet.Cell(currentRow, 4).Value = factura.NombrePago;
+                            worksheet.Cell(currentRow, 5).Value = factura.TotalCompra;
+                            worksheet.Cell(currentRow, 6).Value = factura.DetallesCompra;
+                        }
+
+                        currentRow++;
+                        worksheet.Cell(currentRow, 4).Value = "Total Ventas";
+                        worksheet.Cell(currentRow, 5).Value = viewModel.TotalVentas;
+
+                        using (var stream = new MemoryStream())
+                        {
+                            workbook.SaveAs(stream);
+                            var content = stream.ToArray();
+                            return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"Reporte_Compras_{mes}.xlsx");
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { success = false, message = "Error al generar el reporte. Detalle: " + ex.Message });
+                }
+            }
         }
     }
 }

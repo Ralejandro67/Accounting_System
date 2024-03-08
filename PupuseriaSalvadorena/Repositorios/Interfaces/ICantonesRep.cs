@@ -8,6 +8,7 @@ namespace PupuseriaSalvadorena.Repositorios.Interfaces
         Task ActualizarCanton(int id, string nombre, int provincia);
         Task EliminarCanton(int id);
         Task<List<Canton>> MostrarCantones();
-        Task<Canton> ConsultarCantones(int id);
+        Task<List<Canton>> ConsultarCantones(int id);
+        Task<Canton> ConsultarCanton(int id);
     }
 }

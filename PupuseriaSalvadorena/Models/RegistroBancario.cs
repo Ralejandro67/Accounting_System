@@ -16,7 +16,6 @@ namespace PupuseriaSalvadorena.Models
         public decimal SaldoInicial { get; set; }
 
         [Required(ErrorMessage = "El número de cuenta es obligatorio")]
-        [RegularExpression(@"^[0-9]+$", ErrorMessage = "El número de cuenta solo puede contener números")]
         public string? NumeroCuenta { get; set; }
 
         public string? Observaciones { get; set; }

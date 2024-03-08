@@ -22,59 +22,78 @@
     <div class="container mt-4">
         <div class="d-flex justify-content-between align-items-center">
             Transacciones asociadas al presupuesto seleccionado.
-            <button type="button" class="btn btn-primary nav-link-icon" id="AddImpuesto">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
-                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
+            <button type="button" class="btn btn-primary nav-link-icon" id="AddImpuesto" onclick="history.back();">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left-circle-fill" viewBox="0 0 16 16">
+                    <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z" />
                 </svg> Volver
             </button>
         </div>
     </div>
 </div>
 <div class="card-body table-body-custom">
-    <table class="table table-hover">
-        <thead>
-            <tr>
-                <th>
-                    ID
-                </th>
-                <th>
-                    Fecha de Ingreso
-                </th>
-                <th>
-                    Transaccion
-                </th>
-                <th>
-                    Monto
-                </th>
-                <th>
-                    Acciones
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model) {
+    @if (Model.Count() > 0)
+    {
+        <div class="d-flex justify-content-between align-items-center mt-4">
+            <h4>Transacciones:</h4>
+            <input type="text" class="form-control" id="busqueda" placeholder="Filtrar" />
+        </div>
+        <table class="table table-hover mt-4 table-sm" id="tablaDetalles">
+            <thead>
                 <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.IdTransaccion)
-                    </td>
-                    <td>
-                        @item.FechaIngreso.ToString("dd/MM/yyyy")
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Observaciones)
-                    </td>
-                    <td>
-                        @(item.Monto.ToString("C", new CultureInfo("es-CR")))
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-danger delete-detPresupuesto" id="BtnEliminar" data-idPresupuesto="@item.IdPresupuesto" data-id="@item.IdTransaccion">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
-                                <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
-                            </svg>
-                        </button>
-                    </td>
+                    <th>
+                        ID
+                    </th>
+                    <th id="Fecha">
+                        Fecha de Ingreso
+                    </th>
+                    <th>
+                        Transaccion
+                    </th>
+                    <th>
+                        Monto
+                    </th>
+                    <th id="acciones">
+                        Acciones
+                    </th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.IdTransaccion)
+                        </td>
+                        <td>
+                            @item.FechaIngreso.ToString("dd/MM/yyyy")
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Observaciones)
+                        </td>
+                        <td>
+                            @(item.Monto.ToString("C", new CultureInfo("es-CR")))
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-danger delete-detPresupuesto" id="BtnEliminar" data-idPresupuesto="@item.IdPresupuesto" data-id="@item.IdTransaccion">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+                                    <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div id="pagination" class="pagination justify-content-center align-content-end pb-4">
+            <button class="btn btn-primary anterior" onclick="changePage(-1)"><i class="fas fa-angle-left"></i></button>
+            <span id="pageIndicator">1</span>
+            <button class="btn btn-primary siguiente" onclick="changePage(1)"><i class="fas fa-angle-right"></i></button>
+        </div>
+    }
+    else
+    {
+        <div class="container mt-4 mb-4">
+            <h4 class="text-center">No se ha agredado ninguna transaccion.</h4>
+        </div>
+    }
 </div>

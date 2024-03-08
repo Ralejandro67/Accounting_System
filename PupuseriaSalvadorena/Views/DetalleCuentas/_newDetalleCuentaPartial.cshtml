@@ -2,20 +2,27 @@
 
 <form id="DetalleCuentaForm" asp-action="Create" asp-controller="DetalleCuentas" method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="form-group">
-        <label asp-for="Pago" class="control-label"></label>
-        <input asp-for="Pago" class="form-control" />
-        <span asp-validation-for="Pago" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="FechaIngreso" class="control-label"></label>
-        <input asp-for="FechaIngreso" class="form-control" type="date" />
-        <span asp-validation-for="FechaIngreso" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <input asp-for="IdCuentaPagar" value="@ViewBag.CuentasPagar" class="form-control" type="hidden"/>
+    <input asp-for="IdCuentaPagar" value="@ViewBag.CuentasPagar" class="form-control" type="hidden" />
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="control-label">Monto del Pago</label>
+                <div class="input-group">
+                    <span class="input-group-text">₡</span>
+                    <input id="Pago" name="Pago" class="form-control" placeholder="0.00"/>
+                    <span asp-validation-for="Pago" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="control-label">Fecha del Pago</label>
+                <input asp-for="FechaIngreso" class="form-control" type="date" />
+                <span asp-validation-for="FechaIngreso" class="text-danger"></span>
+            </div>
+        </div>
     </div>
     <div class="form-group text-right">
-        <button type="submit" id="submitDetalleCuenta" class="btn btn-primary">Agregar</button>
+        <button type="submit" id="submitDetalleCuenta" class="btn btn-primary agregar-boton">Agregar</button>
     </div>
 </form>

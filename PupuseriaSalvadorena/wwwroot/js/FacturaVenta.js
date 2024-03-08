@@ -33,6 +33,63 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 }); 
 
+// Reporte de Facturas
+$(document).off('click', '#NewReporte').on('click', '#NewReporte', function () {
+    var idReporte = $(this).data('idreporte');
+    $('input[name="TipoReporte"]').val(idReporte); 
+    $('#ReporteModal').modal('show');
+});
+
+document.addEventListener('click', function (e) {
+    if (e.target && e.target.id === 'submitReporteForm') {
+        var formData = new FormData(document.getElementById('ReporteForm'));
+
+        fetch('/FacturaVentas/ReporteFacturas', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'RequestVerificationToken': document.getElementsByName('__RequestVerificationToken')[0].value
+            }
+        })
+        .then(response => {
+            var contentType = response.headers.get("content-type");
+            if (contentType && contentType.indexOf("application/json") !== -1) {
+                return response.json().then(data => {
+                    Swal.fire({
+                        title: 'Error',
+                        text: data.message,
+                        icon: 'error'
+                    });
+                });
+            } else if (contentType && contentType.indexOf("application/pdf") !== -1 || contentType.indexOf("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") !== -1) {
+                response.blob().then(blob => {
+                    var url = window.URL.createObjectURL(blob);
+                    var a = document.createElement('a');
+                    a.href = url;
+                    a.download = response.headers.get("content-disposition").split('filename=')[1].replaceAll('"', '');
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                });
+            } else {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Formato de respuesta desconocido.',
+                    icon: 'error'
+                });
+            }
+        })
+        .catch(error => {
+            Swal.fire({
+                title: 'Error',
+                text: 'Hubo un problema con la solicitud.',
+                icon: 'error'
+            });
+        });
+    }
+});
+
+// Agregar Factura de Venta
 $(document).ready(function () {
     $("#AddFacturaVenta").on("click", function () {
         $.ajax({
@@ -174,10 +231,16 @@ document.addEventListener('click', function (e) {
                     }
                 });
             } else {
+                let errorMessage = "";
+                if (data.errors && data.errors.length > 0) {
+                    errorMessage += "\n" + data.errors.join("\n");
+                }
+
                 Swal.fire({
                     title: 'Error',
-                    text: data.message,
-                    icon: 'error'
+                    text: errorMessage,
+                    icon: 'warning',
+                    confirmButtonColor: '#0DBCB5'
                 });
             }
         })
@@ -189,4 +252,87 @@ document.addEventListener('click', function (e) {
             });
         });
     }
+});
+
+document.querySelectorAll('.print-FacturaVenta').forEach(button => {
+    button.addEventListener('click', function () {
+        var id = this.getAttribute('data-id');
+        fetch(`/FacturaVentas/ImprimirFactura/${id}`, {
+            method: 'GET'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.open(data.url, '_blank');
+            } else {
+                let errorMessage = "Error al imprimir la factura.";
+                if (data.message) {
+                    errorMessage = data.message;
+                }
+
+                Swal.fire({
+                    title: 'Error',
+                    text: errorMessage,
+                    icon: 'warning',
+                    confirmButtonColor: '#0DBCB5'
+                });
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+});
+
+// Eliminar impuesto
+document.querySelectorAll('.delete-FacturaVenta').forEach(button => {
+    button.addEventListener('click', function () {
+        var Id = this.getAttribute('data-id');
+
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "¡Si anulas la factura no podrás revertir este cambio!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#0DBCB5',
+            cancelButtonColor: '#9DB2BF',
+            confirmButtonText: 'Sí, elimínalo!',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`/FacturaVentas/Delete/${Id}`, {
+                    method: 'POST',
+                    headers: {
+                        'RequestVerificationToken': document.getElementsByName('__RequestVerificationToken')[0].value
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                title: '¡Eliminado!',
+                                text: data.message,
+                                icon: 'success',
+                                confirmButtonColor: '#0DBCB5'
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Error',
+                                text: data.message,
+                                icon: 'error',
+                                confirmButtonColor: '#0DBCB5'
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Hubo un problema con la solicitud.',
+                            icon: 'error',
+                            confirmButtonColor: '#0DBCB5'
+                        });
+                    });
+            }
+        })
+    });
 });

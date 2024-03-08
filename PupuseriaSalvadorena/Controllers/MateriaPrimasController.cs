@@ -64,7 +64,11 @@ namespace PupuseriaSalvadorena.Controllers
                 await _materiaPrimaRep.CrearMateriaPrima(materiaPrima.NombreMateriaPrima, materiaPrima.IdProveedor);
                 return Json(new { success = true, message = "Materia Prima agregada correctamente." });
             }
-            return Json(new { success = false, message = "Error al agregar la materia prima." });
+            else
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                return Json(new { success = false, errors = errors });
+            }
         }
 
         // GET: MateriaPrimas/Edit/5
@@ -76,31 +80,32 @@ namespace PupuseriaSalvadorena.Controllers
             }
 
             var materiaPrima = await _materiaPrimaRep.ConsultarMateriasPrimas(id.Value);
+            var proveedores = await _proveedorRep.MostrarProveedores();
+            ViewBag.Proveedores = new SelectList(proveedores, "IdProveedor", "ProveedorCompleto");
+
             if (materiaPrima == null)
             {
                 return NotFound();
             }
-            return View(materiaPrima);
+
+            return PartialView("_editMateriaPrimaPartial", materiaPrima);
         }
 
         // POST: MateriaPrimas/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("IdMateriaPrima,NombreMateriaPrima,IdProveedor")] MateriaPrima materiaPrima)
         {
-            if (id != materiaPrima.IdMateriaPrima)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
                 await _materiaPrimaRep.ActualizarMateriaPrima(materiaPrima.IdMateriaPrima, materiaPrima.NombreMateriaPrima, materiaPrima.IdProveedor);  
-                return RedirectToAction(nameof(Index));
+                return Json(new { success = true, message = "Materia Prima actualizada correctamente." });
             }
-            return View(materiaPrima);
+            else
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                return Json(new { success = false, errors = errors });
+            }
         }
 
         // GET: MateriaPrimas/Delete/5
@@ -125,8 +130,15 @@ namespace PupuseriaSalvadorena.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _materiaPrimaRep.EliminarMateriaPrima(id);
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await _materiaPrimaRep.EliminarMateriaPrima(id);
+                return Json(new { success = true, message = "Materia Prima eliminada correctamente." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "No se puede eliminar la materia prima, ya que hay facturas asociadas." });
+            }
         }
     }
 }

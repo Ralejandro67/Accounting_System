@@ -5,7 +5,6 @@ document.getElementById("AddCanton").addEventListener("click", function () {
         type: 'GET',
         success: function (result) {
             $('#newCantonModal .modal-body').html(result);
-            toggleRecurrenceFields();
             $('#newCantonModal').modal('show');
         },
         error: function (error) {

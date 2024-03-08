@@ -13,7 +13,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label class="control-label">Proveedor</label>
-                <select asp-for="IdProveedor" asp-items="@ViewBag.Proveedores" class="form-control">
+                <select asp-for="IdProveedor" asp-items="@ViewBag.Proveedores" class="form-control" id="ProveedorId">
                     <option value="">Seleccione un impuesto</option>
                 </select>
                 <span asp-validation-for="IdProveedor" class="text-danger"></span>

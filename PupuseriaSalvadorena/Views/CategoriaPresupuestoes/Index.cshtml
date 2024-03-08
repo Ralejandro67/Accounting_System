@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<PupuseriaSalvadorena.Models.CategoriaPresupuesto>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Categorías Presupuestos";
 }
 
 @section Scripts {
@@ -13,34 +13,38 @@
         <div class="d-flex justify-content-between align-items-center">
             <h1 class="mb-0">
                 <img src="~/images/tipos.png" alt="Icono Categorias Presupuestos" style="height: 60px;" />
-                Categorias de Presupuestos
+                Categorías de Presupuestos
             </h1>
             <button type="button" class="btn btn-primary nav-link-icon agregar-boton" id="AddCategoriaP">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
                     <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
-                </svg> Nueva Categoria
+                </svg> Nueva Categoría
             </button>
         </div>
     </div>
     <div class="container mt-4">
-        Historial de compras de materia prima para la elaboracion de los platillos.
+        Categorías para los presupuestos.
     </div>
 </div>
 <div class="card-body table-body-custom">
-    <table class="table table-hover mt-4">
+    <div class="d-flex justify-content-between align-items-center mt-4">
+        <h4>Categorías:</h4>
+        <input type="text" class="form-control" id="busqueda" placeholder="Filtrar" />
+    </div>
+    <table class="table table-hover mt-4" id="tablaCategorias">
         <thead>
             <tr>
                 <th>
                     ID
                 </th>
                 <th>
-                    Nombre Categoria
-                </th>
-                <th>
-                    Estado
+                    Nombre de la Categoría
                 </th>
                 <th>
                     Tipo de Presupuesto
+                </th>
+                <th id="acciones">
+                    Acciones
                 </th>
             </tr>
         </thead>
@@ -72,12 +76,17 @@
             }
         </tbody>
     </table>
+    <div id="pagination" class="pagination justify-content-center align-content-end pb-4">
+        <button class="btn btn-primary anterior" onclick="changePage(-1)"><i class="fas fa-angle-left"></i></button>
+        <span id="pageIndicator">1</span>
+        <button class="btn btn-primary siguiente" onclick="changePage(1)"><i class="fas fa-angle-right"></i></button>
+    </div>
 </div>
 <div class="modal fade" id="newCategoriaPModal" tabindex="-1" role="dialog" aria-labelledby="newCategoriaPModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="newCategoriaPModalLabel">Nueva Categoria</h5>
+                <h5 class="modal-title" id="newCategoriaPModalLabel">Nueva Categoría</h5>
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -92,7 +101,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="editCategoriaPModalLabel">Editar Categoria</h5>
+                <h5 class="modal-title" id="editCategoriaPModalLabel">Editar Categoría</h5>
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>

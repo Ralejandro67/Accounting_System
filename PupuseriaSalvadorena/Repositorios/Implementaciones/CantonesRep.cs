@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using DocumentFormat.OpenXml.Office2010.Excel;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using PupuseriaSalvadorena.Conexion;
 using PupuseriaSalvadorena.Models;
@@ -44,11 +45,20 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             return cantones;
         }
 
-        public async Task<Canton> ConsultarCantones(int id)
+        public async Task<List<Canton>> ConsultarCantones(int id)
+        {
+            var nombreParam = new SqlParameter("@IdCanton", id);
+            var cantones = await _context.Canton
+                                        .FromSqlRaw("EXEC ConsultarCantones @IdCanton", nombreParam)
+                                        .ToListAsync();
+            return cantones;
+        }
+
+        public async Task<Canton> ConsultarCanton(int id)
         {
             var nombreParam = new SqlParameter("@IdCanton", id);
             var resultado = await _context.Canton
-                                          .FromSqlRaw("EXEC ConsultarCantones @IdCanton", nombreParam)
+                                          .FromSqlRaw("EXEC ConsultarCanton @IdCanton", nombreParam)
                                           .ToListAsync();
 
             return resultado.FirstOrDefault();

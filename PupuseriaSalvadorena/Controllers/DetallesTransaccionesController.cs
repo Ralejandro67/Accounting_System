@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 using PupuseriaSalvadorena.Conexion;
 using PupuseriaSalvadorena.Models;
 using PupuseriaSalvadorena.Repositorios.Interfaces;
+using DocumentFormat.OpenXml.Office2010.Excel;
 
 namespace PupuseriaSalvadorena.Controllers
 {
@@ -44,7 +45,9 @@ namespace PupuseriaSalvadorena.Controllers
 
             var IdLibro = await _detallesTransacRep.ObtenerIdLibroMasReciente();
             var detalleTransaccion = await _detallesTransacRep.MostrarDetallesTransacciones();
+
             var Libro = await _registroLibrosRep.ConsultarRegistrosLibros(IdLibro);
+            var transacciones = await _detallesTransacRep.ConsultarTransacciones(IdLibro);
 
             var IngresosActuales = detalleTransaccion.Where(dt => dt.IdMovimiento == 1 && dt.FechaTrans.Year == añoActual && dt.FechaTrans.Month == mesActual).Sum(dt => dt.Monto);
             var EgresosActuales = detalleTransaccion.Where(dt => dt.IdMovimiento == 2 && dt.FechaTrans.Year == añoActual && dt.FechaTrans.Month == mesActual).Sum(dt => dt.Monto);
@@ -77,7 +80,7 @@ namespace PupuseriaSalvadorena.Controllers
             ViewBag.Ingresos = JsonConvert.SerializeObject(ingresos);
             ViewBag.Egresos = JsonConvert.SerializeObject(egresos);
 
-            return View(detalleTransaccion);
+            return View(transacciones);
         }
 
         // GET: DetallesTransacciones/Details/5
@@ -95,54 +98,6 @@ namespace PupuseriaSalvadorena.Controllers
             }
 
             return View(detalleTransaccion);
-        }
-
-        // GET: DetallesTransacciones/GetTransaccionP
-        [HttpGet]
-        public async Task<IActionResult> GetTransaccionPre()
-        {
-            var impuestos = await _impuestosRep.MostrarImpuestos();
-            ViewBag.Impuestos = new SelectList(impuestos, "IdImpuesto", "NombreImpuesto");
-            return PartialView("_newDetallesTPartial", new DetalleTransaccion());
-        }
-
-        // POST: DetallesTransacciones/CreateTransacPresupuesto
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateTransacPresupuesto([Bind("IdRegistroLibros,IdTransaccion,DescripcionTransaccion,Cantidad,Monto,FechaTrans,IdTipo,IdImpuesto,NombreImpuesto,TipoTransac,Recurrencia,FechaRecurrencia,Frecuencia,Conciliado")] DetalleTransaccion detalleTransaccion)
-        {
-            if (ModelState.IsValid)
-            {
-                var IdLibro = await _detallesTransacRep.ObtenerIdLibroMasReciente();
-                var idTransaccion = await _detallesTransacRep.CrearTransaccionRecurrente(IdLibro, detalleTransaccion.DescripcionTransaccion, detalleTransaccion.Cantidad, detalleTransaccion.Monto, detalleTransaccion.FechaTrans, detalleTransaccion.IdTipo, detalleTransaccion.IdImpuesto, detalleTransaccion.Recurrencia, detalleTransaccion.FechaRecurrencia, detalleTransaccion.Frecuencia, false);
-                var transaccion = await _detallesTransacRep.ConsultarDetallesTransacciones(idTransaccion);
-
-                var registroLibro = await _registroLibrosRep.ConsultarRegistrosLibros(IdLibro);
-
-                decimal MontoLibro = 0;
-
-                if (transaccion.IdMovimiento == 2)
-                {
-                    MontoLibro = registroLibro.MontoTotal - transaccion.Monto;
-                }
-                else
-                {
-                    MontoLibro = registroLibro.MontoTotal + transaccion.Monto;
-                }
-
-                if (detalleTransaccion.Recurrencia)
-                {
-                    var cronExpression = FrecuenciaACron(detalleTransaccion.Frecuencia);
-
-                    RecurringJob.AddOrUpdate($"{idTransaccion}",
-                                 () => TransaccionRecurrente(idTransaccion),
-                                 cronExpression);
-                }
-
-                await _registroLibrosRep.ActualizarRegistroLibros(IdLibro, MontoLibro, registroLibro.Descripcion, registroLibro.Conciliado);
-                return Json(new { success = true, message = "Transaccion agregada correctamente." });
-            }
-            return Json(new { success = false, message = "Error al agregar la transaccion." });
         }
 
         // GET: DetallesTransacciones/GetDetalleTransaccionPartial
@@ -189,7 +144,11 @@ namespace PupuseriaSalvadorena.Controllers
                 await _registroLibrosRep.ActualizarRegistroLibros(IdLibro, MontoLibro, registroLibro.Descripcion, registroLibro.Conciliado);
                 return Json(new { success = true, message = "Transaccion agregada correctamente." });
             }
-            return Json(new { success = false, message = "Error al agregar la transaccion." });
+            else
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                return Json(new { success = false, errors = errors });
+            }
         }
 
         // GET: DetallesTransacciones/Edit/5
@@ -201,9 +160,18 @@ namespace PupuseriaSalvadorena.Controllers
             }
 
             var detalleTransaccion = await _detallesTransacRep.ConsultarDetallesTransacciones(id.Value);
+            var impuestoTransaccion = await _impuestosRep.ConsultarImpuestos(detalleTransaccion.IdImpuesto); 
             var impuestos = await _impuestosRep.MostrarImpuestos();
+            var tipos = await _tipoTransacRep.MostrarTipoTransaccion();
+
+            var impuestoActual = (impuestoTransaccion.Tasa / 100);
+            var valorSubtotal = detalleTransaccion.Monto / (1 + impuestoActual);
 
             ViewBag.Impuestos2 = new SelectList(impuestos, "IdImpuesto", "NombreImpuesto");
+            ViewBag.Tipos = new SelectList(tipos, "IdTipo", "TipoTransac");
+            ViewBag.Monto = detalleTransaccion.Monto;
+            ViewBag.ValorSubtotal = valorSubtotal;
+            ViewBag.valorImpuesto = detalleTransaccion.Monto - valorSubtotal;
 
             if (detalleTransaccion == null)
             {
@@ -215,7 +183,7 @@ namespace PupuseriaSalvadorena.Controllers
         // POST: DetallesTransacciones/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdRegistroLibros,IdTransaccion,DescripcionTransaccion,Cantidad,Monto,FechaTrans,IdTipo,IdImpuesto,NombreImpuesto,TipoTransac,IdMovimiento")] DetalleTransaccion detalleTransaccion)
+        public async Task<IActionResult> Edit(int id, [Bind("IdRegistroLibros,IdTransaccion,DescripcionTransaccion,Cantidad,Monto,FechaTrans,IdTipo,IdImpuesto,NombreImpuesto,TipoTransac,Recurrencia,FechaRecurrencia,Frecuencia,Conciliado")] DetalleTransaccion detalleTransaccion)
         {
             if (id != detalleTransaccion.IdTransaccion)
             {
@@ -242,7 +210,11 @@ namespace PupuseriaSalvadorena.Controllers
                 await _registroLibrosRep.ActualizarRegistroLibros(IdLibro, MontoLibro, libro.Descripcion, libro.Conciliado);
                 return Json(new { success = true, message = "Transaccion actualizada correctamente." });
             }
-            return Json(new { success = false, message = "Datos inválidos." });
+            else
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                return Json(new { success = false, errors = errors });
+            }
         }
 
         // GET: DetallesTransacciones/Delete/5
@@ -369,7 +341,7 @@ namespace PupuseriaSalvadorena.Controllers
         public async Task<IActionResult> GetImpuesto(string IdImpuesto, decimal monto)
         {
             Impuesto impuesto = await _impuestosRep.ConsultarImpuestos(IdImpuesto);
-            decimal montoImpuesto = monto * (impuesto.Tasa / 100);
+            decimal montoImpuesto = monto * (impuesto.Tasa.Value / 100);
             decimal montoTotal = monto + montoImpuesto;
             return Json(new { montoImpuesto = montoImpuesto, montoTotal = montoTotal });
         }

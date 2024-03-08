@@ -103,7 +103,7 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label class="control-label">Tipo de Pago</label>
-                    <select asp-for="IdTipoPago" asp-items="@ViewBag.IdTipoPago" class="form-control" id="IdImpuesto">
+                    <select asp-for="IdTipoPago" asp-items="@ViewBag.IdTipoPago" class="form-control">
                         <option value="">Tipo de pago</option>
                     </select>
                     <span asp-validation-for="IdTipoPago" class="text-danger"></span>
@@ -112,7 +112,7 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label class="control-label">Tipo de Venta</label>
-                    <select asp-for="IdTipoVenta" asp-items="@ViewBag.IdTipoVenta" class="form-control" id="IdImpuesto">
+                    <select asp-for="IdTipoVenta" asp-items="@ViewBag.IdTipoVenta" class="form-control">
                         <option value="">Tipo de venta</option>
                     </select>
                     <span asp-validation-for="IdTipoVenta" class="text-danger"></span>

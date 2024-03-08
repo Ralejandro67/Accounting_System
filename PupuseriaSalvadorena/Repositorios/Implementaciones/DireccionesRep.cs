@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using PupuseriaSalvadorena.Conexion;
 using PupuseriaSalvadorena.Models;
 using PupuseriaSalvadorena.Repositorios.Interfaces;
+using System.Data;
 
 namespace PupuseriaSalvadorena.Repositorios.Implementaciones
 {
@@ -15,12 +16,35 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             _context = context;
         }
 
-        public async Task CrearDireccion(bool estado, string nombre, int distrito)
+        public async Task<int> CrearDireccion(bool Estado, string Detalles, int IdDistrito)
         {
-            var estadoParam = new SqlParameter("@Estado", estado);
-            var nombreParam = new SqlParameter("@Detalles", nombre);
-            var distritoParam = new SqlParameter("@IdDistrito", distrito);
-            await _context.Database.ExecuteSqlRawAsync("CrearDireccion @Estado, @Detalles, @IdDistrito", estadoParam, nombreParam, distritoParam);
+            try
+            {
+                using (var command = _context.Database.GetDbConnection().CreateCommand())
+                {
+                    command.CommandText = "CrearDireccion";
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.Add(new SqlParameter("@Estado", Estado));
+                    command.Parameters.Add(new SqlParameter("@Detalles", Detalles));
+                    command.Parameters.Add(new SqlParameter("@IdDistrito", IdDistrito));
+
+                    var IdDireccion = new SqlParameter("@IdDireccion", SqlDbType.Int)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+                    command.Parameters.Add(IdDireccion);
+
+                    await _context.Database.OpenConnectionAsync();
+                    await command.ExecuteNonQueryAsync();
+
+                    return (int)IdDireccion.Value;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public async Task ActualizarDireccion(int IdDireccion, bool Estado, string Detalles, int IdDistrito)

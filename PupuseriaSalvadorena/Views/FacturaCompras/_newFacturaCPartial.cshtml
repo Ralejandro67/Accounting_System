@@ -46,13 +46,13 @@
             <div class="col-md-5">
                 <div class="form-group" id="campoProveedor">
                     <label class="control-label">Proveedor</label>
-                    <select class="form-control" id="IdProveedor" name="IdProveedor" asp-items="@ViewBag.Proveedores">
+                    <select asp-for="IdProveedor" asp-items="@ViewBag.Proveedores" class="form-control">
                         <option value="">Proveedores</option>
                     </select>
                     <span asp-validation-for="IdProveedor" class="text-danger"></span>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-5">
                 <div class="form-group">
                     <label class="control-label">Materia Prima</label>
                     <select asp-for="IdMateriaPrima" class="form-control" id="IdMateriaPrima">
@@ -61,10 +61,10 @@
                     <span asp-validation-for="IdMateriaPrima" class="text-danger"></span>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div class="form-group">
                     <label class="control-label">Cant.</label>
-                    <input asp-for="Cantidad" class="form-control" />
+                    <input asp-for="Cantidad" class="form-control" min="1" id="Cant"/>
                     <span asp-validation-for="Cantidad" class="text-danger"></span>
                 </div>
             </div>
@@ -75,7 +75,7 @@
                     <label class="control-label">Monto de la Compra</label>
                     <div class="input-group">
                         <span class="input-group-text">₡</span>
-                        <input asp-for="TotalCompra" class="form-control" />
+                        <input id="TotalCompra" name="TotalCompra" class="form-control" placeholder="0.00"/>
                         <span asp-validation-for="TotalCompra" class="text-danger"></span>
                     </div>
                 </div>
@@ -85,7 +85,7 @@
                     <label class="control-label">Peso</label>
                     <div class="input-group">
                         <span class="input-group-text">Kg.</span>
-                        <input asp-for="Peso" class="form-control" />
+                        <input id="Peso" name="Peso" class="form-control" placeholder="0.00" />
                         <span asp-validation-for="Peso" class="text-danger"></span>
                     </div>
                 </div>
@@ -100,8 +100,8 @@
         <span asp-validation-for="IdTipoPago" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label class="control-label">Observaciones</label>
-        <textarea asp-for="DetallesCompra" class="form-control" id="CampoArea"></textarea>
+        <label class="control-label">Descripción</label>
+        <textarea asp-for="DetallesCompra" class="form-control" id="CampoArea" placeholder="Descripción de la compra"></textarea>
         <span asp-validation-for="DetallesCompra" class="text-danger"></span>
     </div>
     <div class="form-group text-right">

@@ -60,7 +60,11 @@ namespace PupuseriaSalvadorena.Controllers
                 await _tipoPagoRep.CrearTipoPago(tipoPago.NombrePago, tipoPago.Estado);
                 return Json(new { success = true, message = "Tipo de factura agregado correctamente." });
             }
-            return View(tipoPago);
+            else
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                return Json(new { success = false, errors = errors });
+            }
         }
 
         // GET: TipoPagos/Edit/5
@@ -80,23 +84,20 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // POST: TipoPagos/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("IdTipoPago,NombrePago,Estado")] TipoPago tipoPago)
         {
-            if (id != tipoPago.IdTipoPago)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
                 await _tipoPagoRep.ActualizarTipoPago(tipoPago.IdTipoPago, tipoPago.NombrePago, tipoPago.Estado);
                 return Json(new { success = true, message = "Tipo de pago actualizado correctamente." });
             }
-            return Json(new { success = false, message = "Error al actualizar el tipo de pago." });
+            else
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                return Json(new { success = false, errors = errors });
+            }
         }
 
         // GET: TipoPagos/Delete/5
@@ -118,7 +119,7 @@ namespace PupuseriaSalvadorena.Controllers
             }
             catch (Exception)
             {
-                return Json(new { success = false, message = "Error al eliminar el tipo de pago." });
+                return Json(new { success = false, message = "Error al eliminar el tipo de pago, hay facturas asociadas a el tipo de pago." });
             }
         }
     }

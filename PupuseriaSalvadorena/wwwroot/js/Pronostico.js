@@ -1,4 +1,15 @@
-﻿// Agregar Cuenta por Pagar
+﻿//Event Handler Propagacion
+document.addEventListener('DOMContentLoaded', function () {
+    var buttons = document.querySelectorAll('.botones button');
+    buttons.forEach(function (button) {
+        button.addEventListener('click', function (event) {
+            event.stopPropagation();
+        });
+    });
+});
+
+
+// Agregar Pronostico
 document.getElementById("AddPronostico").addEventListener("click", function () {
     $.ajax({
         url: '/Pronosticos/Create',
@@ -35,7 +46,8 @@ document.addEventListener('click', function (e) {
                     Swal.fire({
                         title: '¡Éxito!',
                         text: data.message,
-                        icon: 'success'
+                        icon: 'success',
+                        confirmButtonColor: '#0DBCB5'
                     }).then((result) => {
                         if (result.isConfirmed || result.isDismissed) {
                             window.location.reload();
@@ -45,7 +57,8 @@ document.addEventListener('click', function (e) {
                     Swal.fire({
                         title: 'Error',
                         text: data.message,
-                        icon: 'error'
+                        icon: 'warning',
+                        confirmButtonColor: '#0DBCB5'
                     });
                 }
             })
@@ -53,8 +66,64 @@ document.addEventListener('click', function (e) {
                 Swal.fire({
                     title: 'Error',
                     text: 'Hubo un problema con la solicitud.',
-                    icon: 'error'
+                    icon: 'error',
+                    confirmButtonColor: '#0DBCB5'
                 });
             });
     }
+});
+
+// Eliminar Pronostico
+document.querySelectorAll('.delete-Presupuesto').forEach(button => {
+    button.addEventListener('click', function () {
+        var Id = this.getAttribute('data-id');
+
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "¡No podrás revertir este cambio!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#0DBCB5',
+            cancelButtonColor: '#9DB2BF',
+            confirmButtonText: 'Sí, elimínalo!',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`/Pronosticos/Delete/${Id}`, {
+                    method: 'POST',
+                    headers: {
+                        'RequestVerificationToken': document.getElementsByName('__RequestVerificationToken')[0].value
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                title: '¡Eliminado!',
+                                text: data.message,
+                                icon: 'success',
+                                confirmButtonColor: '#0DBCB5'
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Error',
+                                text: data.message,
+                                icon: 'error',
+                                confirmButtonColor: '#0DBCB5'
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Hubo un problema con la solicitud.',
+                            icon: 'error',
+                            confirmButtonColor: '#0DBCB5'
+                        });
+                    });
+            }
+        })
+    });
 });

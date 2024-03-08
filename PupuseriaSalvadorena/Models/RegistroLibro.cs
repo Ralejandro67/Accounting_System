@@ -14,9 +14,9 @@ namespace PupuseriaSalvadorena.Models
         [RegularExpression(@"^[0-9]+(\.[0-9]+)?$", ErrorMessage = "El monto solo puede contener números")]
         public decimal MontoTotal { get; set; }
 
+        [Required(ErrorMessage = "El nombre del libro contable es obligatorio.")]
         public string? Descripcion { get; set; }
 
-        [Required(ErrorMessage = "El estado de conciliacion es obligatorio")]
         public bool Conciliado { get; set; }
     }
 }

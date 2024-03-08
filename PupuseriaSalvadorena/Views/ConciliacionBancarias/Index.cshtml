@@ -7,6 +7,7 @@
 }
 
 @section Scripts {
+    <script src="~/js/conciliacionesbancarias.js" asp-append-version="true"></script>
     <script src="~/js/conciliaciones.js" asp-append-version="true"></script>
 }
 
@@ -28,83 +29,95 @@
         Realiza la conciliacion bancaria de los libros contables contra el saldo en las cuentas bancarias.
     </div>
 </div>
-<div class="card-body pt-4 pb-3 table-body-custom">
-    <table class="table table-hover table-sm">
-        <thead>
-            <tr>
-                <th>
-                    Fecha
-                </th>
-                <th>
-                    Saldo en Cuenta
-                </th>
-                <th>
-                    Saldo en Libro
-                </th>
-                <th>
-                    Diferencia
-                </th>
-                <th>
-                    Observaciones
-                </th>
-                <th>
-                    Cuenta Bancaria
-                </th>
-                <th>
-                    Libro Contable
-                </th>
-                <th>
-                    Acciones
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model) {
+<div class="card-body table-body-custom">
+    @if (Model.Count() > 0)
+    {
+        <div class="d-flex justify-content-between align-items-center mt-4">
+            <h4>Conciliaciones:</h4>
+            <input type="text" class="form-control" id="busqueda" placeholder="Filtrar" />
+        </div>
+        <table class="table table-hover mt-4 table-sm" id="tablaConciliacion">
+            <thead>
                 <tr>
-                    <td>
-                        @item.FechaConciliacion.ToString("dd/MM/yyyy")
-                    </td>
-                    <td>
-                        @item.SaldoBancario.ToString("C", new CultureInfo("es-CR"))
-                    </td>
-                    <td>
-                        @item.SaldoLibro.ToString("C", new CultureInfo("es-CR"))
-                    </td>
-                    <td>
-                        @item.Diferencia.ToString("C", new CultureInfo("es-CR"))
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Observaciones)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.NumeroCuenta)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Descripcion)
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-primary details-Conciliacion nav-link-btn-icons" id="BtnDetalles" onclick="location.href='@Url.Action("Details", new { id = item.IdConciliacion })'">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">
-                                <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0" />
-                                <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7" />
-                            </svg>
-                        </button>
-                        <button type="button" class="btn btn-primary delete-Conciliacion nav-link-btn-icons" id="BtnEliminar" data-id="@item.IdConciliacion">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
-                                <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
-                            </svg>
-                        </button>
-                    </td>
+                    <th id="Fecha">
+                        Fecha
+                    </th>
+                    <th>
+                        Saldo en Cuenta
+                    </th>
+                    <th>
+                        Saldo en Libro
+                    </th>
+                    <th>
+                        Diferencia
+                    </th>
+                    <th>
+                        Cuenta Bancaria
+                    </th>
+                    <th>
+                        Libro Contable
+                    </th>
+                    <th id="acciones">
+                        Acciones
+                    </th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var item in Model) {
+                    <tr>
+                        <td>
+                            @item.FechaConciliacion.ToString("dd/MM/yyyy")
+                        </td>
+                        <td>
+                            @item.SaldoBancario.ToString("C", new CultureInfo("es-CR"))
+                        </td>
+                        <td>
+                            @item.SaldoLibro.ToString("C", new CultureInfo("es-CR"))
+                        </td>
+                        <td>
+                            @item.Diferencia.ToString("C", new CultureInfo("es-CR"))
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.NumeroCuenta)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Descripcion)
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-primary details-Conciliacion nav-link-btn-icons" id="BtnDetalles" onclick="location.href='@Url.Action("Details", new { id = item.IdConciliacion })'">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">
+                                    <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0" />
+                                    <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7" />
+                                </svg>
+                            </button>
+                            <button type="button" class="btn btn-primary delete-Conciliacion nav-link-btn-icons" id="BtnEliminar" data-id="@item.IdConciliacion">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+                                    <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div id="pagination" class="pagination justify-content-center align-content-end pb-4">
+            <button class="btn btn-primary anterior" onclick="changePage(-1)"><i class="fas fa-angle-left"></i></button>
+            <span id="pageIndicator">1</span>
+            <button class="btn btn-primary siguiente" onclick="changePage(1)"><i class="fas fa-angle-right"></i></button>
+        </div>
+    }
+    else
+    {
+        <div class="container mt-4 mb-4">
+            <h4 class="text-center">No se ha realizado ninguna conciliacion bancaria.</h4>
+        </div>
+    }
 </div>
 <div class="modal fade" id="newConciliacionModal" tabindex="-1" role="dialog" aria-labelledby="newConciliacionModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="newConciliacionModalLabel">Nuevo Estado Bancario</h5>
+                <h5 class="modal-title" id="newConciliacionModalLabel">Nueva Conciliación Bancaria</h5>
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>

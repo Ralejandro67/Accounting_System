@@ -1,0 +1,19 @@
+﻿@model PupuseriaSalvadorena.Models.DetalleCuenta
+
+<form id="editDetalleCuentaForm" asp-action="Edit" asp-controller="DetalleCuentas" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input asp-for="IdCuentaPagar" type="hidden" />
+    <input type="hidden" asp-for="IdDetallesCuenta" />
+    <input asp-for="FechaIngreso" type="hidden" />
+    <div class="form-group">
+        <label class="control-label">Monto del Pago</label>
+        <div class="input-group">
+            <span class="input-group-text">₡</span>
+            <input asp-for="Pago" class="form-control" id="PagoC"/>
+            <span asp-validation-for="Pago" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group text-right">
+        <button type="submit" id="submitEditDetalleCuenta" class="btn btn-primary agregar-boton">Editar</button>
+    </div>
+</form>

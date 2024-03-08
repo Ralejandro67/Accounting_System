@@ -37,7 +37,7 @@ namespace PupuseriaSalvadorena.Controllers
                 return NotFound();
             }
 
-            var distrito = await _distritosRep.ConsultarDistritos(id.Value);
+            var distrito = await _distritosRep.ConsultarDistrito(id.Value);
             if (distrito == null)
             {
                 return NotFound();
@@ -75,7 +75,7 @@ namespace PupuseriaSalvadorena.Controllers
                 return NotFound();
             }
 
-            var distrito = await _distritosRep.ConsultarDistritos(id.Value);
+            var distrito = await _distritosRep.ConsultarDistrito(id.Value);
             if (distrito == null)
             {
                 return NotFound();
@@ -109,7 +109,7 @@ namespace PupuseriaSalvadorena.Controllers
                 return NotFound();
             }
 
-            var distrito = await _distritosRep.ConsultarDistritos(id.Value);
+            var distrito = await _distritosRep.ConsultarDistrito(id.Value);
             if (distrito == null)
             {
                 return NotFound();

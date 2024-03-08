@@ -1,4 +1,78 @@
-﻿// Agregar impuesto
+﻿// Paginacion
+var currentPage = 1;
+var rowsPerPage = 10;
+
+function setupPagination() {
+    var table = document.querySelector('#tablaImpuestos tbody');
+    var rows = table.rows;
+    var totalRows = rows.length;
+    var totalPages = Math.ceil(totalRows / rowsPerPage);
+
+    function showPage(page) {
+        for (let i = 0; i < totalRows; i++) {
+            rows[i].style.display = (i >= (page - 1) * rowsPerPage && i < page * rowsPerPage) ? "" : "none";
+        }
+        
+        document.getElementById('pageIndicator').textContent = `${page} / ${totalPages}`;
+    }
+
+    window.changePage = function (direction) {
+        currentPage += direction;
+        
+        if (currentPage < 1) currentPage = 1;
+        if (currentPage > totalPages) currentPage = totalPages;
+
+        showPage(currentPage);
+    };
+
+    showPage(currentPage); 
+}
+
+document.addEventListener('DOMContentLoaded', setupPagination);
+
+// Busqueda
+document.getElementById('busquedaImpuestos').addEventListener('keyup', function () {
+    var searchTerm = this.value.toLowerCase();
+    var rows = document.querySelectorAll('#tablaImpuestos tbody tr');
+
+    rows.forEach(row => {
+        var text = row.textContent.toLowerCase();
+        row.style.display = text.includes(searchTerm) ? '' : 'none';
+    });
+});
+
+// Ordernar tabla
+document.querySelectorAll('#tablaImpuestos th').forEach(header => {
+    if (!header.id.includes("acciones")) { 
+        header.addEventListener('click', function () {
+            var table = document.querySelector('#tablaImpuestos');
+            var tableBody = table.querySelector('tbody');
+            var rowsArray = Array.from(tableBody.rows);
+            var column = this.cellIndex;
+            var isAscending = header.classList.contains('asc');
+
+            rowsArray.sort(function (rowA, rowB) {
+                var textA = rowA.cells[column].textContent.trim();
+                var textB = rowB.cells[column].textContent.trim();
+                return textA.localeCompare(textB, undefined, { numeric: true }) * (isAscending ? -1 : 1);
+            });
+
+            document.querySelectorAll('#tablaImpuestos th').forEach(th => {
+                th.innerHTML = th.textContent; 
+                th.classList.remove('asc', 'desc'); 
+            });
+
+            var newIconHtml = isAscending ? '<i class="fas fa-arrow-down"></i>' : '<i class="fas fa-arrow-up"></i>';
+            this.innerHTML += ' ' + newIconHtml;
+            this.classList.toggle('asc', !isAscending);
+            this.classList.toggle('desc', isAscending);
+
+            rowsArray.forEach(row => tableBody.appendChild(row));
+        });
+    }
+});
+
+// Agregar impuesto
 document.getElementById("AddImpuesto").addEventListener("click", function () {
     $.ajax({
         url: '/Impuestos/Create',
@@ -15,6 +89,30 @@ document.getElementById("AddImpuesto").addEventListener("click", function () {
 
 document.addEventListener('click', function (e) {
     if (e.target && e.target.id === 'submitCreateForm') {
+
+        var tasaValue = document.getElementById('Tasa').value;
+
+        var regex = /^[0-9]+(\.[0-9]+)?$/;
+        if (!regex.test(tasaValue)) {
+            Swal.fire({
+                title: 'Error',
+                text: 'La tasa del impuesto debe ser un número.',
+                icon: 'warning',
+                confirmButtonColor: '#0DBCB5'
+            });
+            return;
+        }
+
+        if (parseFloat(tasaValue) < 0) {
+            Swal.fire({
+                title: 'Error',
+                text: 'La tasa del impuesto no puede ser un número negativo.',
+                icon: 'warning',
+                confirmButtonColor: '#0DBCB5'
+            });
+            return;
+        }
+
         var formData = new FormData(document.getElementById('impuestoForm'));
 
         fetch('/Impuestos/Create', {
@@ -39,10 +137,15 @@ document.addEventListener('click', function (e) {
                         }
                     });
                 } else {
+                    let errorMessage = "";
+                    if (data.errors && data.errors.length > 0) {
+                        errorMessage += "\n" + data.errors.join("\n");
+                    }
+
                     Swal.fire({
                         title: 'Error',
-                        text: data.message,
-                        icon: 'error',
+                        text: errorMessage,
+                        icon: 'warning',
                         confirmButtonColor: '#0DBCB5'
                     });
                 }
@@ -71,6 +174,19 @@ document.querySelectorAll('.edit-impuesto').forEach(button => {
                 document.querySelector('#editImpuestoModal #editImpuestoForm').addEventListener('submit', function (e) {
                     e.preventDefault();
 
+                    var tasaValue = document.getElementById('Value').value;
+
+                    var regex = /^[0-9]+(\.[0-9]+)?$/;
+                    if (!regex.test(tasaValue) || parseFloat(tasaValue) < 0) {
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'La tasa del impuesto debe ser un número.',
+                            icon: 'warning',
+                            confirmButtonColor: '#0DBCB5'
+                        });
+                        return;
+                    }
+
                     var formData = new FormData(this);
 
                     fetch(`/Impuestos/Edit/${Id}`, {
@@ -93,10 +209,15 @@ document.querySelectorAll('.edit-impuesto').forEach(button => {
                                     window.location.reload();
                                 });
                             } else {
+                                let errorMessage = "";
+                                if (data.errors && data.errors.length > 0) {
+                                    errorMessage += "\n" + data.errors.join("\n");
+                                }
+
                                 Swal.fire({
                                     title: 'Error',
-                                    text: data.message,
-                                    icon: 'error',
+                                    text: errorMessage,
+                                    icon: 'warning',
                                     confirmButtonColor: '#0DBCB5'
                                 });
                             }

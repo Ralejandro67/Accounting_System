@@ -59,7 +59,7 @@ namespace PupuseriaSalvadorena.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _rolRep.CrearRol(rol.NombreRol, rol.Estado);
+                await _rolRep.CrearRol(rol.NombreRol, rol.Activo);
                 return RedirectToAction(nameof(Index));
             }
             return View(rol);
@@ -82,8 +82,6 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // POST: Rols/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("IdRol,NombreRol,Estado")] Rol rol)
@@ -95,7 +93,7 @@ namespace PupuseriaSalvadorena.Controllers
 
             if (ModelState.IsValid)
             {
-                await _rolRep.ActualizarRol(rol.IdRol, rol.NombreRol, rol.Estado);
+                await _rolRep.ActualizarRol(rol.IdRol, rol.NombreRol, rol.Activo);
                 return RedirectToAction(nameof(Index));
             }
             return View(rol);

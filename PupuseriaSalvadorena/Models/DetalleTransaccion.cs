@@ -9,6 +9,7 @@ namespace PupuseriaSalvadorena.Models
 
         public int IdTransaccion { get; set; }
 
+        [Required(ErrorMessage = "Se requiere una descripción de la transacción.")]
         public string? DescripcionTransaccion { get; set; }
 
         [Required(ErrorMessage = "La cantidad del producto es obligatorio")]
@@ -32,6 +33,8 @@ namespace PupuseriaSalvadorena.Models
         public string? TipoTransac { get; set; }
 
         public int IdMovimiento { get; set; }
+
+        public string? NombreMov { get; set; }
 
         public bool Recurrencia { get; set; }
 

@@ -108,7 +108,11 @@ namespace PupuseriaSalvadorena.Controllers
                 await _proveedorRep.CrearProveedor(proveedor.NombreProveedor, proveedor.ApellidoProveedor, proveedor.Telefono);
                 return Json(new { success = true, message = "Proveedor agregado correctamente." });
             }
-            return Json(new { success = false, message = "Error al agregar el proveedor." });
+            else
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                return Json(new { success = false, errors = errors });
+            }
         }
 
         // GET: Proveedores/Edit/5
@@ -144,7 +148,11 @@ namespace PupuseriaSalvadorena.Controllers
                 await _proveedorRep.ActualizarProveedor(proveedor.IdProveedor, proveedor.NombreProveedor, proveedor.ApellidoProveedor, proveedor.Telefono);
                 return Json(new { success = true, message = "Proveedor actualizado correctamente." });
             }
-            return Json(new { success = false, message = "Error al actualizar el proveedor." });
+            else
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                return Json(new { success = false, errors = errors });
+            }
         }
 
         // GET: Proveedores/Delete/5

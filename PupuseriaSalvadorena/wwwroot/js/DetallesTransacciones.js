@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 backgroundColor: 'rgba(150, 239, 255, 0.5)',
                 borderColor: 'rgba(150, 239, 255, 1)', 
                 borderWidth: 2,
+                tension: 0.4,
                 fill: false 
             },
             {
@@ -24,6 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 backgroundColor: 'rgba(95, 189, 255, 0.5)', 
                 borderColor: 'rgba(95, 189, 255, 1)', 
                 borderWidth: 2,
+                tension: 0.4,
                 fill: false 
             }]
         },
@@ -63,9 +65,10 @@ function inicializarInputMonto() {
     $('#inputMonto').on('input', function () {
         var monto = $(this).val();
         if (monto === '') {
-            $('#montoDisplay').text('₡0.00');
+            $('#montoDisplayT').text('₡0.00');
         } else {
-            $('#montoDisplay').text('₡' + monto);
+            $('#montoDisplayT').text('₡' + monto);
+            $('#inputMontoTotalT').text('₡' + monto);
         }
     });
 }
@@ -77,8 +80,8 @@ document.getElementById("AddTransaccion").addEventListener("click", function () 
         type: 'GET',
         success: function (result) {
             $('#newDetallesTModal .modal-body').html(result);
-            toggleRecurrenceFields();
             inicializarInputMonto();
+            toggleRecurrenceFields();
             $('#newDetallesTModal').modal('show');
         },
         error: function (error) {
@@ -89,6 +92,31 @@ document.getElementById("AddTransaccion").addEventListener("click", function () 
 
 document.addEventListener('click', function (e) {
     if (e.target && e.target.id === 'submitDetallesForm') {
+
+        var ValueMonto = document.getElementById('inputMonto').value;
+        var ValueCant = document.getElementById('Cantidad').value;
+
+        var regex = /^[0-9]+(\.[0-9]+)?$/;
+        if (!regex.test(ValueMonto) || !regex.test(ValueCant)) {
+            Swal.fire({
+                title: 'Error',
+                text: 'La valor de la transacción o la cantidad debe ser un número.',
+                icon: 'error',
+                confirmButtonColor: '#0DBCB5'
+            });
+            return;
+        }
+
+        if (parseFloat(ValueMonto) < 1 || parseFloat(ValueMonto) < 1) {
+            Swal.fire({
+                title: 'Error',
+                text: 'La valor de la transacción o la cantidad debe ser mayor a 0.',
+                icon: 'error',
+                confirmButtonColor: '#0DBCB5'
+            });
+            return;
+        }
+
         var formData = new FormData(document.getElementById('detallesTForm'));
 
         fetch('/DetallesTransacciones/Create', {
@@ -113,9 +141,14 @@ document.addEventListener('click', function (e) {
                     }
                 });
             } else {
+                let errorMessage = "";
+                if (data.errors && data.errors.length > 0) {
+                    errorMessage += "\n" + data.errors.join("\n");
+                }
+
                 Swal.fire({
                     title: 'Error',
-                    text: data.message,
+                    text: errorMessage,
                     icon: 'error',
                     confirmButtonColor: '#0DBCB5'
                 });
@@ -143,7 +176,7 @@ $(document).on('change', '#IdImpuesto', function () {
         success: function (data) {
             var tipotransaccionSelect = $('#IdTipo');
             tipotransaccionSelect.empty();
-            tipotransaccionSelect.append($('<option></option>').val('').text('Seleccione un tipo de transacción'));
+            tipotransaccionSelect.append($('<option></option>').val('').text('Tipo de transacción'));
             $.each(data, function (index, item) {
                 tipotransaccionSelect.append($('<option></option>').val(item.value).text(item.text));
             });
@@ -162,9 +195,9 @@ $(document).on('change', '#IdImpuesto', function () {
                 Monto: monto
             },
             success: function (data) {
-                $('#inputMontoImpuesto').text('₡' + data.montoImpuesto.toFixed(2));
-                $('#inputMontoTotal').text('₡' + data.montoTotal.toFixed(2));
-                $('#MontoTotal').val(data.montoTotal.toFixed(2));
+                $('#inputMontoImpuestoT').text('₡' + data.montoImpuesto.toFixed(2));
+                $('#inputMontoTotalT').text('₡' + data.montoTotal.toFixed(2));
+                $('#MontoTotalT').val(data.montoTotal.toFixed(2));
             },
             error: function () {
                 alert('Error al cargar la tasa del impuesto');
@@ -181,6 +214,7 @@ document.querySelectorAll('.edit-transaccion').forEach(button => {
             .then(response => response.text())
             .then(html => {
                 document.querySelector('#editDetallesTModal .modal-body').innerHTML = html;
+                inicializarInputMontoEditar();
                 $('#editDetallesTModal').modal('show');
                 document.querySelector('#editDetallesTModal #editdetallesTForm').addEventListener('submit', function (e) {
                     e.preventDefault();
@@ -207,9 +241,14 @@ document.querySelectorAll('.edit-transaccion').forEach(button => {
                                 window.location.reload();
                             });
                         } else {
+                            let errorMessage = "";
+                            if (data.errors && data.errors.length > 0) {
+                                errorMessage += "\n" + data.errors.join("\n");
+                            }
+
                             Swal.fire({
                                 title: 'Error',
-                                text: data.message,
+                                text: errorMessage,
                                 icon: 'error',
                                 confirmButtonColor: '#0DBCB5'
                             });
@@ -226,8 +265,78 @@ document.querySelectorAll('.edit-transaccion').forEach(button => {
                     });
                 });
             })
-            .catch(error => console.error('Error:', error));
     });
+});
+
+function inicializarInputMontoEditar() {
+    $('#inputMontoE').on('input', function () {
+        var monto = $(this).val();
+        var impuestoId = $('#IdImpuestoE').val();
+        if (monto === '') {
+            $('#montoDisplayE').text('₡0.00');
+        } else {
+            $.ajax({
+                url: '/DetallesTransacciones/GetImpuesto/',
+                type: 'GET',
+                dataType: 'json',
+                data: {
+                    IdImpuesto: impuestoId,
+                    Monto: monto
+                },
+                success: function (data) {
+                    $('#montoDisplayE').text('₡' + monto);
+                    $('#inputMontoImpuestoE').text('₡' + data.montoImpuesto.toFixed(2));
+                    $('#inputMontoTotalE').text('₡' + data.montoTotal.toFixed(2));
+                    $('#MontoTotalE').val(data.montoTotal.toFixed(2));
+                },
+                error: function () {
+                    alert('Error al cargar la tasa del impuesto');
+                }
+            });
+        }
+    });
+}
+
+$(document).on('change', '#IdImpuestoE', function () {
+    var impuestoId = $(this).val();
+    var monto = $('#montoDisplayE').text();
+    var valor = monto.replace('₡', '');
+    $.ajax({
+        url: '/DetallesTransacciones/GetTipoTransaccion/',
+        type: 'GET',
+        dataType: 'json',
+        data: { IdImpuesto: impuestoId },
+        success: function (data) {
+            var tipotransaccionSelect = $('#IdTipoE');
+            tipotransaccionSelect.empty();
+            tipotransaccionSelect.append($('<option></option>').val('').text('Tipo de transacción'));
+            $.each(data, function (index, item) {
+                tipotransaccionSelect.append($('<option></option>').val(item.value).text(item.text));
+            });
+        },
+        error: function () {
+            alert('Error al cargar los tipos de transacción');
+        }
+    });
+    if (impuestoId && valor) {
+        $.ajax({
+            url: '/DetallesTransacciones/GetImpuesto/',
+            type: 'GET',
+            dataType: 'json',
+            data: {
+                IdImpuesto: impuestoId,
+                Monto: valor
+            },
+            success: function (data) {
+                $('#inputMontoImpuestoE').text('₡' + data.montoImpuesto.toFixed(2));
+                $('#inputMontoTotalE').text('₡' + data.montoTotal.toFixed(2));
+                $('#MontoTotalE').val(data.montoTotal.toFixed(2));
+            },
+            error: function () {
+                alert('Error al cargar la tasa del impuesto');
+            }
+        });
+    }
 });
 
 // Eliminar Transacciones
@@ -237,7 +346,7 @@ document.querySelectorAll('.delete-transaccion').forEach(button => {
 
         Swal.fire({
             title: '¿Estás seguro?',
-            text: "¡No podrás revertir esto!",
+            text: "¡No podrás revertir este cambio!",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#0DBCB5',
@@ -257,7 +366,7 @@ document.querySelectorAll('.delete-transaccion').forEach(button => {
                         if (data.success) {
                             Swal.fire({
                                 title: '¡Eliminado!',
-                                text: 'El impuesto ha sido eliminado.',
+                                text: 'La transacción ha sido eliminada.',
                                 icon: 'success',
                                 confirmButtonColor: '#0DBCB5'
                             }).then(() => {
@@ -266,7 +375,7 @@ document.querySelectorAll('.delete-transaccion').forEach(button => {
                         } else {
                             Swal.fire({
                                 title: 'Error',
-                                text: 'Hubo un problema al eliminar el impuesto.',
+                                text: 'Hubo un problema al eliminar la transacción.',
                                 icon: 'error',
                                 confirmButtonColor: '#0DBCB5'
                             });

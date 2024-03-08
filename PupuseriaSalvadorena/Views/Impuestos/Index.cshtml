@@ -23,31 +23,23 @@
         </div>
     </div>
     <div class="container mt-4">
-        Historial de compras de materia prima para la elaboracion de los platillos.
+        Registro sobre los impuestos apicables a las transacciones del restaurante.
     </div>
 </div>
 <div class="card-body table-body-custom">
-    <table class="table table-hover">
+    <div class="d-flex justify-content-between align-items-center mt-4">
+        <h4>Impuestos:</h4>
+        <input type="text" class="form-control" id="busquedaImpuestos" placeholder="Filtrar" />
+    </div>
+    <table class="table table-hover mt-4 mb-4" id="tablaImpuestos">
         <thead>
             <tr>
-                <th>
-                    ID
-                </th>
-                <th>
-                    Nombre del Impuesto
-                </th>
-                <th>
-                    Tasa (%)
-                </th>
-                <th>
-                    Estado
-                </th>
-                <th>
-                    Descripción
-                </th>
-                <th>
-                    Acciones
-                </th>
+                <th id="idImpuesto">ID</th>
+                <th id="nombre">Nombre del Impuesto</th>
+                <th id="tasa">Tasa (%)</th>
+                <th id="estado">Estado</th>
+                <th id="descripcion">Descripción</th>
+                <th id="acciones">Acciones</th>
             </tr>
         </thead>
         <tbody>
@@ -84,6 +76,11 @@
     }
         </tbody>
     </table>
+    <div id="pagination" class="pagination justify-content-center align-content-end pb-4">
+        <button class="btn btn-primary anterior" onclick="changePage(-1)"><i class="fas fa-angle-left"></i></button>
+        <span id="pageIndicator">1</span>
+        <button class="btn btn-primary siguiente" onclick="changePage(1)"><i class="fas fa-angle-right"></i></button>
+    </div>
 </div>
 <div class="modal fade" id="newImpuestoModal" tabindex="-1" role="dialog" aria-labelledby="newImpuestoModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">

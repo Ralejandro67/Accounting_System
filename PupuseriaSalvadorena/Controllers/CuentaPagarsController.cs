@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PupuseriaSalvadorena.Conexion;
 using PupuseriaSalvadorena.Models;
+using PupuseriaSalvadorena.Repositorios.Implementaciones;
 using PupuseriaSalvadorena.Repositorios.Interfaces;
 
 namespace PupuseriaSalvadorena.Controllers
@@ -16,12 +17,14 @@ namespace PupuseriaSalvadorena.Controllers
         private readonly ICuentaPagarRep _cuentaPagarRep;
         private readonly IProveedorRep _proveedorRep;
         private readonly IFacturaCompraRep _facturaCompraRep;
+        private readonly IDetallesCuentaRep _detallesCuentaRep;
 
-        public CuentaPagarsController(ICuentaPagarRep context, IProveedorRep proveedorRep, IFacturaCompraRep facturaCompraRep)
+        public CuentaPagarsController(ICuentaPagarRep context, IProveedorRep proveedorRep, IFacturaCompraRep facturaCompraRep, IDetallesCuentaRep detallesCuentaRep)
         {
             _cuentaPagarRep = context;
             _proveedorRep = proveedorRep;
             _facturaCompraRep = facturaCompraRep;
+            _detallesCuentaRep = detallesCuentaRep;
         }
 
         // GET: CuentaPagars
@@ -129,8 +132,21 @@ namespace PupuseriaSalvadorena.Controllers
         {
             try
             {
-                await _cuentaPagarRep.EliminarCuentaPagar(id);
-                return Json(new { success = true, message = "Cuenta por pagar eliminada correctamente." });
+                var cuenta = await _cuentaPagarRep.ConsultarCuentasPagar(id);
+                var detalleCuenta = await _detallesCuentaRep.ConsultarCuentaDetalles(cuenta.IdCuentaPagar);
+
+                decimal Pagado = detalleCuenta.Sum(x => x.Pago);
+                decimal PorPagar = cuenta.TotalPagado - Pagado;
+
+                if (cuenta.TotalPagado == PorPagar || PorPagar == 0)
+                {
+                    await _cuentaPagarRep.EliminarCuentaPagar(id);
+                    return Json(new { success = true, message = "Cuenta por pagar eliminada correctamente." });
+                }
+                else
+                {
+                    return Json(new { success = false, message = "Ya se han realizados pagos sobre la cuenta para proceder con la eliminacion se debe pagar la cuenta en su totalidad." });
+                }
             }
             catch
             {

@@ -122,7 +122,11 @@ namespace PupuseriaSalvadorena.Controllers
                 await _presupuestoRep.CrearPresupuesto(presupuesto.NombreP, presupuesto.FechaInicio, presupuesto.FechaFin, presupuesto.Descripcion, presupuesto.SaldoUsado, presupuesto.SaldoPresupuesto, presupuesto.Estado, presupuesto.IdCategoriaP);
                 return Json(new { success = true, message = "Presupuesto creado correctamente." });
             }
-            return Json(new { success = false, message = "Error al crear el presupuesto." });
+            else
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                return Json(new { success = false, errors = errors });
+            }
         }
 
         // GET: Presupuestoes/Edit/5
@@ -135,6 +139,28 @@ namespace PupuseriaSalvadorena.Controllers
 
             var presupuesto = await _presupuestoRep.ConsultarPresupuestos(id);
             var categorias = await _categoriaPresupuestoRep.MostrarCatPresupuestos();
+            var libros = await _registroLibrosRep.MostrarRegistrosLibros();
+            var presupuestos = await _presupuestoRep.MostrarPresupuestos();
+            decimal saldolibros = 0;
+            decimal saldoPresupuesto = 0;
+
+            if (presupuestos != null)
+            {
+                foreach (var item in presupuestos)
+                {
+                    saldoPresupuesto += item.SaldoPresupuesto;
+                }
+            }
+
+            foreach (var item in libros)
+            {
+                saldolibros += item.MontoTotal;
+            }
+
+            saldoPresupuesto = saldolibros - saldoPresupuesto + presupuesto.SaldoPresupuesto;
+
+            ViewBag.SaldoPresupuestos = saldoPresupuesto;
+            ViewBag.SaldoLibros = saldolibros;
             ViewBag.CategoriasP = new SelectList(categorias, "IdCategoriaP", "Nombre");
 
             if (presupuesto == null)
@@ -159,7 +185,11 @@ namespace PupuseriaSalvadorena.Controllers
                 await _presupuestoRep.ActualizarPresupuesto(presupuesto.IdPresupuesto, presupuesto.NombreP, presupuesto.FechaInicio, presupuesto.FechaFin, presupuesto.Descripcion, presupuesto.SaldoUsado, presupuesto.SaldoPresupuesto, presupuesto.Estado, presupuesto.IdCategoriaP);
                 return Json(new { success = true, message = "Presupuesto actualizado correctamente." });
             }
-            return Json(new { success = false, message = "Error al actualizar el presupuesto." });
+            else
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                return Json(new { success = false, errors = errors });
+            }
         }
 
         // GET: Presupuestoes/Delete/5

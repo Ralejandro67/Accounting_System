@@ -9,6 +9,7 @@ using PupuseriaSalvadorena.Conexion;
 using PupuseriaSalvadorena.Models;
 using PupuseriaSalvadorena.ViewModels;
 using PupuseriaSalvadorena.Repositorios.Interfaces;
+using DocumentFormat.OpenXml.Office2010.Excel;
 
 namespace PupuseriaSalvadorena.Controllers
 {
@@ -37,6 +38,7 @@ namespace PupuseriaSalvadorena.Controllers
             var presupuesto = await _presupuestoRep.ConsultarPresupuestos(id);
 
             ViewBag.Presupuesto = presupuesto.NombreP;
+
             if (detallePresupuesto == null)
             {
                 return Json(new { success = false, message = "El presupuesto no tiene transacciones asociadas." });
@@ -45,20 +47,28 @@ namespace PupuseriaSalvadorena.Controllers
             return View(detallePresupuesto);    
         }
 
-        // GET: DetallePresupuestos/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
         // POST: DetallePresupuestos/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(DetallesPresupuestos detallePresupuesto)
         {
+            var presupuesto = await _presupuestoRep.ConsultarPresupuestos(detallePresupuesto.Presupuesto.IdPresupuesto);
+            if (presupuesto.Estado == false)
+            {
+                return Json(new { success = false, message = "El presupuesto ya fue cerrado, no se pueden agregar transacciones." });
+            }
+
+            foreach (var idTransaccion in detallePresupuesto.TransaccionesSeleccionadas)
+            {
+                var transaccionP = await _detallesPresupuestoRep.ConsultarDetallesPresupuestos(detallePresupuesto.Presupuesto.IdPresupuesto, idTransaccion);
+                if (transaccionP != null)
+                {
+                    return Json(new { success = false, message = $"La transacción {transaccionP.Observaciones} ya fue agregada al presupuesto." });
+                }
+            }
+
             if (detallePresupuesto.TransaccionesSeleccionadas != null && detallePresupuesto.TransaccionesSeleccionadas.Count > 0)
             {
-                var presupuesto = await _presupuestoRep.ConsultarPresupuestos(detallePresupuesto.Presupuesto.IdPresupuesto);
                 decimal saldoUsado = presupuesto.SaldoUsado;
 
                 foreach (var idTransaccion in detallePresupuesto.TransaccionesSeleccionadas)
@@ -81,7 +91,7 @@ namespace PupuseriaSalvadorena.Controllers
                 await _presupuestoRep.ActualizarPresupuesto(detallePresupuesto.Presupuesto.IdPresupuesto, presupuesto.NombreP, presupuesto.FechaInicio, presupuesto.FechaFin, presupuesto.Descripcion, saldoUsado, presupuesto.SaldoPresupuesto, presupuesto.Estado, presupuesto.IdCategoriaP);
                 return Json(new { success = true, message = "Transacciones incluidas correctamente." });
             }
-            return Json(new { success = false, message = "Error al incluir las transacciones." });
+            return Json(new { success = false, message = "Debes seleccionar al menos una transaacion." });
         }
 
         // GET: DetallePresupuestos/Delete/5

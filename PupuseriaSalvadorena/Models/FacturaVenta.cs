@@ -32,6 +32,8 @@ namespace PupuseriaSalvadorena.Models
 
         public string? NombreFactura { get; set; }
 
+        public bool Estado { get; set; }
+
         [NotMapped]
         public string? TipoId { get; set; }
 
@@ -59,5 +61,11 @@ namespace PupuseriaSalvadorena.Models
 
         [NotMapped]
         public bool FacturaElectronica { get; set; }
+
+        [NotMapped]
+        public string? TipoReporte { get; set; }
+
+        [NotMapped]
+        public DateTime FechaReporte { get; set; }
     }
 }

@@ -29,7 +29,11 @@
     </div>
 </div>
 <div class="card-body table-body-custom">
-    <table class="table table-hover">
+    <div class="d-flex justify-content-between align-items-center mt-4">
+        <h4>Productos:</h4>
+        <input type="text" class="form-control" id="busqueda" placeholder="Filtrar" />
+    </div>
+    <table class="table table-hover mt-4" id="tablaPlatillos">
         <thead>
             <tr>
                 <th>
@@ -74,6 +78,11 @@
             }
         </tbody>
     </table>
+    <div id="pagination" class="pagination justify-content-center align-content-end pb-4">
+        <button class="btn btn-primary anterior" onclick="changePage(-1)"><i class="fas fa-angle-left"></i></button>
+        <span id="pageIndicator">1</span>
+        <button class="btn btn-primary siguiente" onclick="changePage(1)"><i class="fas fa-angle-right"></i></button>
+    </div>
 </div>
 <div class="modal fade" id="newPlatilloModal" tabindex="-1" role="dialog" aria-labelledby="newPlatilloModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">

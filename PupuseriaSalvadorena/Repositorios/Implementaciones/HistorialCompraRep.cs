@@ -71,5 +71,11 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
 
             return resultado.FirstOrDefault();
         }
+
+        public async Task EliminarHistorialCompraFactura(string IdFacturaCompra)
+        {
+            var IdFacturaCompraParam = new SqlParameter("@IdFacturaCompra", IdFacturaCompra);
+            await _context.Database.ExecuteSqlRawAsync("EliminarHistorialCompraFactura @IdFacturaCompra", IdFacturaCompraParam);
+        }
     }
 }

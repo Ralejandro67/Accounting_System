@@ -26,8 +26,12 @@
         Registro de las materias primas utilizadas en la elaboración de los platillos.
     </div>
 </div>
-<div class="card-body mat-2 table-body-custom">
-    <table class="table table-hover">
+<div class="card-body table-body-custom">
+    <div class="d-flex justify-content-between align-items-center mt-4">
+        <h4>Materias Primas:</h4>
+        <input type="text" class="form-control" id="busqueda" placeholder="Filtrar" />
+    </div>
+    <table class="table table-hover mt-4" id="tablaMateriasPrimas">
         <thead>
             <tr>
                 <th>
@@ -36,7 +40,7 @@
                 <th>
                     Proveedor
                 </th>
-                <th>
+                <th id="acciones">
                     Acciones
                 </th>
             </tr>
@@ -66,9 +70,12 @@
             }
         </tbody>
     </table>
+    <div id="pagination" class="pagination justify-content-center align-content-end pb-4">
+        <button class="btn btn-primary anterior" onclick="changePage(-1)"><i class="fas fa-angle-left"></i></button>
+        <span id="pageIndicator">1</span>
+        <button class="btn btn-primary siguiente" onclick="changePage(1)"><i class="fas fa-angle-right"></i></button>
+    </div>
 </div>
-
-
 <div class="modal fade" id="newMateriaPrimaModal" tabindex="-1" role="dialog" aria-labelledby="newMateriaPrimaModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -80,6 +87,21 @@
             </div>
             <div class="modal-body">
                 @Html.Partial("_newMateriaPrimaPartial", new PupuseriaSalvadorena.Models.MateriaPrima())
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="editMateriaPrimaModal" tabindex="-1" role="dialog" aria-labelledby="editMateriaPrimaModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editMateriaPrimaModalLabel">Editar Materia Prima</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @Html.Partial("_editMateriaPrimaPartial", new PupuseriaSalvadorena.Models.MateriaPrima())
             </div>
         </div>
     </div>

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using PupuseriaSalvadorena.Conexion;
 using PupuseriaSalvadorena.Models;
 using PupuseriaSalvadorena.Repositorios.Interfaces;
+using System.Data;
 
 namespace PupuseriaSalvadorena.Repositorios.Implementaciones
 {
@@ -15,11 +16,27 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             _context = context;
         }
 
-        public async Task CrearTelefono(int numero, bool estado)
+        public async Task<int> CrearTelefono(int Telefono, bool Estado)
         {
-            var numeroParam = new SqlParameter("@Telefono", numero);
-            var estadoParam = new SqlParameter("@Estado", estado);
-            await _context.Database.ExecuteSqlRawAsync("CrearTelefono @Telefono, @Estado", numeroParam, estadoParam);
+            using(var command = _context.Database.GetDbConnection().CreateCommand())
+            {
+                command.CommandText = "CrearTelefono";
+                command.CommandType = CommandType.StoredProcedure;
+
+                command.Parameters.Add(new SqlParameter("@Telefono", Telefono));
+                command.Parameters.Add(new SqlParameter("@Estado", Estado));
+
+                var IdTelefono = new SqlParameter("@IdTelefono", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                command.Parameters.Add(IdTelefono);
+
+                await _context.Database.OpenConnectionAsync();
+                await command.ExecuteNonQueryAsync();
+
+                return (int)IdTelefono.Value;
+            }
         }
 
         public async Task ActualizarTelefono(int IdTelefono, int Telefono, bool Estado)
@@ -32,8 +49,15 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
 
         public async Task EliminarTelefono(int IdTelefono)
         {
-            var idTelefonoParam = new SqlParameter("@IdTelefono", IdTelefono);
-            await _context.Database.ExecuteSqlRawAsync("EliminarTelefono @IdTelefono", idTelefonoParam);
+            try
+            {
+                var idTelefonoParam = new SqlParameter("@IdTelefono", IdTelefono);
+                await _context.Database.ExecuteSqlRawAsync("EliminarTelefono @IdTelefono", idTelefonoParam);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
 
         public async Task<List<Telefonos>> MostrarTelefonos()

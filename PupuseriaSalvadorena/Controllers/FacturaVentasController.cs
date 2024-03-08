@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using PupuseriaSalvadorena.Conexion;
 using PupuseriaSalvadorena.Models;
 using PupuseriaSalvadorena.Repositorios.Interfaces;
+using PupuseriaSalvadorena.ViewModels;
 using System.Text;
 using System.Collections.Immutable;
 using System.Runtime.CompilerServices;
@@ -18,9 +19,11 @@ using System.ComponentModel;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Routing.Constraints;
 using Microsoft.VisualBasic;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 using PupuseriaSalvadorena.Repositorios.Implementaciones;
 using System.Globalization;
+using Rotativa.AspNetCore;
+using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Wordprocessing;
 
 namespace PupuseriaSalvadorena.Controllers
 {
@@ -61,6 +64,8 @@ namespace PupuseriaSalvadorena.Controllers
             DateTime fecha = DateTime.Now;
 
             var facturaVentas = await _facturaVentaRep.MostrarFacturasVentas();
+            var facturasMesActual = facturaVentas.Where(f => f.FechaFactura.Month == fecha.Month && f.FechaFactura.Year == fecha.Year).ToList();
+
             var facturasPorMes = facturaVentas.GroupBy(f => new { Año = f.FechaFactura.Year, Mes = f.FechaFactura.Month })
                                                .Select(group => new { Año = group.Key.Año, Mes = group.Key.Mes, Cantidad = group.Count(), TotalVentasMes = group.Sum(f => f.TotalVenta) })
                                                .OrderByDescending(x => x.Año).ThenByDescending(x => x.Mes)
@@ -76,7 +81,7 @@ namespace PupuseriaSalvadorena.Controllers
             ViewBag.mesActual = cultura.DateTimeFormat.GetMonthName(fecha.Month);
             ViewBag.facturas = facturaVentas.Count();
 
-            return View(facturaVentas); 
+            return View(facturasMesActual); 
         }
 
         // GET: FacturaVentas/Details/5
@@ -120,7 +125,7 @@ namespace PupuseriaSalvadorena.Controllers
         // POST: FacturaVentas/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdFacturaVenta,FechaFactura,SubTotal,TotalVenta,IdTipoPago,IdTipoFactura,Identificacion,NombreCliente,CorreoElectronico,Telefono,IdPlatillo,CantVenta,IdTipoVenta,FacturaElectronica,TipoId")] FacturaVenta facturaVenta)
+        public async Task<IActionResult> Create([Bind("IdFacturaVenta,FechaFactura,SubTotal,TotalVenta,IdTipoPago,IdTipoFactura,Identificacion,NombreCliente,CorreoElectronico,Telefono,IdPlatillo,CantVenta,IdTipoVenta,FacturaElectronica,TipoId,TipoReporte,FechaReporte,Estado")] FacturaVenta facturaVenta)
         {
             if (ModelState.IsValid)
             {
@@ -164,7 +169,7 @@ namespace PupuseriaSalvadorena.Controllers
                             facturaVenta.Consecutivo = (decimal)jsonObject["numberTemplate"]["fullNumber"];
                             int idfactura = (int)jsonObject["id"];
 
-                            var facturaId = await _facturaVentaRep.CrearFacturaVenta(empresa, facturaVenta.Consecutivo, facturaVenta.FechaFactura, facturaVenta.SubTotal, facturaVenta.TotalVenta, facturaVenta.IdTipoPago, facturaVenta.IdTipoFactura);
+                            var facturaId = await _facturaVentaRep.CrearFacturaVenta(empresa, facturaVenta.Consecutivo, facturaVenta.FechaFactura, facturaVenta.SubTotal, facturaVenta.TotalVenta, facturaVenta.IdTipoPago, facturaVenta.IdTipoFactura, facturaVenta.Estado);
 
                             int cantTotal = 0;
                             decimal montoTotal = Libro.MontoTotal + facturaVenta.TotalVenta;
@@ -205,41 +210,27 @@ namespace PupuseriaSalvadorena.Controllers
                     }
                 }
             }
-            return Json(new { success = false, message = "Error al crear la factura." });
+            else
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                return Json(new { success = false, errors = errors });
+            }
         }
 
-        // GET: FacturaVentas/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        // FacturaVentas/ImprimirFactura/5
+        [HttpGet]
+        public async Task<IActionResult> ImprimirFactura(int id)
         {
-            if (id == null)
+            try
             {
-                return NotFound();
+                var factura = await _historialVentaRep.ConsultarHistorialVentasFactura(id);
+                var url = await FacturaImprimir(factura.IdVenta);
+                return Json(new { success = true, url = url });
             }
-
-            var facturaVenta = await _facturaVentaRep.ConsultarFacturasVentas(id.Value);
-            if (facturaVenta == null)
+            catch
             {
-                return NotFound();
+                return Json(new { success = false, message = "Error al imprimir la factura." });
             }
-            return View("_editFacturaVentaPartial", facturaVenta);
-        }
-
-        // POST: FacturaVentas/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdFacturaVenta,CedulaJuridica,Consecutivo,Clave,FechaFactura,SubTotal,TotalVenta,IdTipoPago,IdTipoFactura")] FacturaVenta facturaVenta)
-        {
-            if (id != facturaVenta.IdFacturaVenta)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                await _facturaVentaRep.ActualizarFacturaVenta(facturaVenta.IdFacturaVenta, facturaVenta.IdTipoPago, facturaVenta.IdTipoFactura);
-                return RedirectToAction(nameof(Index));
-            }
-            return View(facturaVenta);
         }
 
         // GET: FacturaVentas/Delete/5
@@ -264,8 +255,105 @@ namespace PupuseriaSalvadorena.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _facturaVentaRep.EliminarFacturaVenta(id);
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                var IdLibro = await _detallesTransacRep.ObtenerIdLibroMasReciente();
+                var Libro = await _registroLibrosRep.ConsultarRegistrosLibros(IdLibro);
+                var detallesFactura = await _facturaVentaRep.ConsultarFacturasVentas(id);
+                var factura = await _historialVentaRep.ConsultarHistorialVentasFactura(id);
+
+                if (!detallesFactura.Estado)
+                {
+                    return Json(new { success = false, message = "La factura ya se encuentra anulada." });
+                }
+
+                bool anulada = await AnularFactura(factura.IdVenta);
+
+                if (anulada)
+                {
+                    string transaccion = $"Factura de Venta: {detallesFactura.Consecutivo}";
+                    decimal montoTotal = Libro.MontoTotal - detallesFactura.TotalVenta;
+
+                    var transaccionE = await _detallesTransacRep.ConsultarTransaccionesDetalles(transaccion);
+
+                    await _facturaVentaRep.ActualizarFacturaVenta(id, false);
+                    await _detallesTransacRep.EliminarDetallesTransaccion(transaccionE.IdTransaccion);
+                    await _registroLibrosRep.ActualizarRegistroLibros(IdLibro, montoTotal, Libro.Descripcion, Libro.Conciliado);
+
+                    return Json(new { success = true, message = "Factura anulada correctamente." });
+                }
+
+                return Json(new { success = false, message = "Error al anular la factura." });
+
+            }
+            catch
+            {
+                return Json(new { success = false, message = "Error al anular la factura." });
+            }
+        }
+
+        // Anular Factura
+        private async Task<bool> AnularFactura(int idFactura)
+        {
+            string requestUri = "https://api.alegra.com/api/v1/invoices/" + idFactura + "/void";
+
+            using (var client = new HttpClient())
+            {
+                var request = new HttpRequestMessage
+                {
+                    Method = HttpMethod.Post,
+                    RequestUri = new Uri(requestUri),
+                    Headers =
+                    {
+                        { "accept", "application/json" },
+                        { "authorization", "Basic cmFsZWphbmRybzY3QGdtYWlsLmNvbToxOTU4ZjIwZTBhNTJjMTc1YjM3ZQ==" },
+                    },
+                };
+
+                var response = await client.SendAsync(request);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    response.EnsureSuccessStatusCode();
+                    return true;
+                }
+                else
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine("Error en la solicitud HTTP: " + errorContent);
+                    return false;
+                }
+            }
+        }
+        
+        // Enviar Factura
+        private async Task<string> FacturaImprimir(int idFactura)
+        {
+            string requestUri = "https://api.alegra.com/api/v1/invoices/" + idFactura + "?fields=pdf";
+
+            using (var client = new HttpClient())
+            {
+                var request = new HttpRequestMessage
+                {
+                    Method = HttpMethod.Get,
+                    RequestUri = new Uri(requestUri),
+                    Headers =
+                    {
+                        { "accept", "application/json" },
+                        { "authorization", "Basic cmFsZWphbmRybzY3QGdtYWlsLmNvbToxOTU4ZjIwZTBhNTJjMTc1YjM3ZQ==" },
+                    },
+                };
+
+                using (var response = await client.SendAsync(request))
+                {
+                    response.EnsureSuccessStatusCode();
+                    var content = await response.Content.ReadAsStringAsync();
+                    var jsonObject = JObject.Parse(content);
+
+                    string pdfUrl = (string)jsonObject["pdf"];
+                    return pdfUrl;
+                };
+            }
         }
 
         // Contacto Factura Electronica
@@ -338,7 +426,6 @@ namespace PupuseriaSalvadorena.Controllers
                     {
                         if (!response.IsSuccessStatusCode)
                         {
-                            // Si no es exitoso, leer el contenido del error
                             var errorContent = await response.Content.ReadAsStringAsync();
                             Console.WriteLine("Error en la solicitud HTTP: " + errorContent);
                             return false; 
@@ -391,6 +478,84 @@ namespace PupuseriaSalvadorena.Controllers
                     return "OTHER";
                 default:
                     return "OTHER";
+            }
+        }
+
+        // Reporte Facturas
+        public async Task<IActionResult> ReporteFacturas(FacturaVenta facturaVenta)
+        {
+            var facturas = await _facturaVentaRep.MostrarFacturasVentas();
+            var negocio = await _negociosRep.MostrarNegocio();
+            var facturasMes = facturas.Where(f => f.FechaFactura.Year == facturaVenta.FechaReporte.Year && f.FechaFactura.Month == facturaVenta.FechaReporte.Month).ToList();
+
+            string mes = facturaVenta.FechaReporte.ToString("MMMM", new CultureInfo("es-ES"));
+            string year = facturaVenta.FechaReporte.Year.ToString();
+            int totalFacturas = facturasMes.Count();
+            decimal subtotalVentas = facturasMes.Sum(f => f.SubTotal);
+            decimal totalVentas = facturasMes.Sum(f => f.TotalVenta);
+
+            var viewModel = new FacturaVentasPDF
+            {
+                Mes = mes,
+                Year = year,
+                Negocio = negocio,
+                Facturas = facturasMes,
+                TotalVentas = totalVentas,
+                TotalFacturas = totalFacturas,
+                SubtotalVentas = subtotalVentas
+            };
+
+            if (facturaVenta.TipoReporte == "Pdf")
+            {
+                return new ViewAsPdf("DescargarFacturasVentas", viewModel)
+                {
+                    FileName = $"ReporteVentas_{mes}.pdf",
+                    PageSize = Rotativa.AspNetCore.Options.Size.Letter,
+                    PageMargins = new Rotativa.AspNetCore.Options.Margins(15, 12, 12, 12)
+                };
+            }
+            else
+            {
+                try
+                {
+                    using (var workbook = new XLWorkbook())
+                    {
+                        var worksheet = workbook.Worksheets.Add("Reporte de Ventas");
+                        var currentRow = 1;
+                        worksheet.Cell(currentRow, 1).Value = "ID Factura";
+                        worksheet.Cell(currentRow, 2).Value = "Consecutivo";
+                        worksheet.Cell(currentRow, 3).Value = "Fecha";
+                        worksheet.Cell(currentRow, 4).Value = "Tipo de Pago";
+                        worksheet.Cell(currentRow, 5).Value = "SubTotal Venta";
+                        worksheet.Cell(currentRow, 6).Value = "Total Venta";
+
+                        foreach (var factura in viewModel.Facturas)
+                        {
+                            currentRow++;
+                            worksheet.Cell(currentRow, 1).Value = factura.IdFacturaVenta;
+                            worksheet.Cell(currentRow, 2).Value = factura.Consecutivo;
+                            worksheet.Cell(currentRow, 3).Value = factura.FechaFactura.ToString("dd/MM/yyyy");
+                            worksheet.Cell(currentRow, 4).Value = factura.NombrePago;
+                            worksheet.Cell(currentRow, 5).Value = factura.SubTotal;
+                            worksheet.Cell(currentRow, 6).Value = factura.TotalVenta;
+                        }
+
+                        currentRow++;
+                        worksheet.Cell(currentRow, 5).Value = "Total Ventas";
+                        worksheet.Cell(currentRow, 6).Value = viewModel.TotalVentas;
+
+                        using (var stream = new MemoryStream())
+                        {
+                            workbook.SaveAs(stream);
+                            var content = stream.ToArray();
+                            return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"ReporteVentas_{mes}.xlsx");
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { success = false, message = "Error al generar el reporte. Detalle: " + ex.Message });
+                }
             }
         }
     }

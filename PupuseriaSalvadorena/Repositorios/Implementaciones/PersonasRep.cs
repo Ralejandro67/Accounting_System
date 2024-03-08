@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using PupuseriaSalvadorena.Conexion;
 using PupuseriaSalvadorena.Models;
 using PupuseriaSalvadorena.Repositorios.Interfaces;
+using System.Data;
 
 namespace PupuseriaSalvadorena.Repositorios.Implementaciones
 {
@@ -15,16 +16,32 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             _context = context;
         }
 
-        public async Task CrearPersona(int Cedula, string nombre, string apellido, DateTime FechaNac, int correo, int direccion, int telefono)
+        public async Task<string> CrearPersona(long Cedula, string nombre, string apellido, DateTime FechaNac, int correo, int direccion, int telefono)
         {
-            var cedulaParam = new SqlParameter("@Cedula", Cedula);
-            var nombreParam = new SqlParameter("@Nombre", nombre);
-            var apellidoParam = new SqlParameter("@Apellido", apellido);
-            var fechaNacParam = new SqlParameter("@FechaNac", FechaNac);
-            var correoParam = new SqlParameter("@IdCorreoElectronico", correo);
-            var telefonoParam = new SqlParameter("@IdTelefono", telefono);
-            var direccionParam = new SqlParameter("@IdDireccion", direccion);
-            await _context.Database.ExecuteSqlRawAsync("CrearPersona @Cedula, @Nombre, @Apellido, @FechaNac, @IdCorreoElectronico, @IdDireccion, @IdTelefono", cedulaParam, nombreParam, apellidoParam, fechaNacParam, correoParam, direccionParam, telefonoParam);
+            using(var command = _context.Database.GetDbConnection().CreateCommand())
+            {
+                command.CommandText = "CrearPersona";
+                command.CommandType = CommandType.StoredProcedure;
+
+                command.Parameters.Add(new SqlParameter("@Cedula", Cedula));
+                command.Parameters.Add(new SqlParameter("@Nombre", nombre));
+                command.Parameters.Add(new SqlParameter("@Apellido", apellido));
+                command.Parameters.Add(new SqlParameter("@FechaNac", FechaNac));
+                command.Parameters.Add(new SqlParameter("@IdCorreoElectronico", correo));
+                command.Parameters.Add(new SqlParameter("@IdDireccion", direccion));
+                command.Parameters.Add(new SqlParameter("@IdTelefono", telefono));
+
+                var IdPersona = new SqlParameter("@IdPersona", SqlDbType.VarChar, 10)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                command.Parameters.Add(IdPersona);
+
+                await _context.Database.OpenConnectionAsync();
+                await command.ExecuteNonQueryAsync();
+
+                return (string)IdPersona.Value;
+            }
         }
 
         public async Task ActualizarPersona(string IdPersona, string Nombre, string Apellido)
@@ -51,12 +68,20 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
 
         public async Task<Persona> ConsultarPersonas(string IdPersona)
         {
-            var IdPersonaParam = new SqlParameter("@IdPersona", IdPersona);
-            var resultado = await _context.Persona
-                                          .FromSqlRaw("EXEC ConsultarPersonas @IdPersona", IdPersonaParam)
-                                          .ToListAsync();
+            try
+            {
+                var IdPersonaParam = new SqlParameter("@IdPersona", IdPersona);
+                var resultado = await _context.Persona
+                                              .FromSqlRaw("EXEC ConsultarPersonas @IdPersona", IdPersonaParam)
+                                              .ToListAsync();
 
-            return resultado.FirstOrDefault();
+                return resultado.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Se produjo un error al consultar la persona: {ex.Message}");
+                throw ex;
+            }
         }
     }
 }

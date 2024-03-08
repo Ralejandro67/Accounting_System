@@ -44,11 +44,21 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             return distritos;
         }
 
-        public async Task<Distrito> ConsultarDistritos(int IdDistrito)
+        public async Task<List<Distrito>> ConsultarDistritos(int IdDistrito)
         {
             var nombreParam = new SqlParameter("@IdDistrito", IdDistrito);
             var resultado = await _context.Distrito
                                           .FromSqlRaw("EXEC ConsultarDistritos @IdDistrito", nombreParam)
+                                          .ToListAsync();
+
+            return resultado;
+        }
+
+        public async Task<Distrito> ConsultarDistrito(int IdDistrito)
+        {
+            var nombreParam = new SqlParameter("@IdDistrito", IdDistrito);
+            var resultado = await _context.Distrito
+                                          .FromSqlRaw("EXEC ConsultarDistrito @IdDistrito", nombreParam)
                                           .ToListAsync();
 
             return resultado.FirstOrDefault();

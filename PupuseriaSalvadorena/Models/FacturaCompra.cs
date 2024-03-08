@@ -51,5 +51,11 @@ namespace PupuseriaSalvadorena.Models
 
         [NotMapped]
         public bool Activo { get; set; }
+
+        [NotMapped]
+        public string? TipoReporte { get; set; }
+
+        [NotMapped]
+        public DateTime FechaReporte { get; set; }
     }
 }

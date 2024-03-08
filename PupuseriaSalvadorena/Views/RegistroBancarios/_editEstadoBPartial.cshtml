@@ -1,0 +1,34 @@
+﻿@model PupuseriaSalvadorena.Models.RegistroBancario
+
+<form id="EditestadoBacForm" asp-action="Edit" asp-controller="RegistroBancarios" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input asp-for="FechaRegistro" class="form-control" type="hidden"/>
+    <input asp-for="IdRegistro" class="form-control" type="hidden" />
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="control-label">Numero de la Cuenta</label>
+                <input asp-for="NumeroCuenta" class="form-control" placeholder="CR00000000000000000000" />
+                <span asp-validation-for="NumeroCuenta" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="control-label">Saldo en Cuenta</label>
+                <div class="input-group">
+                    <span class="input-group-text">₡</span>
+                    <input asp-for="SaldoInicial" class="form-control" id="Value"/>
+                    <span asp-validation-for="SaldoInicial" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label">Descripción</label>
+        <textarea asp-for="Observaciones" class="form-control" id="CampoArea" placeholder="Descripción adicional sobre la cuenta bancaria"></textarea>
+        <span asp-validation-for="Observaciones" class="text-danger"></span>
+    </div>
+    <div class="form-group text-right">
+        <button type="submit" id="submitEditEstadoBacForm" class="btn btn-primary agregar-boton">Editar</button>
+    </div>
+</form>

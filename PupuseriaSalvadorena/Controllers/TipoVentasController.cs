@@ -60,7 +60,11 @@ namespace PupuseriaSalvadorena.Controllers
                 await _tipoVentaRep.CrearTipoVenta(tipoVenta.NombreVenta, tipoVenta.Estado);
                 return Json(new { success = true, message = "Tipo de venta agregada correctamente." });
             }
-            return Json(new { success = false, message = "Error al agregar el tipo de venta." });
+            else
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                return Json(new { success = false, errors = errors });
+            }
         }
 
         // GET: TipoVentas/Edit/5
@@ -84,17 +88,16 @@ namespace PupuseriaSalvadorena.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("IdTipoVenta,NombreVenta,Estado")] TipoVenta tipoVenta)
         {
-            if (id != tipoVenta.IdTipoVenta)
-            {
-                return Json(new { success = false, message = "Error al editar el tipo de venta." });
-            }
-
             if (ModelState.IsValid)
             {
                 await _tipoVentaRep.ActualizarTipoVentas(tipoVenta.IdTipoVenta, tipoVenta.NombreVenta, tipoVenta.Estado);
                 return Json(new { success = true, message = "Tipo de venta actualizada correctamente." });
             }
-            return Json(new { success = false, message = "Error al editar el tipo de venta." });
+            else
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                return Json(new { success = false, errors = errors });
+            }
         }
 
         // GET: TipoVentas/Delete/5
@@ -116,7 +119,7 @@ namespace PupuseriaSalvadorena.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = "Error al eliminar el tipo de venta." });
+                return Json(new { success = false, message = "Error al eliminar el tipo de venta, hay facturas asociadas a el tipo de venta." });
             }
         }
     }

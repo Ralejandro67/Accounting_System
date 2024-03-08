@@ -7,23 +7,23 @@
 
 <form id="PresupuestoForm" asp-action="Create" asp-controller="Presupuestoes" method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="SaldoUsado" class="form-control" />
+    <input type="hidden" asp-for="Estado" class="form-control" value="true">
     <div class="card-body card-body-custom">
         <div class="row no-gutters">
             <div class="col text-center item">
-                <div class="item-value">Saldo en Libros</div>
+                <div class="item-value"><strong>Saldo en Libros</strong></div>
                 <div class="text-note">₡@ViewBag.SaldoLibros</div>
             </div>
             <div class="col text-center item">
-                <div class="item-value">Saldo Disponible</div>
+                <div class="item-value"><strong>Saldo Disponible</strong></div>
                 <div id="SaldoDisponible" class="text-note" data-saldo="@ViewBag.SaldoPresupuestos">₡@ViewBag.SaldoPresupuestos</div>
             </div>
         </div>
     </div>
-    <input type="hidden" asp-for="SaldoUsado" class="form-control" />
-    <input type="hidden" asp-for="Estado" class="form-control" value="true">
     <div class="form-group">
         <label class="control-label">Nombre del Presupuesto</label>
-        <input asp-for="NombreP" class="form-control" />
+        <input asp-for="NombreP" class="form-control" placeholder="Nombre del presupuesto"/>
         <span asp-validation-for="NombreP" class="text-danger"></span>
     </div>
     <div class="row">
@@ -36,8 +36,8 @@
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <label class="control-label">Fecha de Finalizacion</label>
-                <input asp-for="FechaFin" class="form-control" type="date" />
+                <label class="control-label">Fecha de Finalización</label>
+                <input asp-for="FechaFin" class="form-control" type="date" id="fechaFinal"/>
                 <span asp-validation-for="FechaFin" class="text-danger"></span>
             </div>
         </div>
@@ -48,7 +48,7 @@
                 <label class="control-label">Saldo del Presupuesto</label>
                 <div class="input-group">
                     <span class="input-group-text">₡</span>
-                    <input asp-for="SaldoPresupuesto" class="form-control" id="SaldoIncial"/>
+                    <input type="number" name="SaldoPresupuesto" class="form-control" id="SaldoIncial" min="1" placeholder="0.00"/>
                     <span asp-validation-for="SaldoPresupuesto" class="text-danger"></span>
                 </div>
             </div>
@@ -56,7 +56,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label class="control-label">Categoria</label>
-                <select asp-for="IdCategoriaP" asp-items="@ViewBag.CategoriasP" class="form-control">
+                <select asp-for="IdCategoriaP" asp-items="@ViewBag.CategoriasP" class="form-control" id="Categoria">
                     <option value="">Seleccione una Categoria</option>
                 </select>
                 <span asp-validation-for="IdCategoriaP" class="text-danger"></span>
@@ -64,8 +64,8 @@
         </div>
     </div>
     <div class="form-group">
-        <label class="control-label">Descripcion</label>
-        <textarea asp-for="Descripcion" class="form-control" id="CampoArea"></textarea>
+        <label class="control-label">Descripción</label>
+        <textarea asp-for="Descripcion" class="form-control" id="CampoArea" placeholder="Descripción del presupuesto"></textarea>
         <span asp-validation-for="Descripcion" class="text-danger"></span>
     </div>
     <div class="form-group text-right">

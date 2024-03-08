@@ -11,6 +11,8 @@ using PupuseriaSalvadorena.Services;
 using PupuseriaSalvadorena.ViewModels;
 using PupuseriaSalvadorena.Repositorios.Interfaces;
 using Newtonsoft.Json;
+using PupuseriaSalvadorena.Repositorios.Implementaciones;
+using Rotativa.AspNetCore;
 
 namespace PupuseriaSalvadorena.Controllers
 {
@@ -20,14 +22,16 @@ namespace PupuseriaSalvadorena.Controllers
         private readonly IHistorialVentaRep _historialVentaRep;
         private readonly IPlatilloRep _platilloRep;
         private readonly IDetallesPronosticoRep _detallesPronosticoRep;
+        private readonly INegociosRep _negociosRep;
         private readonly ServicioPronosticos _servicioPronosticos;
 
-        public PronosticosController(IPronosticoRep pronosticoRep, IHistorialVentaRep historialVentaRep, IPlatilloRep platilloRep, IDetallesPronosticoRep detallesPronosticoRep, ServicioPronosticos servicioPronosticos)
+        public PronosticosController(IPronosticoRep pronosticoRep, IHistorialVentaRep historialVentaRep, IPlatilloRep platilloRep, IDetallesPronosticoRep detallesPronosticoRep, INegociosRep negociosRep, ServicioPronosticos servicioPronosticos)
         {
             _pronosticoRep = pronosticoRep;
             _historialVentaRep = historialVentaRep;
             _platilloRep = platilloRep;
             _detallesPronosticoRep = detallesPronosticoRep;
+            _negociosRep = negociosRep;
             _servicioPronosticos = servicioPronosticos;
         }
 
@@ -111,7 +115,7 @@ namespace PupuseriaSalvadorena.Controllers
 
                 foreach (var pronosticoDiario in pronosticos)
                 {
-                    if (fechaNext < pronostico.FechaFinal)
+                    if (fechaNext <= pronostico.FechaFinal)
                     {
                         valorDiario = pronosticoDiario.CantVenta * platillo.PrecioVenta;
                         cantTotal += pronosticoDiario.CantVenta;
@@ -128,58 +132,14 @@ namespace PupuseriaSalvadorena.Controllers
                 await _pronosticoRep.ActualizarPronosticos(idPronostico, pronostico.IdPlatillo, pronostico.FechaInicio, pronostico.FechaFinal, cantTotal, totalVentas);
                 return Json(new { success = true, message = "El pronostico fue creado correctamente." });
             }
-            return Json(new { success = false, message = "Error al crear el pronostico." });
-        }
-
-        // GET: Pronosticos/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var pronostico = await _pronosticoRep.ConsultarPronosticos(id.Value);
-            if (pronostico == null)
-            {
-                return NotFound();
-            }
-            return View(pronostico);
-        }
-
-        // POST: Pronosticos/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdPronostico,IdPlatillo,FechaInicio,FechaFinal,CantTotalProd,TotalVentas")] Pronostico pronostico)
-        {
-            if (id != pronostico.IdPronostico)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                await _pronosticoRep.ActualizarPronosticos(pronostico.IdPronostico, pronostico.IdPlatillo, pronostico.FechaInicio, pronostico.FechaFinal, pronostico.CantTotalProd, pronostico.TotalVentas);
-                return RedirectToAction(nameof(Index));
-            }
-            return View(pronostico);
+            return Json(new { success = false, message = "Debe de seleccionar un platillo para el pronostico." });
         }
 
         // GET: Pronosticos/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var pronostico = await _pronosticoRep.ConsultarPronosticos(id.Value);
-            if (pronostico == null)
-            {
-                return NotFound();
-            }
-
-            return View(pronostico);
+            return Json(new { exists = pronostico != null });
         }
 
         // POST: Pronosticos/Delete/5
@@ -187,8 +147,50 @@ namespace PupuseriaSalvadorena.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _pronosticoRep.EliminarPronostico(id);
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await _pronosticoRep.EliminarPronostico(id);
+                return Json(new { success = true, message = "Pronostico eliminado correctamente." });
+            }
+            catch
+            {
+                return Json(new { success = false, message = "Error al eliminar el impuesto." });
+            }
+        }
+
+        // Pronosticos/DecargarPronostico/5
+        public async Task<IActionResult> DecargarPronostico(int? id)
+        {
+            if (id == null)
+            {
+                return Json(new { success = false, message = "Error al descargar el presupuesto." });
+            }
+
+            var negocio = await _negociosRep.MostrarNegocio();
+            var pronostico = await _pronosticoRep.ConsultarPronosticos(id.Value);
+            var detallesPronostico = await _detallesPronosticoRep.ConsultarDetallesPorPronosticos(id.Value);
+
+            int cantPronostico = detallesPronostico.Count();
+
+            if (pronostico == null)
+            {
+                return Json(new { success = false, message = "Error al descargar el presupuesto." });
+            }
+
+            var viewModel = new PronosticoPDF
+            {
+                TotalPronosticos = cantPronostico,
+                Negocio = negocio,
+                Pronostico = pronostico,
+                DetallesP = detallesPronostico
+            };
+
+            return new ViewAsPdf("DecargarPronostico", viewModel)
+            {
+                FileName = $"Pronostico_{id}.pdf",
+                PageSize = Rotativa.AspNetCore.Options.Size.Letter,
+                PageMargins = new Rotativa.AspNetCore.Options.Margins(15, 12, 12, 12)
+            };
         }
     }
 }

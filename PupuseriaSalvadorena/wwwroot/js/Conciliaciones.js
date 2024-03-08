@@ -15,6 +15,30 @@ document.getElementById("AddConciliacion").addEventListener("click", function ()
 
 document.addEventListener('click', function (e) {
     if (e.target && e.target.id === 'submitConciliacionForm') {
+
+        var Value = document.getElementById('SaldoBancario').value;
+
+        var regex = /^[0-9]+(\.[0-9]+)?$/;
+        if (!regex.test(Value)){
+            Swal.fire({
+                title: 'Error',
+                text: 'Ël saldo en la cuenta debe ser un número.',
+                icon: 'error',
+                confirmButtonColor: '#0DBCB5'
+            });
+            return;
+        }
+
+        if (parseFloat(Value) < 1){
+            Swal.fire({
+                title: 'Error',
+                text: 'El saldo en la cuenta debe de ser mayor a 0.',
+                icon: 'error',
+                confirmButtonColor: '#0DBCB5'
+            });
+            return;
+        }
+
         var formData = new FormData(document.getElementById('conciliacionForm'));
 
         fetch('/ConciliacionBancarias/Create', {
@@ -31,27 +55,89 @@ document.addEventListener('click', function (e) {
                     Swal.fire({
                         title: '¡Éxito!',
                         text: data.message,
-                        icon: 'success'
+                        icon: 'success',
+                        confirmButtonColor: '#0DBCB5'
                     }).then((result) => {
                         if (result.isConfirmed || result.isDismissed) {
                             window.location.reload();
                         }
                     });
                 } else {
+                    let errorMessage = "";
+                    if (data.errors && data.errors.length > 0) {
+                        errorMessage += "\n" + data.errors.join("\n");
+                    }
+
                     Swal.fire({
                         title: 'Error',
-                        text: data.message,
-                        icon: 'error'
+                        text: errorMessage,
+                        icon: 'error',
+                        confirmButtonColor: '#0DBCB5'
                     });
                 }
             })
             .catch(error => {
-                console.error('Error en la solicitud:', error);
                 Swal.fire({
                     title: 'Error',
                     text: 'Hubo un problema con la solicitud. ' + error.toString(),
-                    icon: 'error'
+                    icon: 'error',
+                    confirmButtonColor: '#0DBCB5'
                 });
             });
     }
+});
+
+// Eliminar impuesto
+document.querySelectorAll('.delete-Conciliacion').forEach(button => {
+    button.addEventListener('click', function () {
+        var Id = this.getAttribute('data-id');
+
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "¡No podrás revertir este cambio!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#0DBCB5',
+            cancelButtonColor: '#9DB2BF',
+            confirmButtonText: 'Sí, elimínalo!',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`/ConciliacionBancarias/Delete/${Id}`, {
+                    method: 'POST',
+                    headers: {
+                        'RequestVerificationToken': document.getElementsByName('__RequestVerificationToken')[0].value
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                title: '¡Eliminado!',
+                                text: 'La conciliación ha sido eliminada correctamente.',
+                                icon: 'success',
+                                confirmButtonColor: '#0DBCB5'
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Hubo un problema al eliminar la conciliación .',
+                                icon: 'error',
+                                confirmButtonColor: '#0DBCB5'
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Hubo un problema con la solicitud.',
+                            icon: 'error',
+                            confirmButtonColor: '#0DBCB5'
+                        });
+                    });
+            }
+        })
+    });
 });

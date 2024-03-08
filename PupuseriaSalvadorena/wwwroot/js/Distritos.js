@@ -5,7 +5,6 @@ document.getElementById("AddDistrito").addEventListener("click", function () {
         type: 'GET',
         success: function (result) {
             $('#newDistritoModal .modal-body').html(result);
-            toggleRecurrenceFields();
             $('#newDistritoModal').modal('show');
         },
         error: function (error) {

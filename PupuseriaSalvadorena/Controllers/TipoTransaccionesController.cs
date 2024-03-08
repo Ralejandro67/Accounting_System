@@ -70,7 +70,11 @@ namespace PupuseriaSalvadorena.Controllers
                 await _tipoTransacRep.CrearTipoTransac(tipoTransacciones.TipoTransac, tipoTransacciones.IdMovimiento, tipoTransacciones.IdImpuesto);
                 return Json(new { success = true, message = "Tipo de transaccion agregado correctamente." });
             }
-            return Json(new { success = false, message = "Error al agregar el tipo de transaccion." });
+            else
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                return Json(new { success = false, errors = errors });
+            }
         }
 
         // GET: TipoTransacciones/Edit/5
@@ -109,7 +113,11 @@ namespace PupuseriaSalvadorena.Controllers
                 await _tipoTransacRep.ActualizarTipoTransac(tipoTransacciones.IdTipo, tipoTransacciones.TipoTransac, tipoTransacciones.IdMovimiento, tipoTransacciones.IdImpuesto);
                 return Json(new { success = true, message = "Tipo de transaccion actualizada correctamente." });
             }
-            return Json(new { success = false, message = "Datos inválidos." });
+            else
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                return Json(new { success = false, errors = errors });
+            }
         }
 
         // GET: TipoTransacciones/Delete/5

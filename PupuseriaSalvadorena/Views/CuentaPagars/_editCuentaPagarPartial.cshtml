@@ -2,47 +2,18 @@
 
 <form id="editCuentaPagarForm" asp-action="Edit" asp-controller="CuentaPagars" method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="IdCuentaPagar" />
+    <input asp-for="FechaCreacion" class="form-control" type="hidden" />
+    <input asp-for="TotalPagado" class="form-control" type="hidden" />
+    <input asp-for="IdFacturaCompra" class="form-control" type="hidden" />
+    <input asp-for="IdProveedor" class="form-control" type="hidden" />
+    <input type="hidden" asp-for="Estado" class="form-control" />
     <div class="form-group">
-        <input type="hidden" asp-for="IdCuentaPagar" />
-    </div>
-    <div class="form-group">
-        <input type="hidden" asp-for="FechaCreacion" />
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            <div class="form-group">
-                <label asp-for="FechaVencimiento" class="control-label"></label>
-                <input asp-for="FechaVencimiento" class="form-control" type="date" />
-                <span asp-validation-for="FechaVencimiento" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="form-group">
-                <label asp-for="TotalPagado" class="control-label"></label>
-                <div class="input-group">
-                    <span class="input-group-text">₡</span>
-                    <input asp-for="TotalPagado" class="form-control" />
-                    <span asp-validation-for="TotalPagado" class="text-danger"></span>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="form-group">
-        <label asp-for="IdProveedor" class="control-label"></label>
-        <select asp-for="IdProveedor" asp-items="@ViewBag.Proveedores" class="form-control">
-            <option value="">Seleccione un proveedor</option>
-        </select>
-        <span asp-validation-for="IdProveedor" class="text-danger"></span>
-    </div>
-    <div class="form-group form-check">
-        <label class="form-check-label">
-            <input class="form-check-input" asp-for="Estado" /> @Html.DisplayNameFor(model => model.Estado)
-        </label>
-    </div>
-    <div class="form-group">
-        <input type="hidden" asp-for="IdFacturaCompra" />
+        <label asp-for="FechaVencimiento" class="control-label"></label>
+        <input asp-for="FechaVencimiento" class="form-control" type="date" />
+        <span asp-validation-for="FechaVencimiento" class="text-danger"></span>
     </div>
     <div class="form-group text-right">
-        <button type="submit" id="submitEditCuentaPagar" class="btn btn-primary">Editar</button>
+        <button type="submit" id="submitEditCuentaPagar" class="btn btn-primary agregar-boton">Editar</button>
     </div>
 </form>

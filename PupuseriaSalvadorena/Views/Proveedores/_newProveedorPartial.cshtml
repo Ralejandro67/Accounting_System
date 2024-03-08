@@ -6,14 +6,14 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label class="control-label">Nombre</label>
-                <input asp-for="NombreProveedor" class="form-control" />
+                <input asp-for="NombreProveedor" class="form-control" placeholder="Nombre"/>
                 <span asp-validation-for="NombreProveedor" class="text-danger"></span>
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
                 <label class="control-label">Apellido</label>
-                <input asp-for="ApellidoProveedor" class="form-control" />
+                <input asp-for="ApellidoProveedor" class="form-control" placeholder="Apellido"/>
                 <span asp-validation-for="ApellidoProveedor" class="text-danger"></span>
             </div>
         </div>
@@ -22,7 +22,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label class="control-label">Telefono</label>
-                <input asp-for="Telefono" class="form-control" />
+                <input type="number" id="Telefono" name="Telefono" class="form-control" placeholder="00000000" />
                 <span asp-validation-for="Telefono" class="text-danger"></span>
             </div>
         </div>
