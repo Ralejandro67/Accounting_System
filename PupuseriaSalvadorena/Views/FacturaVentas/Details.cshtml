@@ -1,60 +1,105 @@
-﻿@model PupuseriaSalvadorena.Models.FacturaVenta
+﻿@using System.Globalization;
+
+@model PupuseriaSalvadorena.ViewModels.DetalleFactura
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = $"{Model.FacturaVenta.Consecutivo}";
 }
 
-<h1>Details</h1>
-
-<div>
-    <h4>FacturaVenta</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CedulaJuridica)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CedulaJuridica)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Consecutivo)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Consecutivo)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FechaFactura)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FechaFactura)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.SubTotal)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.SubTotal)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TotalVenta)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TotalVenta)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IdTipoPago)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdTipoPago)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IdTipoFactura)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdTipoFactura)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.IdFacturaVenta">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+<div class="card-body table-body-custom pb-4">
+    <div class="container mt-4">
+        <div class="row mb-5">
+            <div class="col-md-4">
+                <img src="~/images/logo2.png" alt="Icono Logo" style="height: 90px;" />
+            </div>
+            <div class="col-md-4 text-center">
+                <strong>@Model.Negocio.NombreEmpresa</strong>
+                <br style="display: none;" />
+                <p class="mb-0">@Model.Negocio.CedulaJuridica</p>
+                <br style="display: none;" />
+                <p class="mb-0">@Model.Negocio.Detalles</p>
+                <br style="display: none;" />
+                <p class="mb-0">@Model.Negocio.Telefono</p>
+            </div>
+            <div class="col-md-4 text-right">
+                <strong>Factura de Venta</strong>
+                <br style="display: none;" />
+                <p class="mb-0">No. @Model.FacturaVenta.Consecutivo</p>
+                <br style="display: none;" />
+                <p class="mb-0">Regimen Simplificado</p>
+                <br style="display: none;" />
+                <p class="mb-0"><strong>Fecha: </strong>@Model.FacturaVenta.FechaFactura.ToString("dd/MM/yyyy")</p>
+                <br style="display: none;" />
+                <p class="mb-0">@(Model.FacturaVenta.Estado ? "Vigente" : "Anulada")</p>
+            </div>
+        </div>
+        <div class="mb-4">
+            <table>
+                <tr>
+                    <th>Cliente:</th>
+                    <td><p class="mb-0" style="padding-left: 1rem;">@Model.EnvioFactura.NombreCliente</p></td>
+                </tr>
+                <tr>
+                    <th>Identificacion:</th>
+                    <td><p class="mb-0" style="padding-left: 1rem;">@Model.EnvioFactura.Identificacion</p></td>
+                </tr>
+                <tr>
+                    <th>Telefono:</th>
+                    <td><p class="mb-0" style="padding-left: 1rem;">@Model.EnvioFactura.Telefono</p></td>
+                </tr>
+                <tr>
+                    <th>Correo Electronico:</th>
+                    <td><p class="mb-0" style="padding-left: 1rem;">@Model.EnvioFactura.CorreoElectronico</p></td>
+                </tr>
+            </table>
+        </div>
+        <div>
+            <table class="table table-hover mt-4 table-sm">
+                <thead>
+                    <tr>
+                        <th>
+                            Producto
+                        </th>
+                        <th>
+                            Cantidad
+                        </th>
+                        <th>
+                            Precio Unitario
+                        </th>
+                        <th>
+                            Subtotal
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.DetallesF) {
+                        <tr>
+                            <td>
+                                @item.NombrePlatillo
+                            </td>
+                            <td>
+                                @item.CantVenta
+                            </td>
+                            <td>
+                                @item.PrecioVenta.ToString("C", new CultureInfo("es-CR"))
+                            </td>
+                            <td>
+                                @item.PrecioSubtotal.ToString("C", new CultureInfo("es-CR"))
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <p><strong>Metodo de Pago: </strong>@Model.FacturaVenta.NombrePago</p>
+            </div>
+            <div class="col-md-6 text-right">
+                <p><strong>Subtotal: </strong>@Model.FacturaVenta.SubTotal.ToString("C", new CultureInfo("es-CR"))</p>
+                <p><strong>IVA (13.00%): </strong>@ViewBag.Impuesto.ToString("C", new CultureInfo("es-CR"))</p>
+                <p><strong>Total:  </strong>@Model.FacturaVenta.TotalVenta.ToString("C", new CultureInfo("es-CR"))</p>
+            </div>
+        </div>
+    </div>
 </div>

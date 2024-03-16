@@ -105,7 +105,7 @@ document.addEventListener('click', function (e) {
         if (!regex.test(ValueProd) || !regex.test(ValuePrice)) {
             Swal.fire({
                 title: 'Error',
-                text: 'El valor de produccion o el valor de venta tiene que ser un numero.',
+                text: 'El costo de produccion o el valor de venta del platillo es obligatorio.',
                 icon: 'warning',
                 confirmButtonColor: '#0DBCB5'
             });
@@ -115,7 +115,7 @@ document.addEventListener('click', function (e) {
         if (parseFloat(ValueProd) > parseFloat(ValuePrice)) {
             Swal.fire({
                 title: 'Error',
-                text: 'El valor de produccion no puede ser mayor al valor de venta.',
+                text: 'El costo de produccion no puede ser mayor al valor de venta.',
                 icon: 'warning',
                 confirmButtonColor: '#0DBCB5'
             });
@@ -125,7 +125,7 @@ document.addEventListener('click', function (e) {
         if (parseFloat(ValueProd) < 1 || parseFloat(ValuePrice) < 1) {
             Swal.fire({
                 title: 'Error',
-                text: 'El valor de produccion o el valor de venta no puede ser menor a 1.', 
+                text: 'El costo de produccion o el valor de venta no puede ser menor a 1.', 
                 icon: 'warning',
                 confirmButtonColor: '#0DBCB5'
             });
@@ -144,21 +144,30 @@ document.addEventListener('click', function (e) {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    $('#newPlatilloModal').modal('hide');
                     Swal.fire({
                         title: '¡Éxito!',
                         text: data.message,
-                        icon: 'success'
+                        icon: 'success',
+                        confirmButtonColor: '#0DBCB5'
                     }).then((result) => {
                         if (result.isConfirmed || result.isDismissed) {
+                            $('#newPlatilloModal').modal('hide');
                             window.location.reload();
                         }
                     });
                 } else {
+                    let errorMessage = "";
+                    if (data.message) {
+                        errorMessage = data.message;
+                    } else if (data.errors && data.errors.length > 0) {
+                        errorMessage = data.errors.join("\n");
+                    }
+
                     Swal.fire({
                         title: 'Error',
-                        text: data.message,
-                        icon: 'error'
+                        text: errorMessage,
+                        icon: 'warning',
+                        confirmButtonColor: '#0DBCB5'
                     });
                 }
             })
@@ -166,7 +175,8 @@ document.addEventListener('click', function (e) {
                 Swal.fire({
                     title: 'Error',
                     text: 'Hubo un problema con la solicitud.',
-                    icon: 'error'
+                    icon: 'error',
+                    confirmButtonColor: '#0DBCB5'
                 });
             });
     }
@@ -231,20 +241,29 @@ document.querySelectorAll('.edit-platillo').forEach(button => {
                     })
                         .then(response => response.json())
                         .then(data => {
-                            $('#editPlatilloModal').modal('hide');
                             if (data.success) {
                                 Swal.fire({
                                     title: '¡Éxito!',
                                     text: data.message,
-                                    icon: 'success'
+                                    icon: 'success',
+                                    confirmButtonColor: '#0DBCB5'
                                 }).then(() => {
+                                    $('#editPlatilloModal').modal('hide');
                                     window.location.reload();
                                 });
                             } else {
+                                let errorMessage = "";
+                                if (data.message) {
+                                    errorMessage = data.message;
+                                } else if (data.errors && data.errors.length > 0) {
+                                    errorMessage = data.errors.join("\n");
+                                }
+
                                 Swal.fire({
                                     title: 'Error',
-                                    text: data.message,
-                                    icon: 'error'
+                                    text: errorMessage,
+                                    icon: 'warning',
+                                    confirmButtonColor: '#0DBCB5'
                                 });
                             }
                         })
@@ -253,7 +272,8 @@ document.querySelectorAll('.edit-platillo').forEach(button => {
                             Swal.fire({
                                 title: 'Error',
                                 text: 'Hubo un problema con la solicitud.',
-                                icon: 'error'
+                                icon: 'error',
+                                confirmButtonColor: '#0DBCB5'
                             });
                         });
                 });
@@ -289,7 +309,7 @@ document.querySelectorAll('.delete-platillo').forEach(button => {
                         if (data.success) {
                             Swal.fire({
                                 title: '¡Eliminado!',
-                                text: 'El impuesto ha sido eliminado.',
+                                text: data.message,
                                 icon: 'success',
                                 confirmButtonColor: '#0DBCB5'
                             }).then(() => {
@@ -298,7 +318,7 @@ document.querySelectorAll('.delete-platillo').forEach(button => {
                         } else {
                             Swal.fire({
                                 title: 'Error',
-                                text: 'Hubo un problema al eliminar el impuesto.',
+                                text: data.message,
                                 icon: 'error',
                                 confirmButtonColor: '#0DBCB5'
                             });

@@ -22,8 +22,8 @@ namespace PupuseriaSalvadorena.Models
 
         public DateTime FechaTrans { get; set; }
 
-        [Required(ErrorMessage = "El tipo de movimiento es obligatorio")]
-        public int IdTipo { get; set; }
+        [Required(ErrorMessage = "El tipo de transaccion es obligatorio")]
+        public int? IdTipo { get; set; }
 
         [Required(ErrorMessage = "El impuesto asociado es obligatorio")]
         public string? IdImpuesto { get; set; }

@@ -1,4 +1,9 @@
-﻿//Graficos
+﻿window.onload = function () {
+    $('.loading').hide();
+    $('button').prop('disabled', false);
+};
+
+//Graficos
 document.addEventListener('DOMContentLoaded', function () {
     var fechasPronosticos = pronosticos.map(function (d) { return d.FechaPronostico; });
     var cantPVentas = pronosticos.map(function (d) { return d.PCantVenta; });

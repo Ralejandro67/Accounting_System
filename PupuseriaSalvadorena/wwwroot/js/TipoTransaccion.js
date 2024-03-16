@@ -109,7 +109,6 @@ document.addEventListener('click', function (e) {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    $('#newTipoTModal').modal('hide');
                     Swal.fire({
                         title: '¡Éxito!',
                         text: data.message,
@@ -117,19 +116,22 @@ document.addEventListener('click', function (e) {
                         confirmButtonColor: '#0DBCB5'
                     }).then((result) => {
                         if (result.isConfirmed || result.isDismissed) {
+                            $('#newTipoTModal').modal('hide');
                             window.location.reload();
                         }
                     });
                 } else {
                     let errorMessage = "";
-                    if (data.errors && data.errors.length > 0) {
-                        errorMessage += "\n" + data.errors.join("\n");
+                    if (data.message) {
+                        errorMessage = data.message;
+                    } else if (data.errors && data.errors.length > 0) {
+                        errorMessage = data.errors.join("\n");
                     }
 
                     Swal.fire({
                         title: 'Error',
                         text: errorMessage,
-                        icon: 'error',
+                        icon: 'warning',
                         confirmButtonColor: '#0DBCB5'
                     });
                 }
@@ -169,7 +171,6 @@ document.querySelectorAll('.edit-tipot').forEach(button => {
                     })
                         .then(response => response.json())
                         .then(data => {
-                            $('#editTipoTModal').modal('hide');
                             if (data.success) {
                                 Swal.fire({
                                     title: '¡Éxito!',
@@ -177,18 +178,21 @@ document.querySelectorAll('.edit-tipot').forEach(button => {
                                     icon: 'success',
                                     confirmButtonColor: '#0DBCB5'
                                 }).then(() => {
+                                    $('#editTipoTModal').modal('hide');
                                     window.location.reload();
                                 });
                             } else {
                                 let errorMessage = "";
-                                if (data.errors && data.errors.length > 0) {
-                                    errorMessage += "\n" + data.errors.join("\n");
+                                if (data.message) {
+                                    errorMessage = data.message;
+                                } else if (data.errors && data.errors.length > 0) {
+                                    errorMessage = data.errors.join("\n");
                                 }
 
                                 Swal.fire({
                                     title: 'Error',
                                     text: errorMessage,
-                                    icon: 'error',
+                                    icon: 'warning',
                                     confirmButtonColor: '#0DBCB5'
                                 });
                             }
@@ -235,7 +239,7 @@ document.querySelectorAll('.delete-tipot').forEach(button => {
                     if (data.success) {
                         Swal.fire({
                             title: '¡Eliminado!',
-                            text: 'El tipo de transaccion ha sido eliminado.',
+                            text: data.message,
                             icon: 'success',
                             confirmButtonColor: '#0DBCB5'
                         }).then(() => {
@@ -244,7 +248,7 @@ document.querySelectorAll('.delete-tipot').forEach(button => {
                     } else {
                         Swal.fire({
                             title: 'Error',
-                            text: 'Hubo un problema al eliminar el tipo de transaccion.',
+                            text: data.message,
                             icon: 'error',
                             confirmButtonColor: '#0DBCB5'
                         });

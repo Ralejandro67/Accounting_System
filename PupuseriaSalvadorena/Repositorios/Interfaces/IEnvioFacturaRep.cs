@@ -9,5 +9,6 @@ namespace PupuseriaSalvadorena.Repositorios.Interfaces
         Task EliminarEnvioFactura(int IdEnvioFactura);
         Task<List<EnvioFactura>> MostrarEnvioFactura();
         Task<EnvioFactura> ConsultarEnvioFacturas(int IdEnvioFactura);
+        Task<EnvioFactura> ConsultarEnvioFacturasPorID(int IdFacturaVenta);
     }
 }

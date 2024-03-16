@@ -98,7 +98,6 @@ document.getElementById('submitTipoPForm').addEventListener('click', function ()
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                $('#newTipoPModal').modal('hide');
                 Swal.fire({
                     title: '¡Éxito!',
                     text: data.message,
@@ -106,13 +105,16 @@ document.getElementById('submitTipoPForm').addEventListener('click', function ()
                     confirmButtonColor: '#0DBCB5'
                 }).then((result) => {
                     if (result.isConfirmed || result.isDismissed) {
+                        $('#newTipoPModal').modal('hide');
                         window.location.reload();
                     }
                 });
             } else {
                 let errorMessage = "";
-                if (data.errors && data.errors.length > 0) {
-                    errorMessage += "\n" + data.errors.join("\n");
+                if (data.message) {
+                    errorMessage = data.message;
+                } else if (data.errors && data.errors.length > 0) {
+                    errorMessage = data.errors.join("\n");
                 }
 
                 Swal.fire({
@@ -157,7 +159,6 @@ document.querySelectorAll('.edit-TipoP').forEach(button => {
                     })
                         .then(response => response.json())
                         .then(data => {
-                            $('#editTipoPModal').modal('hide');
                             if (data.success) {
                                 Swal.fire({
                                     title: '¡Éxito!',
@@ -165,12 +166,15 @@ document.querySelectorAll('.edit-TipoP').forEach(button => {
                                     icon: 'success',
                                     confirmButtonColor: '#0DBCB5'
                                 }).then(() => {
+                                    $('#editTipoPModal').modal('hide');
                                     window.location.reload();
                                 });
                             } else {
                                 let errorMessage = "";
-                                if (data.errors && data.errors.length > 0) {
-                                    errorMessage += "\n" + data.errors.join("\n");
+                                if (data.message) {
+                                    errorMessage = data.message;
+                                } else if (data.errors && data.errors.length > 0) {
+                                    errorMessage = data.errors.join("\n");
                                 }
 
                                 Swal.fire({
@@ -232,7 +236,7 @@ document.querySelectorAll('.delete-TipoP').forEach(button => {
                         } else {
                             Swal.fire({
                                 title: 'Error',
-                                text: 'Hubo un problema al eliminar el tipo de pago.',
+                                text: data.message,
                                 icon: 'error',
                                 confirmButtonColor: '#0DBCB5'
                             });

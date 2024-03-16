@@ -1,0 +1,106 @@
+﻿@model PupuseriaSalvadorena.Models.Usuario
+
+@{
+    Model.FechaCreacion = Model.FechaCreacion == default ? DateTime.Now : Model.FechaCreacion;
+}
+
+<form id="editUsuarioForm" asp-action="Edit" asp-controller="Usuarios" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="IdUsuario" />
+    <input type="hidden" asp-for="IdPersona" />
+    <input type="hidden" asp-for="Contrasena" />
+    <input type="hidden" asp-for="IdRol" />
+    <input type="hidden" asp-for="Estado" value="true" />
+    <fieldset id="CamposProducto">
+        <legend id="usuarioCampos">Datos del Usuario</legend>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label">Nombre</label>
+                    <input asp-for="Nombre" class="form-control" placeholder="Nombre" />
+                    <span asp-validation-for="Nombre" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label">Apellido</label>
+                    <input asp-for="Apellido" class="form-control" placeholder="Apellido" />
+                    <span asp-validation-for="Apellido" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label">Fecha de Nacimiento</label>
+                    <input asp-for="FechaNac" class="form-control" type="date" readonly />
+                    <span asp-validation-for="FechaNac" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label">Identificacion</label>
+                    <input asp-for="Cedula" class="form-control" readonly />
+                    <span asp-validation-for="Cedula" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset id="CamposProducto">
+        <legend id="productoCampos">Contacto</legend>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label class="control-label">Correo</label>
+                    <input asp-for="CorreoElectronico" class="form-control" placeholder="Correo Electronico" type="email" readonly />
+                    <span asp-validation-for="CorreoElectronico" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Telefono</label>
+                    <input asp-for="Telefono" class="form-control" id="TelefonoEdit"/>
+                    <span asp-validation-for="Telefono" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset id="CamposProducto">
+        <legend id="productoCampos">Dirección</legend>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label">Provincia</label>
+                    <select asp-for="IdProvincia" asp-items="@ViewBag.Provincias" class="form-control" id="IdProvinciaEdit">
+                        <option value="">Seleccione la provincia</option>
+                    </select>
+                    <span asp-validation-for="IdProvincia" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label">Canton</label>
+                    <select asp-for="IdCanton" asp-items="@ViewBag.Cantones" class="form-control" id="IdCantonEdit">
+                        <option value="">Seleccione el canton</option>
+                    </select>
+                    <span asp-validation-for="IdCanton" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label">Distrito</label>
+            <select asp-for="IdDistrito" asp-items="@ViewBag.Distritos" class="form-control" id="IdDistritoEdit">
+                <option value="">Seleccione el canton</option>
+            </select>
+            <span asp-validation-for="IdDistrito" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label class="control-label">Dirección Exacta</label>
+            <textarea asp-for="Detalles" class="form-control" id="CampoArea" placeholder="Dirección de residencia"></textarea>
+            <span asp-validation-for="Detalles" class="text-danger"></span>
+        </div>
+    </fieldset>
+    <div class="form-group text-right">
+        <button type="submit" id="submitEditUsuarioForm" class="btn btn-primary agregar-boton">Editar</button>
+    </div>
+</form>

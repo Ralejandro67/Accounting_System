@@ -24,5 +24,9 @@ namespace PupuseriaSalvadorena.Models
 
         [Required(ErrorMessage = "El tipo de venta es obligatorio")]
         public int IdTipoVenta { get; set; }
+
+        public decimal PrecioVenta { get; set; }
+
+        public decimal PrecioSubtotal { get; set; }
     }
 }

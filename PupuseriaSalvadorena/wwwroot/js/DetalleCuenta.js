@@ -44,19 +44,22 @@ document.querySelectorAll('.add-Pago').forEach(button => {
                     })
                         .then(response => response.json())
                         .then(data => {
-                            $('#newDetalleCuentaModal').modal('hide');
                             if (data.success) {
                                 Swal.fire({
                                     title: '¡Éxito!',
                                     text: data.message,
-                                    icon: 'success'
+                                    icon: 'success',
+                                    confirmButtonColor: '#0DBCB5'
                                 }).then(() => {
+                                    $('#newDetalleCuentaModal').modal('hide');
                                     window.location.reload();
                                 });
                             } else {
                                 let errorMessage = "";
-                                if (data.errors && data.errors.length > 0) {
-                                    errorMessage += "\n" + data.errors.join("\n");
+                                if (data.message) {
+                                    errorMessage = data.message;
+                                } else if (data.errors && data.errors.length > 0) {
+                                    errorMessage = data.errors.join("\n");
                                 }
 
                                 Swal.fire({
@@ -72,7 +75,8 @@ document.querySelectorAll('.add-Pago').forEach(button => {
                             Swal.fire({
                                 title: 'Error',
                                 text: 'Hubo un problema con la solicitud.',
-                                icon: 'error'
+                                icon: 'error',
+                                confirmButtonColor: '#0DBCB5'
                             });
                         });
                 });
@@ -128,7 +132,6 @@ document.querySelectorAll('.edit-DetalleCuenta').forEach(button => {
                     })
                         .then(response => response.json())
                         .then(data => {
-                            $('#editDetalleCuentaModal').modal('hide');
                             if (data.success) {
                                 Swal.fire({
                                     title: '¡Éxito!',
@@ -136,12 +139,15 @@ document.querySelectorAll('.edit-DetalleCuenta').forEach(button => {
                                     icon: 'success',
                                     confirmButtonColor: '#0DBCB5'
                                 }).then(() => {
+                                    $('#editDetalleCuentaModal').modal('hide');
                                     window.location.reload();
                                 });
                             } else {
                                 let errorMessage = "";
-                                if (data.errors && data.errors.length > 0) {
-                                    errorMessage += "\n" + data.errors.join("\n");
+                                if (data.message) {
+                                    errorMessage = data.message;
+                                } else if (data.errors && data.errors.length > 0) {
+                                    errorMessage = data.errors.join("\n");
                                 }
 
                                 Swal.fire({

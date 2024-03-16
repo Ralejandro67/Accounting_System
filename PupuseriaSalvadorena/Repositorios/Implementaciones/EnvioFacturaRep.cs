@@ -47,7 +47,7 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
         public async Task<List<EnvioFactura>> MostrarEnvioFactura()
         {
             var envioFacturas = await _context.EnvioFactura
-                                              .FromSqlRaw("EXEC MostrarEnvioFactura")
+                                              .FromSqlRaw("EXEC MostrarEnvioFacturas")
                                               .ToListAsync();
             return envioFacturas;
         }
@@ -57,6 +57,16 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             var IdEnvioFacturaParam = new SqlParameter("@IdEnvioFactura", IdEnvioFactura);
             var resultado = await _context.EnvioFactura
                                             .FromSqlRaw("EXEC ConsultarEnvioFacturas @IdEnvioFactura", IdEnvioFacturaParam)
+                                            .ToListAsync();
+
+            return resultado.FirstOrDefault();
+        }
+
+        public async Task<EnvioFactura> ConsultarEnvioFacturasPorID(int IdFacturaVenta)
+        {
+            var IdFacturaVentaParam = new SqlParameter("@IdFacturaVenta", IdFacturaVenta);
+            var resultado = await _context.EnvioFactura
+                                            .FromSqlRaw("EXEC ConsultarEnvioFacturasPorID @IdFacturaVenta", IdFacturaVentaParam)
                                             .ToListAsync();
 
             return resultado.FirstOrDefault();

@@ -14,6 +14,7 @@ using PupuseriaSalvadorena.Repositorios.Implementaciones;
 using PupuseriaSalvadorena.Repositorios.Interfaces;
 using ClosedXML.Excel;
 using Rotativa.AspNetCore;
+using PupuseriaSalvadorena.Filtros;
 
 namespace PupuseriaSalvadorena.Controllers
 {
@@ -32,6 +33,7 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // GET: RegistroLibroes
+        [FiltroAutentificacion(RolAcceso = new[] { "Administrador", "Contador" })]
         public async Task<IActionResult> Index()
         {
             var registroLibro = await _registroLibroRep.MostrarRegistrosLibros();
@@ -39,6 +41,7 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // GET: RegistroLibroes/Details/5
+        [FiltroAutentificacion(RolAcceso = new[] { "Administrador", "Contador" })]
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
@@ -90,7 +93,6 @@ namespace PupuseriaSalvadorena.Controllers
             else
             {
                 var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
-
                 return Json(new { success = false, errors = errors });
             }
         }
@@ -154,7 +156,7 @@ namespace PupuseriaSalvadorena.Controllers
             }
             catch
             {
-                return Json(new { success = false, message = "Error al eliminar el libro." });
+                return Json(new { success = false, message = "Error al eliminar el libro, el libro tiene transacciones asociadas." });
             }
         }
 

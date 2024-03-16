@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PupuseriaSalvadorena.Conexion;
+using PupuseriaSalvadorena.Filtros;
 using PupuseriaSalvadorena.Models;
 using PupuseriaSalvadorena.Repositorios.Implementaciones;
 using PupuseriaSalvadorena.Repositorios.Interfaces;
@@ -24,6 +25,7 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // GET: AlertasCuentaPagar
+        [FiltroAutentificacion(RolAcceso = new[] { "Administrador", "Contador" })]
         public async Task<IActionResult> Index()
         {
             var alertasCuentaPagar = await _alertaCuentaPagarRep.MostrarAlertaCuentaPagar();
@@ -111,7 +113,6 @@ namespace PupuseriaSalvadorena.Controllers
 
         // POST: AlertasCuentaPagar/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             try
@@ -122,6 +123,48 @@ namespace PupuseriaSalvadorena.Controllers
             catch
             {
                 return Json(new { success = false, message = "Error al eliminar la alerta." });
+            }
+        }
+
+        [HttpPost]
+        public async Task <IActionResult> DeleteAll()
+        {
+            try
+            {
+                var alertas = await _alertaCuentaPagarRep.MostrarAlertasLeidas();
+
+                if (alertas.Count == 0)
+                {
+                    return Json(new { success = false, message = "No hay alertas para eliminar." });
+                }
+
+                await _alertaCuentaPagarRep.EliminarAlertasLeidas();
+                return Json(new { success = true, message = "Alertas eliminadas correctamente." });
+            }
+            catch
+            {
+                return Json(new { success = false, message = "Error al eliminar las alertas leidas." });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> MarcarLeido()
+        {
+            try
+            {
+                var alertas = await _alertaCuentaPagarRep.MostrarAlertasNoLeidas();
+
+                if (alertas.Count == 0)
+                {
+                    return Json(new { success = false, message = "No hay alertas para marcar como leidas." });
+                }
+
+                await _alertaCuentaPagarRep.ActualizarAlertasNoLeidas();
+                return Json(new { success = true, message = "Alertas marcadas como leidas." });
+            }
+            catch
+            {
+                return Json(new { success = false, message = "Error al marcar las alertas como leidas." });
             }
         }
 

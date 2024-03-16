@@ -12,7 +12,7 @@ namespace PupuseriaSalvadorena.Models
         public string? TipoTransac { get; set; }
 
         [Required(ErrorMessage = "El tipo de movimiento es obligatorio")]
-        public int IdMovimiento { get; set; }
+        public int? IdMovimiento { get; set; }
 
         public string? NombreMov { get; set; }
 

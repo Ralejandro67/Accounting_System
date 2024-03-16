@@ -88,11 +88,11 @@ document.querySelectorAll('.delete-detPresupuesto').forEach(button => {
 
         Swal.fire({
             title: '¿Estás seguro?',
-            text: "¡No podrás revertir esto!",
+            text: "¡No podrás revertir este cambio!",
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
+            confirmButtonColor: '#0DBCB5',
+            cancelButtonColor: '#9DB2BF',
             confirmButtonText: 'Sí, elimínalo!',
             cancelButtonText: 'Cancelar'
         }).then((result) => {
@@ -103,35 +103,35 @@ document.querySelectorAll('.delete-detPresupuesto').forEach(button => {
 
                 fetch(`/DetallePresupuestos/Delete`, {
                     method: 'POST',
-                    body: formData,
-                    headers: {
-                        'RequestVerificationToken': document.getElementsByName('__RequestVerificationToken')[0].value
-                    }
+                    body: formData
                 })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        Swal.fire(
-                            '¡Eliminado!',
-                            'La transaccion ha sido eliminada.',
-                            'success'
-                        ).then(() => {
+                        Swal.fire({
+                            title: '¡Eliminado!',
+                            text: data.message,
+                            icon: 'success',
+                            confirmButtonColor: '#0DBCB5'
+                        }).then(() => {
                             window.location.reload();
                         });
                     } else {
-                        Swal.fire(
-                            'Error',
-                            'Hubo un problema al eliminar la transaccion.',
-                            'error'
-                        );
+                        Swal.fire({
+                            title: 'Error',
+                            text: data.message,
+                            icon: 'error',
+                            confirmButtonColor: '#0DBCB5'
+                        });
                     }
                 })
                 .catch(error => {
-                    Swal.fire(
-                        'Error',
-                        'Hubo un problema con la solicitud.',
-                        'error'
-                    );
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Hubo un problema con la solicitud.',
+                        icon: 'error',
+                        confirmButtonColor: '#0DBCB5'
+                    });
                 });
             }
         })

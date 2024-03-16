@@ -57,5 +57,15 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
 
             return resultado.FirstOrDefault();
         }
+
+        public async Task<Usuario> ConsultarUsuarioCorreo(string Correo)
+        {
+            var CorreoParam = new SqlParameter("@Correo", Correo);
+            var resultado = await _context.Usuario
+                                          .FromSqlRaw("EXEC ConsultarUsuarioCorreo @Correo", CorreoParam)
+                                          .ToListAsync();
+
+            return resultado.FirstOrDefault();
+        }
     }
 }

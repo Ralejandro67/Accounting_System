@@ -26,7 +26,6 @@ document.getElementById('submitLibroForm').addEventListener('click', function ()
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            $('#newLibroModal').modal('hide');
             Swal.fire({
                 title: '¡Éxito!',
                 text: data.message,
@@ -34,19 +33,22 @@ document.getElementById('submitLibroForm').addEventListener('click', function ()
                 confirmButtonColor: '#0DBCB5'
             }).then((result) => {
                 if (result.isConfirmed || result.isDismissed) {
+                    $('#newLibroModal').modal('hide');
                     window.location.reload();
                 }
             });
         } else {
             let errorMessage = "";
-            if (data.errors && data.errors.length > 0) {
-                errorMessage += "\n" + data.errors.join("\n");
+            if (data.message) {
+                errorMessage = data.message;
+            } else if (data.errors && data.errors.length > 0) {
+                errorMessage = data.errors.join("\n");
             }
 
             Swal.fire({
                 title: 'Error',
                 text: errorMessage,
-                icon: 'error',
+                icon: 'warning',
                 confirmButtonColor: '#0DBCB5'
             });
         }
@@ -84,7 +86,6 @@ document.querySelectorAll('.edit-libro').forEach(button => {
                     })
                     .then(response => response.json())
                     .then(data => {
-                        $('#editLibroModal').modal('hide');
                         if (data.success) {
                             Swal.fire({
                                 title: '¡Éxito!',
@@ -92,18 +93,21 @@ document.querySelectorAll('.edit-libro').forEach(button => {
                                 icon: 'success',
                                 confirmButtonColor: '#0DBCB5'
                             }).then(() => {
+                                $('#editLibroModal').modal('hide');
                                 window.location.reload();
                             });
                         } else {
                             let errorMessage = "";
-                            if (data.errors && data.errors.length > 0) {
-                                errorMessage += "\n" + data.errors.join("\n");
+                            if (data.message) {
+                                errorMessage = data.message;
+                            } else if (data.errors && data.errors.length > 0) {
+                                errorMessage = data.errors.join("\n");
                             }
 
                             Swal.fire({
                                 title: 'Error',
                                 text: errorMessage,
-                                icon: 'error',
+                                icon: 'warning',
                                 confirmButtonColor: '#0DBCB5'
                             });
                         }
@@ -150,7 +154,7 @@ document.querySelectorAll('.delete-libro').forEach(button => {
                     if (data.success) {
                         Swal.fire({
                             title: '¡Eliminado!',
-                            text: 'El libro contable ha sido eliminado.',
+                            text: data.message,
                             icon: 'success',
                             confirmButtonColor: '#0DBCB5'
                         }).then(() => {
@@ -159,7 +163,7 @@ document.querySelectorAll('.delete-libro').forEach(button => {
                     } else {
                         Swal.fire({
                             title: 'Error',
-                            text: 'Hubo un problema al eliminar el libro.',
+                            text: data.message,
                             icon: 'error',
                             confirmButtonColor: '#0DBCB5'
                         });

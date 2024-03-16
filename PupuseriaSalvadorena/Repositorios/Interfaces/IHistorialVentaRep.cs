@@ -11,5 +11,6 @@ namespace PupuseriaSalvadorena.Repositorios.Interfaces
         Task<HistorialVenta> ConsultarHistorialVentas(int IdVenta);
         Task<List<HistorialVenta>> ConsultarHistorialVentasPlatillos(int IdPlatillo);
         Task<HistorialVenta> ConsultarHistorialVentasFactura(int IdFacturaVenta);
+        Task<List<HistorialVenta>> ConsultarDetallesVentas(int IdFacturaVenta);
     }
 }

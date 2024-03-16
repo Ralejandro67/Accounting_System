@@ -8,23 +8,27 @@ using Microsoft.EntityFrameworkCore;
 using PupuseriaSalvadorena.Conexion;
 using PupuseriaSalvadorena.Models;
 using PupuseriaSalvadorena.Repositorios.Interfaces;
+using PupuseriaSalvadorena.Filtros;
 
 namespace PupuseriaSalvadorena.Controllers
 {
     public class HistorialVentasController : Controller
     {
         private readonly IHistorialVentaRep _historialVentaRep;
+        private readonly IFacturaVentaRep _facturaVentaRep;
 
-        public HistorialVentasController(IHistorialVentaRep context)
+        public HistorialVentasController(IHistorialVentaRep context, IFacturaVentaRep facturaVentaRep)
         {
             _historialVentaRep = context;
+            _facturaVentaRep = facturaVentaRep;
         }
 
         // GET: HistorialVentas
+        [FiltroAutentificacion(RolAcceso = new[] { "Administrador", "Contador" })]
         public async Task<IActionResult> Index()
         {
-            var historialVentas = await _historialVentaRep.MostrarHistorialVenta();
-            return View(historialVentas);   
+            var facturas = await _facturaVentaRep.MostrarFacturasVentas();
+            return View(facturas);   
         }
 
         // GET: HistorialVentas/Details/5

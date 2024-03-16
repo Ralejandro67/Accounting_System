@@ -9,5 +9,6 @@ namespace PupuseriaSalvadorena.Repositorios.Interfaces
         Task EliminarUsuario(string IdUsuario);
         Task<List<Usuario>> MostrarUsuarios();
         Task<Usuario> ConsultarUsuarios(string IdUsuario);
+        Task<Usuario> ConsultarUsuarioCorreo(string Correo);
     }
 }

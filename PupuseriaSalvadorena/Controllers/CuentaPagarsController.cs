@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PupuseriaSalvadorena.Conexion;
+using PupuseriaSalvadorena.Filtros;
 using PupuseriaSalvadorena.Models;
 using PupuseriaSalvadorena.Repositorios.Implementaciones;
 using PupuseriaSalvadorena.Repositorios.Interfaces;
@@ -28,6 +29,7 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // GET: CuentaPagars
+        [FiltroAutentificacion(RolAcceso = new[] { "Administrador", "Contador" })]
         public async Task<IActionResult> Index()
         {
             var cuentaPagars = await _cuentaPagarRep.MostrarCuentasPagar();

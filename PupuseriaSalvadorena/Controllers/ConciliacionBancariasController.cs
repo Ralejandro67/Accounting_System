@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Rotativa.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,8 @@ using PupuseriaSalvadorena.ViewModels;
 using PupuseriaSalvadorena.Repositorios.Interfaces;
 using System.Text.RegularExpressions;
 using System.Globalization;
+using PupuseriaSalvadorena.Repositorios.Implementaciones;
+using PupuseriaSalvadorena.Filtros;
 
 namespace PupuseriaSalvadorena.Controllers
 {
@@ -20,16 +23,19 @@ namespace PupuseriaSalvadorena.Controllers
         private readonly IRegistrosBancariosRep _registrosBancariosRep;
         private readonly IRegistroLibrosRep _registrosLibrosRep;
         private readonly IDetallesTransacRep _detallesTransacRep;
+        private readonly INegociosRep _negociosRep;
 
-        public ConciliacionBancariasController(IConciliacionRep context, IRegistrosBancariosRep registrosBancariosRep, IRegistroLibrosRep registrosLibrosRep, IDetallesTransacRep detallesTransacRep)
+        public ConciliacionBancariasController(IConciliacionRep context, IRegistrosBancariosRep registrosBancariosRep, IRegistroLibrosRep registrosLibrosRep, IDetallesTransacRep detallesTransacRep, INegociosRep negociosRep)
         {
             _conciliacionRep = context;
             _registrosBancariosRep = registrosBancariosRep;
             _registrosLibrosRep = registrosLibrosRep;
             _detallesTransacRep = detallesTransacRep;
+            _negociosRep = negociosRep;
         }
 
         // GET: ConciliacionBancarias
+        [FiltroAutentificacion(RolAcceso = new[] { "Administrador", "Contador" })]
         public async Task<IActionResult> Index()
         {
             var conciliacionBancarias = await _conciliacionRep.MostrarConciliacionesBancarias();
@@ -37,6 +43,7 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // GET: ConciliacionBancarias/Details/5
+        [FiltroAutentificacion(RolAcceso = new[] { "Administrador", "Contador" })]
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
@@ -169,6 +176,37 @@ namespace PupuseriaSalvadorena.Controllers
             {
                 return Json(new { success = false, message = "Error al eliminar el impuesto." });
             }
+        }
+
+        // Reporte Pdf
+        public async Task<IActionResult> DescargarConciliacion(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var negocio = await _negociosRep.MostrarNegocio();
+            var conciliacionBancaria = await _conciliacionRep.ConsultarConciliacionesBancarias(id);
+            var cuenta = await _registrosBancariosRep.ConsultarRegistrosBancarios(conciliacionBancaria.IdRegistro);
+            var transacciones = await _detallesTransacRep.ConsultarTransacciones(conciliacionBancaria.IdRegistroLibros);
+            var libro = await _registrosLibrosRep.ConsultarRegistrosLibros(conciliacionBancaria.IdRegistroLibros);
+
+            var viewModel = new ConciliacionPDF
+            {
+                Negocio = negocio,
+                RegistroLibro = libro,
+                RegistroBancario = cuenta,
+                ConciliacionBancaria = conciliacionBancaria,
+                DetallesTransacciones = transacciones
+            };
+
+            return new ViewAsPdf("DescargarConciliacion", viewModel)
+            {
+                FileName = $"Conciliacion_{conciliacionBancaria.IdRegistroLibros}.pdf",
+                PageSize = Rotativa.AspNetCore.Options.Size.Letter,
+                PageMargins = new Rotativa.AspNetCore.Options.Margins(15, 12, 12, 12)
+            };
         }
     }
 }

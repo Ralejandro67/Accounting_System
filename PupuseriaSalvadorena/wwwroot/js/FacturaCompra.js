@@ -23,7 +23,8 @@ document.addEventListener('click', function (e) {
                     Swal.fire({
                         title: 'Error',
                         text: data.message,
-                        icon: 'error'
+                        icon: 'error',
+                        confirmButtonColor: '#0DBCB5'
                     });
                 });
             } else if (contentType && contentType.indexOf("application/pdf") !== -1 || contentType.indexOf("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") !== -1) {
@@ -40,7 +41,8 @@ document.addEventListener('click', function (e) {
                 Swal.fire({
                     title: 'Error',
                     text: 'Formato de respuesta desconocido.',
-                    icon: 'error'
+                    icon: 'error',
+                    confirmButtonColor: '#0DBCB5'
                 });
             }
         })
@@ -48,7 +50,8 @@ document.addEventListener('click', function (e) {
             Swal.fire({
                 title: 'Error',
                 text: 'Hubo un problema con la solicitud.',
-                icon: 'error'
+                icon: 'error',
+                confirmButtonColor: '#0DBCB5'
             });
         });
     }
@@ -125,7 +128,6 @@ document.addEventListener('click', function (e) {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    $('#newFacturaCModal').modal('hide');
                     Swal.fire({
                         title: '¡Éxito!',
                         text: data.message,
@@ -133,13 +135,16 @@ document.addEventListener('click', function (e) {
                         confirmButtonColor: '#0DBCB5'
                     }).then((result) => {
                         if (result.isConfirmed || result.isDismissed) {
+                            $('#newFacturaCModal').modal('hide');
                             window.location.reload();
                         }
                     });
                 } else {
                     let errorMessage = "";
-                    if (data.errors && data.errors.length > 0) {
-                        errorMessage += "\n" + data.errors.join("\n");
+                    if (data.message) {
+                        errorMessage = data.message;
+                    } else if (data.errors && data.errors.length > 0) {
+                        errorMessage = data.errors.join("\n");
                     }
 
                     Swal.fire({

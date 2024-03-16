@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Pagina de Inicio";
+    ViewData["Title"] = "Inicio";
 }
 
 @section Scripts {
@@ -16,21 +16,21 @@
     </div>
     <hr>
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-4" id="CampoCartasAcciones">
             <div type="button" class="CartasAcciones" id="AddFacturaVenta" style="background-color: white !important; border: 1px solid #ddd;">
                 <h4 style="text-align: left !important;">Nueva Venta</h4>
                 <div class="go-corner" href="#">
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-4" id="CampoCartasAcciones">
             <div type="button" class="CartasAcciones" id="AddFacturaC" style="background-color: white !important; border: 1px solid #ddd;">
                 <h4 style="text-align: left !important;">Nueva Compra</h4>
                 <div class="go-corner" href="#">
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-4" id="CampoCartasAcciones">
             <div type="button" class="CartasAcciones" id="AddTransaccion" style="background-color: white !important; border: 1px solid #ddd;">
                 <h4 style="text-align: left !important;">Nueva Transaccion</h4>
                 <div class="go-corner" href="#">
@@ -39,21 +39,21 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-4" id="CampoCartasAcciones">
             <div class="CartasAcciones" onclick="location.href='@Url.Action("Index", "Pronosticos")'">
                 <h4 style="text-align: left !important;">Pronosticos</h4>
                 <div class="go-corner" href="#">
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-4" id="CampoCartasAcciones">
             <div class="CartasAcciones" onclick="location.href='@Url.Action("Index", "Presupuestoes")'">
                 <h4 style="text-align: left !important;">Presupuestos</h4>
                 <div class="go-corner" href="#">
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-4" id="CampoCartasAcciones">
             <div class="CartasAcciones" onclick="location.href='@Url.Action("Index", "CuentaPagars")'">
                 <h4 style="text-align: left !important;">Cuentas por Pagar</h4>
                 <div class="go-corner" href="#">
@@ -72,7 +72,7 @@
             </div>
         </div>
         <div class="col-md-5">
-            <div class="card-body table-body-custom">
+            <div class="card-body table-body-custom" id="Graphs">
                 <h5 class="mt-4">Ventas</h5>
                 <small class="mb-3">Ultimas 4 semanas</small>
                 <canvas id="VentasChart"></canvas>
@@ -87,7 +87,7 @@
             </div>
         </div>
         <div class="col-md-5">
-            <div class="card-body table-body-custom">
+            <div class="card-body table-body-custom" id="Graphs">
                 <h5 class="mt-4">Compras de Materia Prima</h5>
                 <small class="mb-3">Ultimas 4 semanas</small>
                 <canvas id="ComprasChart"></canvas>

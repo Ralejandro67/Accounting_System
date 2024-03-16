@@ -106,7 +106,7 @@ document.addEventListener('click', function (e) {
         if (parseFloat(tasaValue) < 0) {
             Swal.fire({
                 title: 'Error',
-                text: 'La tasa del impuesto no puede ser un número negativo.',
+                text: 'La tasa del impuesto debe ser mayor a 0.',
                 icon: 'warning',
                 confirmButtonColor: '#0DBCB5'
             });
@@ -138,8 +138,10 @@ document.addEventListener('click', function (e) {
                     });
                 } else {
                     let errorMessage = "";
-                    if (data.errors && data.errors.length > 0) {
-                        errorMessage += "\n" + data.errors.join("\n");
+                    if (data.message) {
+                        errorMessage = data.message;
+                    } else if (data.errors && data.errors.length > 0) {
+                        errorMessage = data.errors.join("\n");
                     }
 
                     Swal.fire({
@@ -210,8 +212,10 @@ document.querySelectorAll('.edit-impuesto').forEach(button => {
                                 });
                             } else {
                                 let errorMessage = "";
-                                if (data.errors && data.errors.length > 0) {
-                                    errorMessage += "\n" + data.errors.join("\n");
+                                if (data.message) {
+                                    errorMessage = data.message;
+                                } else if (data.errors && data.errors.length > 0) {
+                                    errorMessage = data.errors.join("\n");
                                 }
 
                                 Swal.fire({
@@ -264,7 +268,7 @@ document.querySelectorAll('.delete-impuesto').forEach(button => {
                         if (data.success) {
                             Swal.fire({
                                 title: '¡Eliminado!',
-                                text: 'El impuesto ha sido eliminado.',
+                                text: data.message,
                                 icon: 'success',
                                 confirmButtonColor: '#0DBCB5'
                             }).then(() => {
@@ -273,7 +277,7 @@ document.querySelectorAll('.delete-impuesto').forEach(button => {
                         } else {
                             Swal.fire({
                                 title: 'Error',
-                                text: 'Hubo un problema al eliminar el impuesto.',
+                                text: data.message,
                                 icon: 'error',
                                 confirmButtonColor: '#0DBCB5'
                             });

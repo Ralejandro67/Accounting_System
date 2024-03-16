@@ -29,6 +29,7 @@ namespace PupuseriaSalvadorena.Models
         [Required(ErrorMessage = "El libro contable es obligatorio.")]
         public string? IdRegistroLibros { get; set; }
 
+        [Required(ErrorMessage = "Es necesaria una desccripcion para la conciliacion")]
         public string? Descripcion { get; set; }
     }
 }

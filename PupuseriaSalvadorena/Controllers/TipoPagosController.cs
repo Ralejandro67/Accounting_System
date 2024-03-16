@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using PupuseriaSalvadorena.Conexion;
 using PupuseriaSalvadorena.Models;
 using PupuseriaSalvadorena.Repositorios.Interfaces;
+using PupuseriaSalvadorena.Filtros;
 
 namespace PupuseriaSalvadorena.Controllers
 {
@@ -21,6 +22,7 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // GET: TipoPagos
+        [FiltroAutentificacion(RolAcceso = new[] { "Administrador" })]
         public async Task<IActionResult> Index()
         {
             var tipoPagos = await _tipoPagoRep.MostrarTipoPagos();
@@ -57,8 +59,15 @@ namespace PupuseriaSalvadorena.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _tipoPagoRep.CrearTipoPago(tipoPago.NombrePago, tipoPago.Estado);
-                return Json(new { success = true, message = "Tipo de factura agregado correctamente." });
+                try
+                {
+                    await _tipoPagoRep.CrearTipoPago(tipoPago.NombrePago, tipoPago.Estado);
+                    return Json(new { success = true, message = "Tipo de factura agregado correctamente." });
+                }
+                catch
+                {
+                    return Json(new { success = false, message = $"Ya existe un tipo de pago llamado '{tipoPago.NombrePago}'." });
+                }
             }
             else
             {
@@ -90,6 +99,19 @@ namespace PupuseriaSalvadorena.Controllers
         {
             if (ModelState.IsValid)
             {
+                var tipo = await _tipoPagoRep.ConsultarTipoPagos(id);
+
+                if (tipo.NombrePago != tipoPago.NombrePago)
+                {
+                    var existe = await _tipoPagoRep.MostrarTipoPagos();
+                    var existeTipo = existe.Where(x => x.NombrePago == tipoPago.NombrePago).ToList();
+
+                    if(existeTipo.Count > 0)
+                    {
+                        return Json(new { success = false, message = $"Ya existe un tipo de pago llamado '{tipoPago.NombrePago}'." });
+                    }
+                }
+
                 await _tipoPagoRep.ActualizarTipoPago(tipoPago.IdTipoPago, tipoPago.NombrePago, tipoPago.Estado);
                 return Json(new { success = true, message = "Tipo de pago actualizado correctamente." });
             }

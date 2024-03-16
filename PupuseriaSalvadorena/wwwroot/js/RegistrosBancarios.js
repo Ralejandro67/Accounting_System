@@ -104,7 +104,7 @@ document.addEventListener('click', function (e) {
         if (!regex.test(Value) || parseFloat(Value) < 0) {
             Swal.fire({
                 title: 'Error',
-                text: 'La saldo de la cuenta debe de ser un número.',
+                text: 'Debes brindar el saldo de la cuenta.',
                 icon: 'error',
                 confirmButtonColor: '#0DBCB5'
             });
@@ -123,7 +123,6 @@ document.addEventListener('click', function (e) {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    $('#newEstadoBModal').modal('hide');
                     Swal.fire({
                         title: '¡Éxito!',
                         text: data.message,
@@ -131,19 +130,22 @@ document.addEventListener('click', function (e) {
                         confirmButtonColor: '#0DBCB5'
                     }).then((result) => {
                         if (result.isConfirmed || result.isDismissed) {
+                            $('#newEstadoBModal').modal('hide');
                             window.location.reload();
                         }
                     });
                 } else {
                     let errorMessage = "";
-                    if (data.errors && data.errors.length > 0) {
-                        errorMessage += "\n" + data.errors.join("\n");
+                    if (data.message) {
+                        errorMessage = data.message;
+                    } else if (data.errors && data.errors.length > 0) {
+                        errorMessage = data.errors.join("\n");
                     }
 
                     Swal.fire({
                         title: 'Error',
                         text: errorMessage,
-                        icon: 'error',
+                        icon: 'warning',
                         confirmButtonColor: '#0DBCB5'
                     });
                 }
@@ -153,7 +155,8 @@ document.addEventListener('click', function (e) {
                 Swal.fire({
                     title: 'Error',
                     text: 'Hubo un problema con la solicitud. ' + error.toString(),
-                    icon: 'error'
+                    icon: 'error',
+                    confirmButtonColor: '#0DBCB5'
                 });
             });
     }
@@ -178,7 +181,7 @@ document.querySelectorAll('.edit-CuentaBancaria').forEach(button => {
                     if (!regex.test(Value) || parseFloat(Value) < 0) {
                         Swal.fire({
                             title: 'Error',
-                            text: 'La saldo de la cuenta debe de ser un número.',
+                            text: 'Debes brindar el saldo de la cuenta.',
                             icon: 'error',
                             confirmButtonColor: '#0DBCB5'
                         });
@@ -196,7 +199,6 @@ document.querySelectorAll('.edit-CuentaBancaria').forEach(button => {
                     })
                         .then(response => response.json())
                         .then(data => {
-                            $('#editEstadoBModal').modal('hide');
                             if (data.success) {
                                 Swal.fire({
                                     title: '¡Éxito!',
@@ -204,18 +206,21 @@ document.querySelectorAll('.edit-CuentaBancaria').forEach(button => {
                                     icon: 'success',
                                     confirmButtonColor: '#0DBCB5'
                                 }).then(() => {
+                                    $('#editEstadoBModal').modal('hide');
                                     window.location.reload();
                                 });
                             } else {
                                 let errorMessage = "";
-                                if (data.errors && data.errors.length > 0) {
-                                    errorMessage += "\n" + data.errors.join("\n");
+                                if (data.message) {
+                                    errorMessage = data.message;
+                                } else if (data.errors && data.errors.length > 0) {
+                                    errorMessage = data.errors.join("\n");
                                 }
 
                                 Swal.fire({
                                     title: 'Error',
                                     text: errorMessage,
-                                    icon: 'error',
+                                    icon: 'warning',
                                     confirmButtonColor: '#0DBCB5'
                                 });
                             }
@@ -262,7 +267,7 @@ document.querySelectorAll('.delete-CuentaBancaria').forEach(button => {
                         if (data.success) {
                             Swal.fire({
                                 title: '¡Eliminado!',
-                                text: 'El impuesto ha sido eliminado.',
+                                text: data.message,
                                 icon: 'success',
                                 confirmButtonColor: '#0DBCB5'
                             }).then(() => {
@@ -271,7 +276,7 @@ document.querySelectorAll('.delete-CuentaBancaria').forEach(button => {
                         } else {
                             Swal.fire({
                                 title: 'Error',
-                                text: 'Hubo un problema al eliminar el impuesto.',
+                                text: data.message,
                                 icon: 'error',
                                 confirmButtonColor: '#0DBCB5'
                             });

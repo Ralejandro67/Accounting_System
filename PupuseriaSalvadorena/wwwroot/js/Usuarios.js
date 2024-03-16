@@ -107,7 +107,7 @@ document.addEventListener('click', function (e) {
             Swal.fire({
                 title: 'Error',
                 text: 'La contraseña debe ser alfanumérica con al menos una letra mayúscula, un símbolo especial y al menos 10 caracteres de longitud.',
-                icon: 'error',
+                icon: 'warning',
                 confirmButtonColor: '#0DBCB5'
             });
             return;
@@ -147,17 +147,11 @@ document.addEventListener('click', function (e) {
                         }
                     });
                 } else {
-                    let errorMessage = data.message;
-                    if (data.errors && data.errors.length > 0) {
-                        errorMessage += "\n" + data.errors.join("\n");
-                    }
-                    else {
-                        Swal.fire({
-                            title: 'Error',
-                            text: errorMessage,
-                            icon: 'warning',
-                            confirmButtonColor: '#0DBCB5'
-                        });
+                    let errorMessage = "";
+                    if (data.message) {
+                        errorMessage = data.message;
+                    } else if (data.errors && data.errors.length > 0) {
+                        errorMessage = data.errors.join("\n");
                     }
 
                     Swal.fire({
@@ -270,8 +264,10 @@ document.querySelectorAll('.edit-Usuario').forEach(button => {
                                 });
                             } else {
                                 let errorMessage = "";
-                                if (data.errors && data.errors.length > 0) {
-                                    errorMessage += "\n" + data.errors.join("\n");
+                                if (data.message) {
+                                    errorMessage = data.message;
+                                } else if (data.errors && data.errors.length > 0) {
+                                    errorMessage = data.errors.join("\n");
                                 }
 
                                 Swal.fire({
@@ -363,7 +359,7 @@ document.querySelectorAll('.delete-Usuario').forEach(button => {
                         if (data.success) {
                             Swal.fire({
                                 title: '¡Eliminado!',
-                                text: 'El usuario ha sido eliminado.',
+                                text: data.message,
                                 icon: 'success',
                                 confirmButtonColor: '#0DBCB5'
                             }).then(() => {
@@ -372,7 +368,7 @@ document.querySelectorAll('.delete-Usuario').forEach(button => {
                         } else {
                             Swal.fire({
                                 title: 'Error',
-                                text: 'Hubo un problema al eliminar el usuario.',
+                                text: data.message,
                                 icon: 'error',
                                 confirmButtonColor: '#0DBCB5'
                             });

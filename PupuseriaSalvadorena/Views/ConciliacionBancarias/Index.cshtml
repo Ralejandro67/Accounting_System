@@ -6,6 +6,10 @@
     ViewData["Title"] = "Conciliacion Bancaria";
 }
 
+@{
+    <link href="~/css/transacciones.css" rel="stylesheet" />
+}
+
 @section Scripts {
     <script src="~/js/conciliacionesbancarias.js" asp-append-version="true"></script>
     <script src="~/js/conciliaciones.js" asp-append-version="true"></script>
@@ -26,7 +30,7 @@
         </div>
     </div>
     <div class="container mt-4">
-        Realiza la conciliacion bancaria de los libros contables contra el saldo en las cuentas bancarias.
+        <p>Realiza la conciliacion bancaria de los libros contables contra el saldo en las cuentas bancarias.</p>
     </div>
 </div>
 <div class="card-body table-body-custom">
@@ -84,13 +88,13 @@
                             @Html.DisplayFor(modelItem => item.Descripcion)
                         </td>
                         <td>
-                            <button type="button" class="btn btn-primary details-Conciliacion nav-link-btn-icons" id="BtnDetalles" onclick="location.href='@Url.Action("Details", new { id = item.IdConciliacion })'">
+                            <button type="button" class="btn btn-primary details-Conciliacion nav-link-btn-icons" id="BtnDetalles" title="Detalles" data-toggle="tooltip" onclick="location.href='@Url.Action("Details", new { id = item.IdConciliacion })'">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">
                                     <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0" />
                                     <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7" />
                                 </svg>
                             </button>
-                            <button type="button" class="btn btn-primary delete-Conciliacion nav-link-btn-icons" id="BtnEliminar" data-id="@item.IdConciliacion">
+                            <button type="button" class="btn btn-primary delete-Conciliacion nav-link-btn-icons" id="BtnEliminar" title="Eliminar" data-toggle="tooltip" data-id="@item.IdConciliacion">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
                                     <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
                                 </svg>

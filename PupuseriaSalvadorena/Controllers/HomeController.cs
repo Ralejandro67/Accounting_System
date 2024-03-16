@@ -13,6 +13,8 @@ using PupuseriaSalvadorena.Conexion;
 using PupuseriaSalvadorena.Models;
 using PupuseriaSalvadorena.Repositorios.Interfaces;
 using Microsoft.AspNetCore.Authentication;
+using Scrypt;
+using PupuseriaSalvadorena.Filtros;
 
 namespace PupuseriaSalvadorena.Controllers
 {
@@ -33,6 +35,7 @@ namespace PupuseriaSalvadorena.Controllers
             _pronosticoRep = pronosticoRep;
         }
 
+        [FiltroAutentificacion(RolAcceso = new[] { "Administrador", "Contador" })]
         public async Task<IActionResult> Index()
         {
             var cultura = new CultureInfo("es-ES");
@@ -104,17 +107,6 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         public IActionResult IniciarSesion()
-        {
-            return View();
-        }
-
-        public async Task<IActionResult> CerrarSesion()
-        {
-            await HttpContext.SignOutAsync();
-            return RedirectToAction("Index", "Login");
-        }
-
-        public IActionResult Privacy()
         {
             return View();
         }

@@ -1,0 +1,118 @@
+﻿@model PupuseriaSalvadorena.ViewModels.User
+
+@{
+    ViewData["Title"] = "Usuario";
+}
+
+@section Scripts {
+    <script src="~/js/userconfig.js" asp-append-version="true"></script>
+}
+
+<div class="card-body table-body-custom pb-4">
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <div style="width: 70%;">
+                <h1 class="mb-0">
+                    <img src="~/images/usuarios.png" alt="Icono de Usuario" style="height: 60px;" />
+                    @Model.Usuario.NombreUsuario
+                </h1>
+            </div>
+            <div class="text-right" style="width: 30%;">
+                <button type="button" class="btn btn-primary nav-link-icon edit-Usuario agregar-boton" data-id="@Model.Usuario.IdUsuario">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
+                        <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z" />
+                    </svg> Editar Usuario
+                </button>
+                <br />
+                <button type="button" class="btn btn-primary mt-2 nav-link-icon edit-Contrasena agregar-boton" data-id="@Model.Usuario.IdUsuario">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-key-fill" viewBox="0 0 16 16">
+                        <path d="M3.5 11.5a3.5 3.5 0 1 1 3.163-5H14L15.5 8 14 9.5l-1-1-1 1-1-1-1 1-1-1-1 1H6.663a3.5 3.5 0 0 1-3.163 2M2.5 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2" />
+                    </svg> Modificar Contraseña
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card-body table-body-custom pb-4">
+    <div class="container mt-4">
+        <h4 class="mb-0">Datos Personales</h4>
+        <hr/>
+        <div class="row">
+            <div class="col-md-4">
+                <h5 class="mb-0">Usuario</h5>
+                <hr />
+                <div class="form-group mb-0">
+                    <strong>Identificacion: </strong>
+                    <br />
+                    <p style="margin-bottom: 0 !important;">@Model.Usuario.Cedula</p>
+                </div>
+                <br />
+                <div class="form-group mb-0">
+                    <strong>Fecha de Nacimiento: </strong>
+                    <br />
+                    <p style="margin-bottom: 0 !important;">@Model.Usuario.FechaNac.ToString("dd/MM/yyyy")</p>
+                </div>
+                <br />
+                <div class="form-group">
+                    <strong>Rol: </strong>
+                    <br />
+                    <p style="margin-bottom: 0 !important;">@Model.Usuario.NombreRol</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <h5 class="mb-0">Contacto</h5>
+                <hr />
+                <div class="form-group">
+                    <strong>Correo Electronico: </strong>
+                    <br />
+                    <p style="margin-bottom: 0 !important;">@Model.Usuario.CorreoElectronico</p>
+                </div>
+                <br />
+                <div class="form-group">
+                    <strong>Telefono: </strong>
+                    <br />
+                    <p style="margin-bottom: 0 !important;">@Model.Usuario.Telefono</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <h5 class="mb-0">Direccion</h5>
+                <hr />
+                <div class="form-group">
+                    <strong>Direccion: </strong>
+                    <br />
+                    <p style="margin-bottom: 0 !important;">@Model.Usuario.NombreProvincia, @Model.Usuario.NombreCanton, @Model.Usuario.NombreDistrito, @Model.Usuario.Detalles</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="editUsuarioModal" tabindex="-1" role="dialog" aria-labelledby="editUsuarioModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editUsuarioModalLabel">Editar Usuario</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @Html.Partial("_editUserPartial", new PupuseriaSalvadorena.Models.Usuario())
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="editPasswordModal" tabindex="-1" role="dialog" aria-labelledby="editPasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editPasswordModalLabel">Editar Contraseña</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @Html.Partial("_editPasswordPartial", new PupuseriaSalvadorena.Models.Usuario())
+            </div>
+        </div>
+    </div>
+</div>

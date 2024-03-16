@@ -22,8 +22,8 @@ document.addEventListener('click', function (e) {
         if (!regex.test(Value)){
             Swal.fire({
                 title: 'Error',
-                text: 'Ël saldo en la cuenta debe ser un número.',
-                icon: 'error',
+                text: 'Debes brindar el saldo actual de la cuenta bancaria.',
+                icon: 'warning',
                 confirmButtonColor: '#0DBCB5'
             });
             return;
@@ -33,7 +33,7 @@ document.addEventListener('click', function (e) {
             Swal.fire({
                 title: 'Error',
                 text: 'El saldo en la cuenta debe de ser mayor a 0.',
-                icon: 'error',
+                icon: 'warning',
                 confirmButtonColor: '#0DBCB5'
             });
             return;
@@ -64,14 +64,16 @@ document.addEventListener('click', function (e) {
                     });
                 } else {
                     let errorMessage = "";
-                    if (data.errors && data.errors.length > 0) {
-                        errorMessage += "\n" + data.errors.join("\n");
+                    if (data.message) {
+                        errorMessage = data.message;
+                    } else if (data.errors && data.errors.length > 0) {
+                        errorMessage = data.errors.join("\n");
                     }
 
                     Swal.fire({
                         title: 'Error',
                         text: errorMessage,
-                        icon: 'error',
+                        icon: 'warning',
                         confirmButtonColor: '#0DBCB5'
                     });
                 }
@@ -87,7 +89,7 @@ document.addEventListener('click', function (e) {
     }
 });
 
-// Eliminar impuesto
+// Eliminar 
 document.querySelectorAll('.delete-Conciliacion').forEach(button => {
     button.addEventListener('click', function () {
         var Id = this.getAttribute('data-id');
@@ -114,7 +116,7 @@ document.querySelectorAll('.delete-Conciliacion').forEach(button => {
                         if (data.success) {
                             Swal.fire({
                                 title: '¡Eliminado!',
-                                text: 'La conciliación ha sido eliminada correctamente.',
+                                text: data.message,
                                 icon: 'success',
                                 confirmButtonColor: '#0DBCB5'
                             }).then(() => {
@@ -123,7 +125,7 @@ document.querySelectorAll('.delete-Conciliacion').forEach(button => {
                         } else {
                             Swal.fire({
                                 title: 'Error',
-                                text: 'Hubo un problema al eliminar la conciliación .',
+                                text: data.message,
                                 icon: 'error',
                                 confirmButtonColor: '#0DBCB5'
                             });

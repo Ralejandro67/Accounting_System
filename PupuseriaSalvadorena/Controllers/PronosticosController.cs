@@ -13,6 +13,7 @@ using PupuseriaSalvadorena.Repositorios.Interfaces;
 using Newtonsoft.Json;
 using PupuseriaSalvadorena.Repositorios.Implementaciones;
 using Rotativa.AspNetCore;
+using PupuseriaSalvadorena.Filtros;
 
 namespace PupuseriaSalvadorena.Controllers
 {
@@ -36,6 +37,7 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // GET: Pronosticos
+        [FiltroAutentificacion(RolAcceso = new[] { "Administrador", "Contador" })]
         public async Task<IActionResult> Index()
         {
             var pronosticos = await _pronosticoRep.MostrarPronosticos();
@@ -43,6 +45,7 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // GET: Pronosticos/Details/5
+        [FiltroAutentificacion(RolAcceso = new[] { "Administrador", "Contador" })]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -102,16 +105,16 @@ namespace PupuseriaSalvadorena.Controllers
         {
             if (ModelState.IsValid)
             {
-                var historialVentas = (await _historialVentaRep.ConsultarHistorialVentasPlatillos(pronostico.IdPlatillo)).ToArray();
+                var historialVentas = (await _historialVentaRep.ConsultarHistorialVentasPlatillos(pronostico.IdPlatillo.Value)).ToArray();
                 var pronosticos = _servicioPronosticos.CalcularPronosticoHoltWinters(historialVentas);
-                var platillo = await _platilloRep.ConsultarPlatillos(pronostico.IdPlatillo);
+                var platillo = await _platilloRep.ConsultarPlatillos(pronostico.IdPlatillo.Value);
 
                 DateTime fechaNext = pronostico.FechaInicio.Date.AddDays(1);
                 decimal valorDiario;
                 decimal totalVentas = 0;
                 int cantTotal = 0;
 
-                var idPronostico = await _pronosticoRep.CrearPronostico(pronostico.IdPlatillo, pronostico.FechaInicio, pronostico.FechaFinal, pronostico.CantTotalProd, pronostico.TotalVentas);
+                var idPronostico = await _pronosticoRep.CrearPronostico(pronostico.IdPlatillo.Value, pronostico.FechaInicio, pronostico.FechaFinal, pronostico.CantTotalProd, pronostico.TotalVentas);
 
                 foreach (var pronosticoDiario in pronosticos)
                 {
@@ -129,10 +132,14 @@ namespace PupuseriaSalvadorena.Controllers
                     }
                 }
 
-                await _pronosticoRep.ActualizarPronosticos(idPronostico, pronostico.IdPlatillo, pronostico.FechaInicio, pronostico.FechaFinal, cantTotal, totalVentas);
+                await _pronosticoRep.ActualizarPronosticos(idPronostico, pronostico.IdPlatillo.Value, pronostico.FechaInicio, pronostico.FechaFinal, cantTotal, totalVentas);
                 return Json(new { success = true, message = "El pronostico fue creado correctamente." });
             }
-            return Json(new { success = false, message = "Debe de seleccionar un platillo para el pronostico." });
+            else
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                return Json(new { success = false, errors = errors });
+            }
         }
 
         // GET: Pronosticos/Delete/5

@@ -1,0 +1,46 @@
+﻿@media screen and (max-width: 980px) {
+    #tablaCuentasPagar th:nth-child(2),
+    #tablaCuentasPagar td:nth-child(2){
+        display: none;
+    }
+
+    #tablaConciliacion th:nth-child(2),
+    #tablaConciliacion td:nth-child(2),
+    #tablaConciliacion th:nth-child(3),
+    #tablaConciliacion td:nth-child(3),
+    #tablaConciliacion th:nth-child(4),
+    #tablaConciliacion td:nth-child(4) {
+        display: none;
+    }
+
+    #tablaTransacciones th:nth-child(1),
+    #tablaTransacciones td:nth-child(1),
+    #tablaTransacciones th:nth-child(3),
+    #tablaTransacciones td:nth-child(3),
+    #tablaTransacciones th:nth-child(8),
+    #tablaTransacciones td:nth-child(8) {
+        display: none;
+    }
+
+    #tablaVentas th:nth-child(3),
+    #tablaVentas td:nth-child(3) {
+        display: none;
+    }
+
+    #tablaHistorial th:nth-child(3),
+    #tablaHistorial td:nth-child(3) {
+        display: none;
+    }
+
+    #tablaUsuarios th:nth-child(2),
+    #tablaUsuarios td:nth-child(2) {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    #tablaCuentasBancarias th:nth-child(4),
+    #tablaCuentasBancarias td:nth-child(4) {
+        display: none;
+    }
+}

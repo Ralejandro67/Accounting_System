@@ -4,9 +4,13 @@
 {
     var notificaciones = Model.ToList();
 
+    <div class="text-center pt-2 pb-2 allAlerts" onclick="location.href='@Url.Action("Index", "AlertasCuentaPagar")'">
+        <a>Todas las notificaciones</a>
+    </div>
+    <hr class="hr-notificaciones" />
     for (int i = 0; i < notificaciones.Count; i++)
     {
-        <a class="dropdown-item" href="@Url.Action("Details", "AlertasCuentaPagar", new { id = notificaciones[i].IdAlerta })">
+        <a class="dropdown-item" id="alertaNotificacion" href="@Url.Action("Details", "DetalleCuentas", new { id = notificaciones[i].IdCuentaPagar })">
             @notificaciones[i].Mensaje
             <small class="text-muted">@notificaciones[i].FechaMensaje.ToShortDateString()</small>
         </a>

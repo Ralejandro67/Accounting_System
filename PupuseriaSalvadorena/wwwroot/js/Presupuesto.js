@@ -29,19 +29,8 @@ document.getElementById("AddPresupuesto").addEventListener("click", function () 
 document.addEventListener('click', function (e) {
     if (e.target && e.target.id === 'submitPresupuesto') {
 
-        var categoria = document.getElementById('Categoria').value;
         var saldoPresupuesto = parseFloat(document.getElementById('SaldoIncial').value);
         var saldoDisponible = parseFloat(document.getElementById('SaldoDisponible').dataset.saldo);
-
-        if (categoria == '') {
-            Swal.fire({
-                title: 'Error',
-                text: 'Debes seleccionar una categoria para el presupuesto.',
-                icon: 'warning',
-                confirmButtonColor: '#0DBCB5'
-            });
-            return;
-        }
 
         if (saldoPresupuesto > saldoDisponible) {
             Swal.fire({
@@ -86,7 +75,6 @@ document.addEventListener('click', function (e) {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    $('#newPresupuestoModal').modal('hide');
                     Swal.fire({
                         title: '¡Éxito!',
                         text: data.message,
@@ -94,13 +82,16 @@ document.addEventListener('click', function (e) {
                         confirmButtonColor: '#0DBCB5'
                     }).then((result) => {
                         if (result.isConfirmed || result.isDismissed) {
+                            $('#newPresupuestoModal').modal('hide');
                             window.location.reload();
                         }
                     });
                 } else {
                     let errorMessage = "";
-                    if (data.errors && data.errors.length > 0) {
-                        errorMessage += "\n" + data.errors.join("\n");
+                    if (data.message) {
+                        errorMessage = data.message;
+                    } else if (data.errors && data.errors.length > 0) {
+                        errorMessage = data.errors.join("\n");
                     }
 
                     Swal.fire({
@@ -135,19 +126,8 @@ document.querySelectorAll('.edit-Presupuesto').forEach(button => {
                 document.querySelector('#editPresupuestoModal #editPresupuestoForm').addEventListener('submit', function (e) {
                     e.preventDefault();
 
-                    var categoria = document.getElementById('CategoriaE').value;
                     var saldoPresupuesto = parseFloat(document.getElementById('SaldoIncialE').value);
                     var saldoDisponible = parseFloat(document.getElementById('SaldoDisponibleE').dataset.saldo);
-
-                    if (categoria == '') {
-                        Swal.fire({
-                            title: 'Error',
-                            text: 'Debes seleccionar una categoria para el presupuesto.',
-                            icon: 'warning',
-                            confirmButtonColor: '#0DBCB5'
-                        });
-                        return;
-                    }
 
                     if (saldoPresupuesto > saldoDisponible) {
                         Swal.fire({
@@ -191,7 +171,6 @@ document.querySelectorAll('.edit-Presupuesto').forEach(button => {
                     })
                         .then(response => response.json())
                         .then(data => {
-                            $('#editPresupuestoModal').modal('hide');
                             if (data.success) {
                                 Swal.fire({
                                     title: '¡Éxito!',
@@ -199,12 +178,15 @@ document.querySelectorAll('.edit-Presupuesto').forEach(button => {
                                     icon: 'success',
                                     confirmButtonColor: '#0DBCB5'
                                 }).then(() => {
+                                    $('#editPresupuestoModal').modal('hide');
                                     window.location.reload();
                                 });
                             } else {
                                 let errorMessage = "";
-                                if (data.errors && data.errors.length > 0) {
-                                    errorMessage += "\n" + data.errors.join("\n");
+                                if (data.message) {
+                                    errorMessage = data.message;
+                                } else if (data.errors && data.errors.length > 0) {
+                                    errorMessage = data.errors.join("\n");
                                 }
 
                                 Swal.fire({
@@ -257,7 +239,7 @@ document.querySelectorAll('.delete-Presupuesto').forEach(button => {
                         if (data.success) {
                             Swal.fire({
                                 title: '¡Eliminado!',
-                                text: 'El impuesto ha sido eliminado.',
+                                text: data.message,
                                 icon: 'success',
                                 confirmButtonColor: '#0DBCB5'
                             }).then(() => {
@@ -266,7 +248,7 @@ document.querySelectorAll('.delete-Presupuesto').forEach(button => {
                         } else {
                             Swal.fire({
                                 title: 'Error',
-                                text: 'Hubo un problema al eliminar el impuesto.',
+                                text: data.message,
                                 icon: 'error',
                                 confirmButtonColor: '#0DBCB5'
                             });

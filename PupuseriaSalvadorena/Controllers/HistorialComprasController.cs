@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PupuseriaSalvadorena.Conexion;
+using PupuseriaSalvadorena.Filtros;
 using PupuseriaSalvadorena.Models;
 using PupuseriaSalvadorena.Repositorios.Interfaces;
 
@@ -29,6 +30,7 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // GET: HistorialCompras
+        [FiltroAutentificacion(RolAcceso = new[] { "Administrador", "Contador" })]
         public async Task<IActionResult> Index()
         {
             var historialCompras = await _historialCompraRep.MostrarHistorialCompras();

@@ -33,7 +33,6 @@ document.getElementById('submitDeclaracionImpuesto').addEventListener('click', f
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                $('#newDeclaracionModal').modal('hide');
                 Swal.fire({
                     title: '¡Éxito!',
                     text: 'Declaracion creada correctamente.',
@@ -41,14 +40,23 @@ document.getElementById('submitDeclaracionImpuesto').addEventListener('click', f
                     confirmButtonColor: '#0DBCB5'
                 }).then((result) => {
                     if (result.isConfirmed || result.isDismissed) {
+                        $('#newDeclaracionModal').modal('hide');
                         window.location.href = data.url;
                     }
                 });
             } else {
+                let errorMessage = "";
+                if (data.message) {
+                    errorMessage = data.message;
+                } else if (data.errors && data.errors.length > 0) {
+                    errorMessage = data.errors.join("\n");
+                }
+
                 Swal.fire({
                     title: 'Error',
-                    text: data.message,
-                    icon: 'error'
+                    text: errorMessage,
+                    icon: 'warning',
+                    confirmButtonColor: '#0DBCB5'
                 });
             }
         })
@@ -85,7 +93,6 @@ document.querySelectorAll('.edit-Declaracion').forEach(button => {
                     })
                         .then(response => response.json())
                         .then(data => {
-                            $('#editDeclaracionModal').modal('hide');
                             if (data.success) {
                                 Swal.fire({
                                     title: '¡Éxito!',
@@ -93,6 +100,7 @@ document.querySelectorAll('.edit-Declaracion').forEach(button => {
                                     icon: 'success',
                                     confirmButtonColor: '#0DBCB5'
                                 }).then(() => {
+                                    $('#editDeclaracionModal').modal('hide');
                                     window.location.reload();
                                 });
                             } else {
@@ -146,7 +154,7 @@ document.querySelectorAll('.delete-Declaracion').forEach(button => {
                         if (data.success) {
                             Swal.fire({
                                 title: '¡Eliminado!',
-                                text: 'La declaracion de impuestos ha sido eliminada.',
+                                text: data.message,
                                 icon: 'success',
                                 confirmButtonColor: '#0DBCB5'
                             }).then((result) => {

@@ -14,6 +14,7 @@ using PupuseriaSalvadorena.Conexion;
 using PupuseriaSalvadorena.Models;
 using PupuseriaSalvadorena.Repositorios.Interfaces;
 using DocumentFormat.OpenXml.Office2010.Excel;
+using PupuseriaSalvadorena.Filtros;
 
 namespace PupuseriaSalvadorena.Controllers
 {
@@ -35,6 +36,7 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // GET: DetallesTransacciones
+        [FiltroAutentificacion(RolAcceso = new[] { "Administrador", "Contador" })]
         public async Task<IActionResult> Index()
         {
             var cultura = new CultureInfo("es-ES");
@@ -117,7 +119,7 @@ namespace PupuseriaSalvadorena.Controllers
             if (ModelState.IsValid)
             {
                 var IdLibro = await _detallesTransacRep.ObtenerIdLibroMasReciente();
-                var idTransaccion = await _detallesTransacRep.CrearTransaccionRecurrente(IdLibro, detalleTransaccion.DescripcionTransaccion, detalleTransaccion.Cantidad, detalleTransaccion.Monto, detalleTransaccion.FechaTrans, detalleTransaccion.IdTipo, detalleTransaccion.IdImpuesto, detalleTransaccion.Recurrencia, detalleTransaccion.FechaRecurrencia, detalleTransaccion.Frecuencia, false);
+                var idTransaccion = await _detallesTransacRep.CrearTransaccionRecurrente(IdLibro, detalleTransaccion.DescripcionTransaccion, detalleTransaccion.Cantidad, detalleTransaccion.Monto, detalleTransaccion.FechaTrans, detalleTransaccion.IdTipo.Value, detalleTransaccion.IdImpuesto, detalleTransaccion.Recurrencia, detalleTransaccion.FechaRecurrencia, detalleTransaccion.Frecuencia, false);
                 var transaccion = await _detallesTransacRep.ConsultarDetallesTransacciones(idTransaccion);
                 var registroLibro = await _registroLibrosRep.ConsultarRegistrosLibros(IdLibro);
 
@@ -206,7 +208,7 @@ namespace PupuseriaSalvadorena.Controllers
                     MontoLibro = (libro.MontoTotal - transaccion.Monto) + detalleTransaccion.Monto;
                 }
 
-                await _detallesTransacRep.ActualizarDetalleTransaccion(detalleTransaccion.IdTransaccion, detalleTransaccion.DescripcionTransaccion, detalleTransaccion.Cantidad, detalleTransaccion.Monto, detalleTransaccion.IdTipo, detalleTransaccion.IdImpuesto, false);
+                await _detallesTransacRep.ActualizarDetalleTransaccion(detalleTransaccion.IdTransaccion, detalleTransaccion.DescripcionTransaccion, detalleTransaccion.Cantidad, detalleTransaccion.Monto, detalleTransaccion.IdTipo.Value, detalleTransaccion.IdImpuesto, false);
                 await _registroLibrosRep.ActualizarRegistroLibros(IdLibro, MontoLibro, libro.Descripcion, libro.Conciliado);
                 return Json(new { success = true, message = "Transaccion actualizada correctamente." });
             }
@@ -318,7 +320,7 @@ namespace PupuseriaSalvadorena.Controllers
                     TransaccionOriginal.Cantidad,
                     TransaccionOriginal.Monto,
                     FechaTransaccion,
-                    TransaccionOriginal.IdTipo,
+                    TransaccionOriginal.IdTipo.Value,
                     TransaccionOriginal.IdImpuesto,
                     TransaccionOriginal.Recurrencia,
                     TransaccionOriginal.FechaRecurrencia,

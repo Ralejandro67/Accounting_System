@@ -11,6 +11,7 @@ using PupuseriaSalvadorena.Models;
 using PupuseriaSalvadorena.Repositorios.Implementaciones;
 using PupuseriaSalvadorena.Repositorios.Interfaces;
 using PupuseriaSalvadorena.ViewModels;
+using PupuseriaSalvadorena.Filtros;
 using Scrypt;
 
 namespace PupuseriaSalvadorena.Controllers
@@ -41,6 +42,7 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // GET: Usuarios
+        [FiltroAutentificacion(RolAcceso = new[] { "Administrador" })]
         public async Task<IActionResult> Index()
         {
             var usuarios = await _usuariosRep.MostrarUsuarios();
@@ -48,6 +50,7 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // GET: Usuarios/Details/5
+        [FiltroAutentificacion(RolAcceso = new[] { "Administrador" })]
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
@@ -57,6 +60,26 @@ namespace PupuseriaSalvadorena.Controllers
 
             var usuario = await _usuariosRep.ConsultarUsuarios(id);
             var user = new User{ Usuario = usuario };
+
+            if (usuario == null)
+            {
+                return NotFound();
+            }
+
+            return View(user);
+        }
+
+        // GET: Usuarios/Configuracion/5
+        [FiltroAutentificacion(RolAcceso = new[] { "Administrador", "Contador" })]
+        public async Task<IActionResult> Configuracion(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var usuario = await _usuariosRep.ConsultarUsuarios(id);
+            var user = new User { Usuario = usuario };
 
             if (usuario == null)
             {
@@ -158,6 +181,32 @@ namespace PupuseriaSalvadorena.Controllers
             return PartialView("_editUsuarioPartial", usuario);
         }
 
+        public async Task<IActionResult> Editar(string id)
+        {
+            if (id == null)
+            {
+                return Json(new { success = false, message = "Usuario no encontrado." });
+            }
+
+            var usuario = await _usuariosRep.ConsultarUsuarios(id);
+            var roles = await _rolesRep.MostrarRoles();
+            var provincias = await _provinciasRep.MostrarProvincias();
+            var cantones = await _cantonesRep.ConsultarCantones(usuario.IdProvincia.Value);
+            var distritos = await _distritosRep.ConsultarDistritos(usuario.IdCanton.Value);
+
+            ViewBag.Roles = new SelectList(roles, "IdRol", "NombreRol");
+            ViewBag.Provincias = new SelectList(provincias, "IdProvincia", "NombreProvincia");
+            ViewBag.Cantones = new SelectList(cantones, "IdCanton", "NombreCanton");
+            ViewBag.Distritos = new SelectList(distritos, "IdDistrito", "NombreDistrito");
+
+            if (usuario == null)
+            {
+                return Json(new { success = false, message = "Usuario no encontrado." });
+            }
+
+            return PartialView("_editUserPartial", usuario);
+        }
+
         // POST: Usuarios/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -167,12 +216,17 @@ namespace PupuseriaSalvadorena.Controllers
             {
                 var user = await _usuariosRep.ConsultarUsuarios(id);
                 var persona = await _personasRep.ConsultarPersonas(usuario.IdPersona);
-                var telefonos = await _telefonosRep.MostrarTelefonos();
-                var telefonosExistentes = telefonos.Where(t => t.Telefono == usuario.Telefono).ToList();
+                var telefono = await _telefonosRep.ConsultarTelefonos(persona.IdTelefono);
 
-                if (telefonosExistentes.Count > 0)
+                if (telefono.Telefono != usuario.Telefono)
                 {
-                    return Json(new { success = false, message = "El telefono brindado ya esta registrado." });
+                    var telefonos = await _telefonosRep.MostrarTelefonos();
+                    var telefonosExistentes = telefonos.Where(t => t.Telefono == usuario.Telefono).ToList();
+
+                    if (telefonosExistentes.Count > 0)
+                    {
+                        return Json(new { success = false, message = "El telefono brindado ya esta registrado." });
+                    }
                 }
 
                 await _telefonosRep.ActualizarTelefono(persona.IdTelefono, usuario.Telefono, usuario.Estado);

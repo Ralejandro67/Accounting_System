@@ -18,14 +18,10 @@
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-6">
-            <div class="form-group">
-                <label class="control-label">Telefono</label>
-                <input type="number" id="Telefono" name="Telefono" class="form-control" placeholder="00000000" />
-                <span asp-validation-for="Telefono" class="text-danger"></span>
-            </div>
-        </div>
+    <div class="form-group">
+        <label class="control-label">Telefono</label>
+        <input type="number" id="Telefono" name="Telefono" class="form-control" placeholder="Telefono del proveedor" />
+        <span asp-validation-for="Telefono" class="text-danger"></span>
     </div>
     <div class="form-group text-right">
         <button type="button" id="submitProveedor" class="btn btn-primary agregar-boton">Agregar</button>

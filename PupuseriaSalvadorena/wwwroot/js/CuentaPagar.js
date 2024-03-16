@@ -152,7 +152,6 @@ document.addEventListener('click', function (e) {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    $('#newFacturaCModal').modal('hide');
                     Swal.fire({
                         title: '¡Éxito!',
                         text: data.message,
@@ -160,6 +159,7 @@ document.addEventListener('click', function (e) {
                         confirmButtonColor: '#0DBCB5'
                     }).then((result) => {
                         if (result.isConfirmed || result.isDismissed) {
+                            $('#newFacturaCModal').modal('hide');
                             window.location.reload();
                         }
                     });
@@ -232,7 +232,6 @@ document.querySelectorAll('.edit-CuentaPagar').forEach(button => {
                     })
                         .then(response => response.json())
                         .then(data => {
-                            $('#editCuentaPagarModal').modal('hide');
                             if (data.success) {
                                 Swal.fire({
                                     title: '¡Éxito!',
@@ -240,6 +239,7 @@ document.querySelectorAll('.edit-CuentaPagar').forEach(button => {
                                     icon: 'success',
                                     confirmButtonColor: '#0DBCB5'
                                 }).then(() => {
+                                    $('#editCuentaPagarModal').modal('hide');
                                     window.location.reload();
                                 });
                             } else {
@@ -293,7 +293,7 @@ document.querySelectorAll('.delete-CuentaPagar').forEach(button => {
                     if (data.success) {
                         Swal.fire({
                             title: '¡Eliminado!',
-                            text: 'El impuesto ha sido eliminado.',
+                            text: data.message,
                             icon: 'success',
                             confirmButtonColor: '#0DBCB5'
                         }).then(() => {
@@ -302,7 +302,7 @@ document.querySelectorAll('.delete-CuentaPagar').forEach(button => {
                     } else {
                         Swal.fire({
                             title: 'Error',
-                            text: 'Hubo un problema al eliminar el impuesto.',
+                            text: data.message,
                             icon: 'error',
                             confirmButtonColor: '#0DBCB5'
                         });

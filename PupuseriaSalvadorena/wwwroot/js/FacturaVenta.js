@@ -42,6 +42,9 @@ $(document).off('click', '#NewReporte').on('click', '#NewReporte', function () {
 
 document.addEventListener('click', function (e) {
     if (e.target && e.target.id === 'submitReporteForm') {
+
+        var identicacion = document.getElementById('idCedula').value;
+
         var formData = new FormData(document.getElementById('ReporteForm'));
 
         fetch('/FacturaVentas/ReporteFacturas', {
@@ -134,6 +137,18 @@ function actualizarEstadoFacturaE() {
     var isElectronicaSelected = $('#FacturaElectronica').is(':checked');
     $('#CamposFacturasE').toggle(isElectronicaSelected);
     $('#FacturaE').val(isElectronicaSelected ? 'true' : 'false');
+
+    if (isElectronicaSelected) {
+        $('#Identificacion').val('');
+        $('#Telefono').val('');
+        $('#Cliente').val('');
+        $('#Correo').val('');
+    } else {
+        $('#Identificacion').val('0');
+        $('#Telefono').val('00000000');
+        $('#Cliente').val('Consumidor final');
+        $('#Correo').val('example@gmail.com');
+    }
 }
 
 function agregarNuevoPlatillo() {
@@ -148,13 +163,13 @@ function agregarNuevoPlatillo() {
 
     var nuevoPlatilloHtml = `
         <div class="row platilloRow">
-            <div class="col-md-5">
+            <div class="col-md-6">
                 <div class="form-group">
                     <label>Platillo</label>
                     ${selectHtml}
                 </div>
             </div>
-            <div class="col-md-5">
+            <div class="col-md-4">
                 <div class="form-group">
                     <label>Cantidad</label>
                     <input type="number" class="form-control" name="CantVenta[]" min="1" value="1"/>
@@ -208,6 +223,36 @@ function actualizarOpcionesPlatillos() {
 
 document.addEventListener('click', function (e) {
     if (e.target && e.target.id === 'submitFacturaVentaForm') {
+        e.preventDefault();
+
+        $('.loading').show();
+        $('button').prop('disabled', true);
+
+        var platillos = document.getElementById('platillosContenedor').querySelectorAll('.platilloRow');
+        var telefono = document.getElementById('Telefono').value;
+
+        var regexTel = /^[0-9]{8}$/;
+
+        if (!regexTel.test(telefono)) {
+            Swal.fire({
+                title: 'Error',
+                text: 'El número de teléfono debe contener 8 dígitos.',
+                icon: 'warning',
+                confirmButtonColor: '#0DBCB5'
+            })
+            return;
+        }
+
+        if (platillos.length === 0) {
+            Swal.fire({
+                title: '¡Error!',
+                text: 'Debe agregar al menos un platillo a la factura',
+                icon: 'warning',
+                confirmButtonColor: '#0DBCB5'
+            });
+            return;
+        }
+
         var formData = new FormData(document.getElementById('FacturaVentaForm'));
 
         fetch('/FacturaVentas/Create', {
@@ -219,21 +264,28 @@ document.addEventListener('click', function (e) {
         })
         .then(response => response.json())
         .then(data => {
+
+            $('.loading').hide();
+            $('button').prop('disabled', false);
+
             if (data.success) {
-                $('#newFacturaVentaModal').modal('hide');
                 Swal.fire({
                     title: '¡Éxito!',
                     text: data.message,
-                    icon: 'success'
+                    icon: 'success',
+                    confirmButtonColor: '#0DBCB5'
                 }).then((result) => {
                     if (result.isConfirmed || result.isDismissed) {
+                        $('#newFacturaVentaModal').modal('hide');
                         window.location.reload();
                     }
                 });
             } else {
                 let errorMessage = "";
-                if (data.errors && data.errors.length > 0) {
-                    errorMessage += "\n" + data.errors.join("\n");
+                if (data.message) {
+                    errorMessage = data.message;
+                } else if (data.errors && data.errors.length > 0) {
+                    errorMessage = data.errors.join("\n");
                 }
 
                 Swal.fire({
@@ -245,23 +297,33 @@ document.addEventListener('click', function (e) {
             }
         })
         .catch(error => {
+            $('.loading').hide();
+            $('button').prop('disabled', false);
             Swal.fire({
                 title: 'Error',
                 text: 'Hubo un problema con la solicitud.',
-                icon: 'error'
+                icon: 'error',
+                confirmButtonColor: '#0DBCB5'
             });
         });
     }
 });
 
+// Imprimir factura
+
 document.querySelectorAll('.print-FacturaVenta').forEach(button => {
     button.addEventListener('click', function () {
+        $('.loading').show();
+        $('button').prop('disabled', true);
+
         var id = this.getAttribute('data-id');
         fetch(`/FacturaVentas/ImprimirFactura/${id}`, {
             method: 'GET'
         })
         .then(response => response.json())
-        .then(data => {
+            .then(data => {
+                $('.loading').hide();
+                $('button').prop('disabled', false);
             if (data.success) {
                 window.open(data.url, '_blank');
             } else {
@@ -282,7 +344,7 @@ document.querySelectorAll('.print-FacturaVenta').forEach(button => {
     });
 });
 
-// Eliminar impuesto
+// anular factura
 document.querySelectorAll('.delete-FacturaVenta').forEach(button => {
     button.addEventListener('click', function () {
         var Id = this.getAttribute('data-id');
@@ -294,10 +356,12 @@ document.querySelectorAll('.delete-FacturaVenta').forEach(button => {
             showCancelButton: true,
             confirmButtonColor: '#0DBCB5',
             cancelButtonColor: '#9DB2BF',
-            confirmButtonText: 'Sí, elimínalo!',
+            confirmButtonText: 'Sí, proceder!',
             cancelButtonText: 'Cancelar'
         }).then((result) => {
             if (result.isConfirmed) {
+                $('.loading').show();
+                $('button').prop('disabled', true);
                 fetch(`/FacturaVentas/Delete/${Id}`, {
                     method: 'POST',
                     headers: {
@@ -306,9 +370,11 @@ document.querySelectorAll('.delete-FacturaVenta').forEach(button => {
                 })
                     .then(response => response.json())
                     .then(data => {
+                        $('.loading').hide();
+                        $('button').prop('disabled', false);
                         if (data.success) {
                             Swal.fire({
-                                title: '¡Eliminado!',
+                                title: '¡Anulada!',
                                 text: data.message,
                                 icon: 'success',
                                 confirmButtonColor: '#0DBCB5'
@@ -325,6 +391,8 @@ document.querySelectorAll('.delete-FacturaVenta').forEach(button => {
                         }
                     })
                     .catch(error => {
+                        $('.loading').hide();
+                        $('button').prop('disabled', false);
                         Swal.fire({
                             title: 'Error',
                             text: 'Hubo un problema con la solicitud.',

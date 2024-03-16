@@ -1,6 +1,7 @@
 ﻿using PupuseriaSalvadorena.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace PupuseriaSalvadorena.Conexion
 {

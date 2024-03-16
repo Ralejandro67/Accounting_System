@@ -1,0 +1,1176 @@
+﻿html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    line-height: 1.6;
+    background-color: #F5F7F8;
+    font-size: 16px;
+}
+
+header .navbar {
+    width: 100%;
+    z-index: 1000;
+}
+
+#topbar {
+    background-color: white;
+    border-bottom: 1px solid #A9A9A9;
+}
+
+.wrapper {
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+    overflow-x: hidden;
+}
+
+#sidebar {
+    min-width: 290px;
+    max-width: 290px;
+    transition: all 0.3s;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    padding-top: 2rem;
+    padding-left: 0;
+    padding-right: 0;
+    background-color: white;
+}
+
+    #sidebar .navbar-brand {
+        padding: 0.5rem 1rem;
+    }
+
+    #sidebar ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+        #sidebar ul li {
+            width: 100%;
+        }
+
+            #sidebar ul li a {
+                padding: 0.5rem 1rem;
+                display: block;
+                text-decoration: none;
+                transition: 0.3s;
+                border-radius: 0.5rem;
+            }
+
+                #sidebar ul li a:hover {
+                    background-color: #0DBCB5;
+                    color: white;
+                    border-radius: 0.5rem;
+                }
+
+.navbar-nav .dropdown-menu {
+    border: none;
+    box-shadow: none;
+}
+
+#barnav .nav-item {
+    margin-bottom: 0.5rem;
+}
+
+.navbar-nav .nav-link {
+    color: black;
+}
+
+.accordion-item {
+    border: none;
+}
+
+.accordion-button {
+    color: black !important;
+}
+
+    .accordion-button:not(.collapsed) {
+        background-color: #72DDD9 !important;
+    }
+
+    .accordion-button:hover {
+        color: white !important;
+    }
+
+.accordion-body .dropdown-item {
+    color: black !important;
+}
+
+    .accordion-body .dropdown-item:hover {
+        text-decoration: none;
+    }
+
+.accordion-body .list-unstyled li {
+    margin-bottom: 0.5rem;
+}
+
+    .accordion-body .list-unstyled li a:hover {
+        color: white !important;
+    }
+
+#content {
+    flex-grow: 1;
+    padding: 1rem;
+    padding-top: 3rem;
+    overflow-y: auto;
+    background-color: #F5F7F8;
+}
+
+#content2 {
+    flex-grow: 1;
+    padding: 1rem;
+    padding-top: 0;
+    overflow-y: auto;
+    background-color: white;
+    align-items: center;
+}
+
+.nav-link-icon svg {
+    margin-bottom: 0.2em;
+    margin-right: 0.5em;
+}
+
+.nav-link-icon2 svg {
+    margin-bottom: 0.1em;
+    margin-right: 0.3em;
+}
+
+
+#dropdownNotificaciones {
+    color: black;
+    background-color: white;
+    border: 0;
+    border-radius: 0.5rem;
+    margin-right: 0.5rem;
+}
+
+    #dropdownNotificaciones:hover {
+        color: white;
+        background-color: #0DBCB5;
+    }
+
+    #dropdownNotificaciones:focus {
+        background-color: #72DDD9;
+        color: white;
+        box-shadow: none;
+    }
+
+    #dropdownNotificaciones::after {
+        display: none;
+    }
+
+.hr-notificaciones {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+    .hr-notificaciones:not([size]) {
+        height: 0px;
+    }
+
+#notificacionesContainer {
+    margin-right: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.badge {
+    background-color: #D71313;
+}
+
+    .badge:focus {
+        background-color: #FFE1E1 !important;
+    }
+
+
+#HomeB {
+    padding: 1rem 1.25rem;
+}
+
+    #HomeB:hover {
+        padding: 1rem 1.25rem;
+        color: white;
+    }
+
+#PronosticosB {
+    padding: 1rem 1.25rem;
+}
+
+    #PronosticosB:hover {
+        padding: 1rem 1.25rem;
+        color: white;
+    }
+
+
+#menuTop ul li:hover {
+    background-color: #0DBCB5 !important;
+    color: white !important;
+}
+
+#accordbtn:hover {
+    background-color: #0DBCB5;
+    color: white;
+    text-decoration: none;
+}
+
+.menuCollapsed ul li a {
+    border-radius: 5px 0 0 5px !important;
+}
+
+    .menuCollapsed ul li a:hover {
+        background-color: #0DBCB5 !important;
+        color: white !important;
+    }
+
+/*Tablas*/
+/*----------------------------*/
+th {
+    cursor: pointer;
+}
+
+#busquedaImpuestos {
+    width: 20%;
+}
+
+#busqueda {
+    width: 20%;
+}
+
+#busquedaF {
+    width: 20%;
+}
+
+#busquedaCuentas {
+    width: 20%;
+}
+
+#busquedaMaterias {
+    width: 20%;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(121, 242, 238, 0.75) !important;
+}
+
+.anterior {
+    background-color: transparent !important;
+    border-color: transparent !important;
+    box-shadow: none;
+    color: black !important;
+    padding: 0.25rem !important;
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+    margin: 0 !important;
+    margin-right: 0.5rem !important;
+}
+
+    .anterior:hover {
+        color: #0DBCB5 !important;
+    }
+
+.siguiente {
+    background-color: transparent !important;
+    border-color: transparent !important;
+    box-shadow: none;
+    color: black !important;
+    padding: 0.25rem !important;
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+    margin: 0 !important;
+    margin-left: 0.5rem !important;
+}
+
+    .siguiente:hover {
+        color: #0DBCB5 !important;
+    }
+
+#pageIndicator {
+    padding: 0.25rem !important;
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+    margin: 0 !important;
+}
+
+#pageIndicatorM {
+    padding: 0.25rem !important;
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+    margin: 0 !important;
+}
+
+#pageIndicatorC {
+    padding: 0.25rem !important;
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+    margin: 0 !important;
+}
+
+/*----------------------------*/
+#AddPronostico {
+    background-color: #0DBCB5;
+    border-color: #0DBCB5;
+    border-radius: 0.5rem;
+}
+
+    #AddPronostico:hover {
+        background-color: #72DDD9;
+        border-color: #72DDD9;
+    }
+
+#AddFacturaVenta {
+    background-color: #0DBCB5;
+    border-color: #0DBCB5;
+    border-radius: 0.5rem;
+}
+
+    #AddFacturaVenta:hover {
+        background-color: #72DDD9;
+        border-color: #72DDD9;
+    }
+
+.eliminarPlatillo {
+    color: black !important;
+    background-color: white !important;
+    border-radius: 0.5rem !important;
+    border-color: white !important;
+    padding: 0.5rem !important;
+    padding-top: 0.2rem !important;
+    margin-top: 1.95rem !important;
+}
+
+    .eliminarPlatillo:hover {
+        color: #BE3144 !important;
+    }
+
+#AddTransaccionP {
+    background-color: #0DBCB5;
+    border-color: #0DBCB5;
+    border-radius: 0.5rem;
+}
+
+    #AddTransaccionP:hover {
+        background-color: #72DDD9;
+        border-color: #72DDD9;
+    }
+
+#AddTransaccion {
+    background-color: #0DBCB5;
+    border-color: #0DBCB5;
+    border-radius: 0.5rem;
+}
+
+    #AddTransaccion:hover {
+        background-color: #72DDD9;
+        border-color: #72DDD9;
+    }
+
+.agregar-boton {
+    background-color: #0DBCB5 !important;
+    border-color: #0DBCB5 !important;
+    border-radius: 0.5rem !important;
+}
+
+    .agregar-boton:hover {
+        background-color: #72DDD9 !important;
+        border-color: #72DDD9 !important;
+    }
+
+#AddPresupuesto {
+    background-color: #0DBCB5;
+    border-color: #0DBCB5;
+    border-radius: 0.5rem;
+}
+
+    #AddPresupuesto:hover {
+        background-color: #72DDD9;
+        border-color: #72DDD9;
+    }
+
+#AddImpuesto {
+    background-color: #0DBCB5;
+    border-color: #0DBCB5;
+    border-radius: 0.5rem;
+}
+
+    #AddImpuesto:hover {
+        background-color: #72DDD9;
+        border-color: #72DDD9;
+    }
+
+#AddTipoT {
+    background-color: #0DBCB5;
+    border-color: #0DBCB5;
+    border-radius: 0.5rem;
+}
+
+    #AddTipoT:hover {
+        background-color: #72DDD9;
+        border-color: #72DDD9;
+    }
+
+#AddTipoM {
+    background-color: #0DBCB5;
+    border-color: #0DBCB5;
+    border-radius: 0.5rem;
+}
+
+    #AddTipoM:hover {
+        background-color: #72DDD9;
+        border-color: #72DDD9;
+    }
+
+#AddProveedor {
+    background-color: #0DBCB5;
+    border-color: #0DBCB5;
+    border-radius: 0.5rem;
+}
+
+    #AddProveedor:hover {
+        background-color: #72DDD9;
+        border-color: #72DDD9;
+    }
+
+#AddTipoF {
+    background-color: #0DBCB5;
+    border-color: #0DBCB5;
+    border-radius: 0.5rem;
+}
+
+    #AddTipoF:hover {
+        background-color: #72DDD9;
+        border-color: #72DDD9;
+    }
+
+#AddTipoP {
+    background-color: #0DBCB5;
+    border-color: #0DBCB5;
+    border-radius: 0.5rem;
+}
+
+    #AddTipoP:hover {
+        background-color: #72DDD9;
+        border-color: #72DDD9;
+    }
+
+#AddFacturaC {
+    background-color: #0DBCB5;
+    border-color: #0DBCB5;
+    border-radius: 0.5rem;
+}
+
+    #AddFacturaC:hover {
+        background-color: #72DDD9;
+        border-color: #72DDD9;
+    }
+
+#AddHistorialC {
+    background-color: #0DBCB5;
+    border-color: #0DBCB5;
+    border-radius: 0.5rem;
+}
+
+    #AddHistorialC:hover {
+        background-color: #72DDD9;
+        border-color: #72DDD9;
+    }
+
+
+.modal-header {
+    background-color: #0DBCB5;
+    color: white;
+}
+
+#submitFacturaC {
+    background-color: #0DBCB5;
+    border-radius: 0.5rem;
+    border-color: #0DBCB5;
+}
+
+    #submitFacturaC:hover {
+        background-color: #72DDD9;
+        border-color: #72DDD9;
+    }
+
+#CampoArea {
+    resize: none;
+}
+
+.theme-switch {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    width: 9em;
+    color: black;
+    background-color: white;
+    padding: 0.5em;
+    transition: .4s;
+    z-index: 1;
+    border-radius: 0.2rem;
+    border: 1px solid #D8D9DA;
+}
+
+.name::before {
+    color: black;
+    content: "Pagado";
+    margin-right: 2em;
+    transition: .2s ease-in-out;
+}
+
+.name::after {
+    color: black;
+    content: "Por Pagar";
+    margin-right: 1.7em;
+    transition: .2s ease-in-out;
+    display: none;
+}
+
+.theme-switch .slider {
+    position: absolute;
+    background-color: #F0F0F0;
+    margin-left: 6.2em;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+}
+
+.theme-switch:hover {
+    color: white;
+    cursor: pointer;
+    background-color: #72DDD9;
+}
+
+    .theme-switch:hover .name::before {
+        color: white;
+    }
+
+    .theme-switch:hover .name::after {
+        color: white;
+    }
+
+.theme-switch input[type=checkbox]:checked + .slider {
+    transform: rotate(360deg);
+    box-shadow: none;
+    border: 3.5px solid #D8D9DA;
+    background-color: #0DBCB5;
+}
+
+.theme-switch input[type=checkbox]:checked ~ .name::before {
+    display: none;
+}
+
+.theme-switch input[type=checkbox]:checked ~ .name::after {
+    display: block;
+}
+
+.theme-switch input[type=checkbox] {
+    position: absolute;
+    visibility: hidden;
+}
+
+.slider {
+    transition: 300ms ease;
+}
+
+.link-icon svg {
+    margin-bottom: 0.5em;
+    margin-right: 0.5em;
+}
+
+#BtnEditar {
+    color: black;
+    background-color: transparent;
+    border-radius: 0.5rem;
+    border-color: transparent;
+    padding: 0.5rem;
+    padding-top: 0.2rem;
+}
+
+    #BtnEditar:hover {
+        background-color: #0DBCB5;
+        border-color: #0DBCB5;
+        color: white;
+    }
+
+#BtnEliminar {
+    color: black;
+    background-color: transparent;
+    border-radius: 0.5rem;
+    border-color: transparent;
+    padding: 0.5rem;
+    padding-top: 0.2rem;
+}
+
+    #BtnEliminar:hover {
+        background-color: #0DBCB5;
+        border-color: #0DBCB5;
+        color: white;
+    }
+
+#BtnPagar {
+    color: black;
+    background-color: transparent;
+    border-radius: 0.5rem;
+    border-color: transparent;
+    padding: 0.5rem;
+    padding-top: 0.2rem;
+}
+
+    #BtnPagar:hover {
+        background-color: #0DBCB5;
+        border-color: #0DBCB5;
+        color: white;
+    }
+
+#BtnImprimir {
+    color: black;
+    background-color: transparent;
+    border-radius: 0.5rem;
+    border-color: transparent;
+    padding: 0.5rem;
+    padding-top: 0.2rem;
+}
+
+    #BtnImprimir:hover {
+        background-color: #0DBCB5;
+        border-color: #0DBCB5;
+        color: white;
+    }
+
+#BtnDetalles {
+    color: black;
+    background-color: transparent;
+    border-radius: 0.5rem;
+    border-color: transparent;
+    padding: 0.5rem;
+    padding-top: 0.2rem;
+}
+
+    #BtnDetalles:hover {
+        background-color: #0DBCB5;
+        border-color: #0DBCB5;
+        color: white;
+    }
+
+#AddCuentaPagar {
+    background-color: #0DBCB5;
+    border-radius: 0.5rem;
+    border-color: #0DBCB5;
+}
+
+    #AddCuentaPagar:hover {
+        background-color: #72DDD9;
+        border-color: #72DDD9;
+    }
+
+#AddDetalleCuenta {
+    background-color: #0DBCB5;
+    border-radius: 0.5rem;
+    border-color: #0DBCB5;
+    color: white;
+}
+
+    #AddDetalleCuenta:hover {
+        background-color: #72DDD9;
+        border-color: #72DDD9;
+    }
+
+/* Campos Card */
+/* ----------------------------------- */
+.card-body-custom {
+    background-color: #ffffff;
+    border: 1px solid #ddd !important;
+    border-radius: 0.5rem;
+    padding: 0 !important;
+    margin-top: 1.25rem !important;
+    margin-bottom: 1.25rem !important;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    box-shadow: 2px 2px 10px 0 rgba(0, 0, 0, 0.25);
+}
+
+.table-body-custom {
+    background-color: #ffffff;
+    border: 1px solid #ddd !important;
+    border-radius: 0.5rem;
+    padding: 0 !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    margin-top: 1.25rem !important;
+    margin-bottom: 1.25rem !important;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    box-shadow: 2px 2px 10px 0 rgba(0, 0, 0, 0.25);
+}
+
+.table-body-custom2 {
+    background-color: #ffffff;
+    border: 1px solid #ddd !important;
+    border-radius: 0.5rem;
+    padding: 0 !important;
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+    padding-bottom: 1.5rem !important;
+    padding-top: 1.5rem !important;
+    margin-top: 1.25rem !important;
+    margin-bottom: 1.25rem !important;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    height: 100%;
+    box-shadow: 2px 2px 10px 0 rgba(0, 0, 0, 0.25);
+    text-align: center;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.table-body-custom3 {
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    padding: 0 !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    margin-bottom: 1.25rem !important;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.table-body-custom4 {
+    background-color: #ffffff;
+    border: 1px solid #ddd !important;
+    border-radius: 0.5rem;
+    padding: 0 !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    margin-top: 1.25rem !important;
+    margin-bottom: 1.25rem !important;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.row.no-gutters {
+    display: flex;
+    flex-grow: 1;
+    width: 100%;
+}
+
+.item {
+    text-align: center;
+    border-right: 2px solid #ddd;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex-grow: 1;
+    padding-top: 1.25rem !important;
+    padding-bottom: 1.25rem !important;
+}
+
+    .item:first-child {
+        border-top-left-radius: 0.5rem;
+        border-bottom-left-radius: 0.5rem;
+    }
+
+
+    .item:last-child {
+        border-top-right-radius: 0.5rem;
+        border-bottom-right-radius: 0.5rem;
+        border-right: 0;
+    }
+
+card-body2 {
+    flex: 1;
+}
+
+.item2 {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex-grow: 1;
+    padding-top: 0 !important;
+}
+
+    .item2:first-child {
+        border-top-left-radius: 0.5rem;
+        border-bottom-left-radius: 0.5rem;
+    }
+
+
+    .item2:last-child {
+        border-top-right-radius: 0.5rem;
+        border-bottom-right-radius: 0.5rem;
+        border-right: 0;
+    }
+
+.text-note {
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 0.25rem;
+}
+
+#TituloPresupuesto {
+    margin-bottom: 0 !important;
+    text-align: center;
+}
+
+    #TituloPresupuesto h5 {
+        margin-bottom: 0 !important;
+    }
+
+#Titulo {
+    text-align: center;
+}
+
+/* ----------------------------------- */
+/* Campos Cartas Presupuestos */
+.CartasPresupuestos {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 6px 10px 0 rgba(13, 188, 181, 0.5);
+    height: 160px;
+    justify-content: left !important;
+    margin: 12px;
+    width: 235px;
+    overflow: hidden;
+    padding: 32px 24px;
+    position: relative;
+    text-decoration: none;
+    z-index: 0;
+    animation-name: CartasPresupuestos;
+    animation-duration: 1s;
+    animation-delay: 0.8s;
+    animation-fill-mode: both;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.botones {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.botoneslibros {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 12px;
+}
+
+.CartasPresupuestos:before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: -16px;
+    right: -16px;
+    background: #72DDD9;
+    height: 32px;
+    width: 32px;
+    border-radius: 32px;
+    transform: scale(1);
+    transform-origin: 50% 50%;
+    transition: transform 0.25s ease-out;
+}
+
+.CartasPresupuestos:hover:before {
+    transform: scale(21);
+}
+
+.CartasPresupuestos .print-Presupuesto {
+    margin-right: 0.5rem;
+}
+
+.CartasPresupuestos .edit-Presupuesto {
+    margin-right: 0.5rem;
+}
+
+.CartasPresupuestos h5,
+.CartasPresupuestos .small {
+    align-self: flex-start;
+}
+
+.CartasPresupuestos:hover small {
+    transition: all 0.3s ease-out;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.CartasPresupuestos:hover h5 {
+    transition: all 0.3s ease-out;
+    color: #ffffff;
+}
+
+.CartasPresupuestos:hover strong {
+    transition: all 0.3s ease-out;
+    color: #ffffff;
+}
+
+.CartasPresupuestos:hover {
+    cursor: pointer;
+}
+
+@keyframes CartasPresupuestos {
+    0% {
+        transform: scale(0);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.go-corner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    overflow: hidden;
+    top: 0;
+    right: 0;
+    background-color: #72DDD9;
+    border-radius: 0 4px 0 32px;
+}
+
+/* ----------------------------------- */
+/* Campos Cartas Presupuestos */
+.CartasAcciones {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 6px 10px 0 rgba(13, 188, 181, 0.5);
+    height: 105px;
+    justify-content: left !important;
+    margin: 12px;
+    width: auto;
+    overflow: hidden;
+    padding: 32px 24px;
+    position: relative;
+    text-decoration: none;
+    z-index: 0;
+    animation-name: CartasAcciones;
+    animation-duration: 1s;
+    animation-delay: 0.8s;
+    animation-fill-mode: both;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+    .CartasAcciones:before {
+        content: "";
+        position: absolute;
+        z-index: -1;
+        top: -16px;
+        right: -16px;
+        background: #72DDD9;
+        height: 32px;
+        width: 32px;
+        border-radius: 32px;
+        transform: scale(1);
+        transform-origin: 50% 50%;
+        transition: transform 0.25s ease-out;
+    }
+
+    .CartasAcciones:hover:before {
+        transform: scale(21);
+    }
+
+    .CartasAcciones .print-Presupuesto {
+        margin-right: 0.5rem;
+    }
+
+    .CartasAcciones .edit-Presupuesto {
+        margin-right: 0.5rem;
+    }
+
+    .CartasAcciones h5,
+    .CartasAcciones .small {
+        align-self: flex-start;
+    }
+
+    .CartasAcciones:hover small {
+        transition: all 0.3s ease-out;
+        color: rgba(255, 255, 255, 0.8);
+    }
+
+    .CartasAcciones:hover h4 {
+        transition: all 0.3s ease-out;
+        color: #ffffff !important;
+    }
+
+    .CartasAcciones:hover {
+        cursor: pointer;
+    }
+
+@keyframes CartasAcciones {
+    0% {
+        transform: scale(0);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.go-corner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    overflow: hidden;
+    top: 0;
+    right: 0;
+    background-color: #72DDD9;
+    border-radius: 0 4px 0 32px;
+}
+
+/* ----------------------------------- */
+/* Checkboxs */
+
+.CheckboxTransac {
+    display: inline-block;
+    color: #fff;
+    cursor: pointer;
+    position: relative;
+    margin-bottom: 0 !important;
+}
+
+label span {
+    display: inline-block;
+    position: relative;
+    background-color: transparent;
+    width: 25px;
+    height: 25px;
+    transform-origin: center;
+    border: 2px solid #808080;
+    border-radius: 50%;
+    vertical-align: -6px;
+    margin-right: 10px;
+    transition: background-color 150ms 200ms, transform 350ms cubic-bezier(.78,-1.22,.17,1.89);
+}
+
+label span:before, label span:after {
+    content: "";
+    position: absolute;
+    height: 2px;
+    border-radius: 2px;
+    background: #0DBCB5;
+    transition: width 50ms ease;
+    transform-origin: 0% 0%;
+}
+
+label span:before {
+    width: 0px;
+    transform: rotate(45deg);
+    top: 10px;
+    left: 7px;
+    transition: width 50ms ease 50ms;
+}
+
+label span:after {
+    width: 0;
+    transform: rotate(305deg);
+    top: 14px;
+    left: 8px;
+}
+
+label:hover span:before {
+    width: 5px;
+    transition: width 100ms ease;
+}
+
+label:hover span:after {
+    width: 10px;
+    transition: width 150ms ease 100ms;
+}
+
+input[type="checkbox"] {
+    display: none;
+}
+
+input[type="checkbox"]:checked + label span {
+    background-color: transparent;
+    transform: scale(1.25);
+}
+
+input[type="checkbox"]:checked + label span:before,
+input[type="checkbox"]:checked + label span:after {
+    background: #0DBCB5;
+    transition: width 150ms ease 100ms;
+}
+
+input[type="checkbox"]:checked + label span:before {
+    width: 5px;
+}
+
+input[type="checkbox"]:checked + label span:after {
+    width: 10px;
+}
+
+input[type="checkbox"]:checked + label:hover span {
+    background-color: transparent;
+    transform: scale(1.25);
+}
+
+input[type="checkbox"]:checked + label:hover span:before,
+input[type="checkbox"]:checked + label:hover span:after {
+    background: #0DBCB5;
+}
+
+
+#productoCampos {
+    width: 18% !important;
+}
+
+#usuarioCampos {
+    width: 30% !important;
+}
+
+#FECampos {
+    margin-top: 1rem;
+}
+
+#agregarPlatillo {
+    cursor: pointer;
+}
+
+.DescripcionP {
+    margin-top: -0.75rem;
+}
+
+.TituloReporte {
+    margin-bottom: 0;
+}
+
+.ReporteCampos {
+    margin-bottom: 0.3rem;
+}
+
+.TablaReporte {
+    border-collapse: collapse;
+    border-color: white !important;
+    border: 0px !important;
+}

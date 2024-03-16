@@ -9,5 +9,6 @@ namespace PupuseriaSalvadorena.Repositorios.Interfaces
         Task EliminarCorreo(int id);
         Task<List<CorreoElectronico>> MostrarCorreos();
         Task<CorreoElectronico> ConsultarCorreos(int id);
+        Task<CorreoElectronico> ConsultarCorreoElectronico(string correo);
     }
 }

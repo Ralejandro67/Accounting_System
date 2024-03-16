@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using PupuseriaSalvadorena.Conexion;
+using PupuseriaSalvadorena.Filtros;
 using PupuseriaSalvadorena.Models;
 using PupuseriaSalvadorena.Repositorios.Implementaciones;
 using PupuseriaSalvadorena.Repositorios.Interfaces;
@@ -30,6 +31,7 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // GET: DeclaracionImpuestoes
+        [FiltroAutentificacion(RolAcceso = new[] { "Administrador", "Contador" })]
         public async Task<IActionResult> Index()
         {
             var declaracionImpuesto = await _declaracionTaxRep.MostrarDeclaracionesImpuestos();
@@ -37,6 +39,7 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // GET: DeclaracionImpuestoes/Details/5
+        [FiltroAutentificacion(RolAcceso = new[] { "Administrador", "Contador" })]
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
@@ -94,6 +97,14 @@ namespace PupuseriaSalvadorena.Controllers
                 var transacciones = (await _detallesTransacRep.MostrarDetallesTransaccionesYear())
                                     .Where(t => t.FechaTrans.Year == year && t.FechaTrans.Month >= mesInicio && t.FechaTrans.Month <= mesFinal).ToList();
 
+                for (int mes = mesInicio; mes <= mesFinal; mes++)
+                {
+                    if (!transacciones.Any(t => t.FechaTrans.Month == mes))
+                    {
+                        return Json(new { success = false, message = $"No hay datos suficientes para la declaracion del {declaracionImpuesto.Trimestre}." });
+                    }
+                }
+
                 decimal montoTotal = transacciones.Sum(t => t.Monto);
                 decimal montoRenta = montoTotal * 0.02m;
                 decimal montoIVA = montoTotal * 0.04m;
@@ -104,7 +115,11 @@ namespace PupuseriaSalvadorena.Controllers
 
                 return Json(new { success = true, url = Url.Action(nameof(Details), new { id = IdDeclaracion }) });
             }
-            return Json(new { success = false, message = "Error al crear la declaracion." });
+            else
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                return Json(new { success = false, errors = errors });
+            }
         }
 
         // GET: DeclaracionImpuestoes/Edit/5

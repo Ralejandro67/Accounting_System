@@ -34,7 +34,7 @@ namespace PupuseriaSalvadorena.Services
                 {
                     if (presupuesto.Estado && presupuesto.FechaInicio >= presupuesto.FechaFin)
                     {
-                        presupuestosRep.ActualizarPresupuesto(presupuesto.IdPresupuesto, presupuesto.NombreP, presupuesto.FechaInicio, presupuesto.FechaFin, presupuesto.Descripcion, presupuesto.SaldoUsado, presupuesto.SaldoPresupuesto, false, presupuesto.IdCategoriaP);
+                        presupuestosRep.ActualizarPresupuesto(presupuesto.IdPresupuesto, presupuesto.NombreP, presupuesto.FechaInicio, presupuesto.FechaFin, presupuesto.Descripcion, presupuesto.SaldoUsado, presupuesto.SaldoPresupuesto, false, presupuesto.IdCategoriaP.Value);
                     }
                 }
             }

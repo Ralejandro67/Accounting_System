@@ -1,7 +1,12 @@
 ﻿@model IEnumerable<PupuseriaSalvadorena.Models.AlertaCuentaPagar>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Alertas";
+}
+
+@section Scripts {
+    <script src="~/js/alertasmanejo.js" asp-append-version="true"></script>
+    <script src="~/js/alertas.js" asp-append-version="true"></script>
 }
 
 <div class="card-body table-body-custom pb-4">
@@ -13,19 +18,19 @@
                     Alertas de Cuentas por Pagar
                 </h1>
                 <br />
-                <p>Alerta de expiracion sobre las cuentas por pagar.</p>
+                <p>Alertas de expiracion sobre las cuentas por pagar.</p>
             </div>
             <div class="text-right" style="width: 40%;">
-                <button type="button" class="btn btn-primary nav-link-icon agregar-boton" id="AddMateriaPrima">
+                <button type="button" class="btn btn-primary nav-link-icon agregar-boton read-Alerta" id="AddMateriaPrima">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">
                         <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0" />
                         <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7" />
-                    </svg> Marcar todas como leidas
+                    </svg> Marcar alertas como leidas
                 </button>
-                <button type="button" class="btn btn-primary mt-2 nav-link-icon agregar-boton" id="AddMateriaPrima">
+                <button type="button" class="btn btn-primary mt-2 nav-link-icon agregar-boton deleteAll-Alerta" id="AddMateriaPrima">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
                         <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
-                    </svg> Borrar Notificaciones Leidas
+                    </svg> Borrar alertas Leidas
                 </button>
             </div>
         </div>
@@ -75,13 +80,13 @@
                             @(item.Leido ? "Leida" : "No Leida")
                         </td>
                         <td>
-                            <button type="button" class="btn btn-primary seen-Alerta nav-link-btn-icons" id="BtnImprimir" data-id="@item.IdAlerta">
+                            <button type="button" class="btn btn-primary seen-Alerta nav-link-btn-icons" id="BtnImprimir" title="Detalles" data-toggle="tooltip" onclick="location.href='@Url.Action("Details", "DetalleCuentas", new { id = item.IdCuentaPagar })'">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">
                                     <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0" />
                                     <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7" />
                                 </svg>
                             </button>
-                            <button type="button" class="btn btn-primary delete-Alerta nav-link-btn-icons" id="BtnDetalles" data-id="@item.IdAlerta">
+                            <button type="button" class="btn btn-primary delete-Alerta nav-link-btn-icons" id="BtnDetalles" data-id="@item.IdAlerta" title="Eliminar" data-toggle="tooltip">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
                                     <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
                                 </svg>
@@ -91,6 +96,11 @@
                 }
             </tbody>
         </table>
+        <div id="pagination" class="pagination justify-content-center align-content-end pb-4">
+            <button class="btn btn-primary anterior" onclick="changePage(-1)"><i class="fas fa-angle-left"></i></button>
+            <span id="pageIndicator">1</span>
+            <button class="btn btn-primary siguiente" onclick="changePage(1)"><i class="fas fa-angle-right"></i></button>
+        </div>
     }
     else
     {

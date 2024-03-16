@@ -16,18 +16,19 @@
     <input asp-for="FechaFactura" class="form-control" type="hidden" />
     <input asp-for="SubTotal" class="form-control" id="MontoSubTotal" type="hidden" />
     <input asp-for="TotalVenta" class="form-control" id="MontoTotal" type="hidden" />
+    <input asp-for="Estado" class="form-control" type="hidden" value="true"/>
     <div class="card-body card-body-custom">
         <div class="row no-gutters">
             <div class="col text-center item">
-                <div class="item-value">Subtotal</div>
+                <div class="item-value"><Strong>Subtotal</Strong></div>
                 <div id="montoDisplay" class="text-note">₡0.00</div>
             </div>
             <div class="col text-center item">
-                <div class="item-value">IVA</div>
+                <div class="item-value"><Strong>IVA</Strong></div>
                 <div id="inputMontoImpuesto" class="text-note">₡0.00</div>
             </div>
             <div class="col text-center item">
-                <div class="item-value">Total</div>
+                <div class="item-value"><Strong>Total</Strong></div>
                 <div asp-for="DescripcionTransaccion" id="inputMontoTotal" class="text-note">₡0.00</div>
             </div>
         </div>
@@ -47,7 +48,7 @@
         <div class="row" id="FECampos">
             <div class="form-group recurrence-fields">
                 <label for="control-label">Tipo de Identificacion</label>
-                <select asp-for="TipoId" class="form-control">
+                <select asp-for="TipoId" class="form-control" id="idCedula">
                     <option value="CF">Cédula Física</option>
                     <option value="CJ">Cédula Jurídica</option>
                     <option value="DIMEX">DIMEX</option>
@@ -58,14 +59,14 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label class="control-label">Cedula</label>
-                    <input asp-for="Identificacion" class="form-control" />
+                    <input id="Identificacion" name="Identificacion" class="form-control" placeholder="Identificacion"/>
                     <span asp-validation-for="Identificacion" class="text-danger"></span>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label class="control-label">Nombre del Cliente</label>
-                    <input asp-for="NombreCliente" class="form-control" />
+                    <input asp-for="NombreCliente" class="form-control" placeholder="Nombre del cliente" id="Cliente"/>
                     <span asp-validation-for="NombreCliente" class="text-danger"></span>
                 </div>
             </div>
@@ -74,14 +75,14 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label class="control-label">Correo</label>
-                    <input asp-for="CorreoElectronico" class="form-control" />
+                    <input asp-for="CorreoElectronico" class="form-control" placeholder="Correo Electronico" id="Correo"/>
                     <span asp-validation-for="CorreoElectronico" class="text-danger"></span>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label class="control-label">Telefono</label>
-                    <input asp-for="Telefono" class="form-control" />
+                    <input id="Telefono" name="Telefono" class="form-control" placeholder="Telefono" />
                     <span asp-validation-for="Telefono" class="text-danger"></span>
                 </div>
             </div>

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PupuseriaSalvadorena.Conexion;
+using PupuseriaSalvadorena.Filtros;
 using PupuseriaSalvadorena.Models;
 using PupuseriaSalvadorena.Repositorios.Interfaces;
 
@@ -23,6 +24,7 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // GET: MateriaPrimas
+        [FiltroAutentificacion(RolAcceso = new[] { "Administrador", "Contador" })]
         public async Task<IActionResult> Index()
         {
             var materiaPrimas = await _materiaPrimaRep.MostrarMateriaPrima();
@@ -61,8 +63,15 @@ namespace PupuseriaSalvadorena.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _materiaPrimaRep.CrearMateriaPrima(materiaPrima.NombreMateriaPrima, materiaPrima.IdProveedor);
-                return Json(new { success = true, message = "Materia Prima agregada correctamente." });
+                try
+                {
+                    await _materiaPrimaRep.CrearMateriaPrima(materiaPrima.NombreMateriaPrima, materiaPrima.IdProveedor);
+                    return Json(new { success = true, message = "Materia Prima agregada correctamente." });
+                }
+                catch
+                {
+                    return Json(new { success = false, message = "Esta materia prima ya esta registrada bajo este proveedor." });
+                }
             }
             else
             {
@@ -98,6 +107,19 @@ namespace PupuseriaSalvadorena.Controllers
         {
             if (ModelState.IsValid)
             {
+                var materia = await _materiaPrimaRep.ConsultarMateriasPrimas(id);
+
+                if(materia.NombreMateriaPrima != materiaPrima.NombreMateriaPrima && materia.IdProveedor == materiaPrima.IdProveedor)
+                {
+                    var existe = await _materiaPrimaRep.MostrarMateriaPrima();
+                    var materiaExiste = existe.Where(m => m.NombreMateriaPrima == materiaPrima.NombreMateriaPrima && m.IdProveedor == materiaPrima.IdProveedor).ToList();
+                    if (materiaExiste.Count > 0)
+                    {
+                        return Json(new { success = false, message = "Esta materia prima ya esta registrada bajo este proveedor." });
+                    }
+                }
+
+
                 await _materiaPrimaRep.ActualizarMateriaPrima(materiaPrima.IdMateriaPrima, materiaPrima.NombreMateriaPrima, materiaPrima.IdProveedor);  
                 return Json(new { success = true, message = "Materia Prima actualizada correctamente." });
             }
@@ -137,7 +159,7 @@ namespace PupuseriaSalvadorena.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = "No se puede eliminar la materia prima, ya que hay facturas asociadas." });
+                return Json(new { success = false, message = "No se puede eliminar la materia prima ya que hay facturas asociadas." });
             }
         }
     }

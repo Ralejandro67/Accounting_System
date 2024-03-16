@@ -6,6 +6,10 @@
     ViewData["Title"] = "Facturas de Venta";
 }
 
+@{
+    <link href="~/css/transacciones.css" rel="stylesheet" />
+}
+
 @section Scripts {
     <script src="~/js/ventas.js" asp-append-version="true"></script>
     <script src="~/js/facturaventa.js" asp-append-version="true"></script>
@@ -128,19 +132,19 @@
                         @(item.Estado ? "Vigente" : "Anulada")
                     </td>
                     <td>
-                        <button type="button" class="btn btn-primary print-FacturaVenta nav-link-btn-icons" id="BtnImprimir" data-id="@item.IdFacturaVenta">
+                        <button type="button" class="btn btn-primary print-FacturaVenta nav-link-btn-icons" id="BtnImprimir" data-id="@item.IdFacturaVenta" title="Imprimir" data-toggle="tooltip">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-printer-fill" viewBox="0 0 16 16">
                                 <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2zm6 8H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1" />
                                 <path d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1" />
                             </svg>
                         </button>
-                        <button type="button" class="btn btn-primary send-FacturaVenta nav-link-btn-icons" id="BtnDetalles" data-id="@item.IdFacturaVenta">
+                        <button type="button" class="btn btn-primary send-FacturaVenta nav-link-btn-icons" id="BtnDetalles" title="Detalles" data-toggle="tooltip" onclick="location.href='@Url.Action("Details", "FacturaVentas", new { id = item.IdFacturaVenta })'">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">
                                 <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0" />
                                 <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7" />
                             </svg>
                         </button>
-                        <button type="button" class="btn btn-primary delete-FacturaVenta nav-link-btn-icons" id="BtnEliminar" data-id="@item.IdFacturaVenta">
+                        <button type="button" class="btn btn-primary delete-FacturaVenta nav-link-btn-icons" id="BtnEliminar" data-id="@item.IdFacturaVenta" title="Anular" data-toggle="tooltip">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash-circle-fill" viewBox="0 0 16 16">
                                 <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M4.5 7.5a.5.5 0 0 0 0 1h7a.5.5 0 0 0 0-1z" />
                             </svg>

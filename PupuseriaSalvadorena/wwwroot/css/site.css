@@ -140,34 +140,13 @@ header .navbar {
     margin-right: 0.3em;
 }
 
-@media (max-width: 768px) {
-    #sidebar {
-        min-width: 80px;
-        max-width: 80px;
-    }
-
-    #content {
-        padding-left: 80px; 
-    }
-
-    #sidebar ul li a {
-        text-align: center;
-        padding: 0.5rem;
-    }
-
-    #sidebar .navbar-brand {
-        display: none; 
-    }
-
-    .wrapper {
-        flex-direction: column;
-    }
-}
 
 #dropdownNotificaciones {
     color: black;
     background-color: white;
     border: 0;
+    border-radius: 0.5rem;
+    margin-right: 0.5rem;
 }
 
 #dropdownNotificaciones:hover {
@@ -197,6 +176,8 @@ header .navbar {
 #notificacionesContainer {
     margin-right: 0.5rem;
     margin-top: 0.5rem;
+    padding-top: 0;
+    padding-bottom: 0;
 }
 
 .badge {
@@ -205,4 +186,186 @@ header .navbar {
 
 .badge:focus {
     background-color: #FFE1E1 !important;
+}
+
+@media (max-width: 500px){
+    #iconEmpresa{
+        display: none;
+    }
+
+    #topbarMenu {
+        align-content: end !important;
+        justify-content: end !important;
+    }
+
+    #topbarMenu button {
+        font-size: 1rem !important;
+    }
+
+    #topbarMenu button svg {
+        width: 26px !important;
+        height: 26px !important;
+    }
+
+    #topbarMenu button #iconSesion {
+        width: 16px !important;
+        height: 16px !important;
+    }
+
+    h1 img {
+        display: none;
+    }
+
+    h2 img {
+        display: none;
+    }
+
+    p {
+        font-size: 0.8rem !important;
+    }
+
+    .CartasPresupuestos strong {
+        font-size: 1rem !important;
+    }
+
+    table td, table th {
+        padding: 0.5rem !important;
+    }
+
+    button {
+        font-size: 0.8rem !important;
+    }
+
+    button svg {
+        width: 13px !important;
+        height: 13px !important;
+    }
+
+    .close{
+        font-size: 1.5rem !important;
+    }
+
+    table button {
+        padding: 0.25rem !important;
+    }
+}
+
+@media (max-width: 830px) {
+    #sidebar {
+        display: none !important;
+    }
+
+    .navbar-toggler {
+        display: block;
+        background-color: #0DBCB5 !important;
+        border-color: #0DBCB5 !important;
+        border-radius: 0.5rem !important;
+        margin-left: 0.5rem !important;
+        padding: 0.25rem 0.25rem !important;
+        color: white !important;
+    }
+
+    .navbar-toggler:hover {
+        background-color: #72DDD9 !important;
+        border-color: #72DDD9 !important;
+    }
+
+    .navbar-toggler:focus {
+        box-shadow: none;
+    }
+
+    #menuTop {
+        position: absolute;
+        width: 100%;
+        top: 56px;
+        background-color: white;
+    }
+}
+
+@media (min-width: 831px) {
+    #sidebar {
+        display: block !important;
+    }
+
+    .navbar-toggler {
+        display: none;
+    }
+
+    #menuTop {
+        display: none !important;
+    }
+}
+
+#HomeB {
+    padding: 1rem 1.25rem;
+}
+
+#HomeB:hover {
+    padding: 1rem 1.25rem;
+    color: white;
+}
+
+#PronosticosB {
+    padding: 1rem 1.25rem;
+}
+
+#PronosticosB:hover {
+    padding: 1rem 1.25rem;
+    color: white;
+}
+
+
+#menuTop ul li:hover {
+    background-color: #0DBCB5 !important;
+    color: white !important;
+}
+
+#accordbtn:hover {
+    background-color: #0DBCB5;
+    color: white;
+    text-decoration: none;
+}
+
+.menuCollapsed ul li a {
+    border-radius: 5px 0 0 5px !important;
+}
+
+.menuCollapsed ul li a:hover {
+    background-color: #0DBCB5 !important;
+    color: white !important;
+}
+
+.menu-perfil li a {
+    cursor: pointer;
+    color: black !important;
+    text-decoration: none !important;
+}
+
+.menu-perfil li a:hover {
+    background-color: #0DBCB5 !important;
+    color: white !important;
+}
+
+#notificacionesContainer #alertaNotificacion:hover {
+    background-color: #72DDD9 !important;
+    color: white !important;
+}
+
+.allAlerts a {
+    width: 100%;
+    text-decoration: none;
+}
+
+.allAlerts:hover {
+    background-color: #0DBCB5;
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.allAlerts a:hover {
+    background-color: #0DBCB5;
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
 }

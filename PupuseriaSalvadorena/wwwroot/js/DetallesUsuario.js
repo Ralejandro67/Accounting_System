@@ -35,7 +35,6 @@ document.querySelectorAll('.edit-Usuario').forEach(button => {
                     })
                         .then(response => response.json())
                         .then(data => {
-                            $('#editUsuarioModal').modal('hide');
                             if (data.success) {
                                 Swal.fire({
                                     title: '¡Éxito!',
@@ -43,12 +42,15 @@ document.querySelectorAll('.edit-Usuario').forEach(button => {
                                     icon: 'success',
                                     confirmButtonColor: '#0DBCB5'
                                 }).then(() => {
+                                    $('#editUsuarioModal').modal('hide');
                                     window.location.reload();
                                 });
                             } else {
-                                let errorMessage = data.message;
-                                if (data.errors && data.errors.length > 0) {
-                                    errorMessage += "\n" + data.errors.join("\n");
+                                let errorMessage = "";
+                                if (data.message) {
+                                    errorMessage = data.message;
+                                } else if (data.errors && data.errors.length > 0) {
+                                    errorMessage = data.errors.join("\n");
                                 }
 
                                 Swal.fire({

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PupuseriaSalvadorena.Conexion;
+using PupuseriaSalvadorena.Filtros;
 using PupuseriaSalvadorena.Models;
 using PupuseriaSalvadorena.Repositorios.Implementaciones;
 using PupuseriaSalvadorena.Repositorios.Interfaces;
@@ -23,6 +24,7 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // GET: Impuestos
+        [FiltroAutentificacion(RolAcceso = new[] { "Administrador", "Contador" })]
         public async Task<IActionResult> Index()
         {
             var impuestos = await _impuestosRep.MostrarImpuestos();
@@ -59,8 +61,15 @@ namespace PupuseriaSalvadorena.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _impuestosRep.CrearImpuesto(impuesto.NombreImpuesto, impuesto.Tasa.Value, impuesto.Estado, impuesto.Descripcion);
-                return Json(new { success = true, message = "Impuesto agregado correctamente." });
+                try
+                {
+                    await _impuestosRep.CrearImpuesto(impuesto.NombreImpuesto, impuesto.Tasa.Value, impuesto.Estado, impuesto.Descripcion);
+                    return Json(new { success = true, message = "Impuesto agregado correctamente." });
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { success = false, message = $"Ya existe un impuesto llamado {impuesto.NombreImpuesto}." });
+                }
             }
             else
             {
@@ -98,6 +107,19 @@ namespace PupuseriaSalvadorena.Controllers
 
             if (ModelState.IsValid)
             {
+                var tax = await _impuestosRep.ConsultarImpuestos(id);
+
+                if (tax.NombreImpuesto != impuesto.NombreImpuesto)
+                {
+                    var exist = await _impuestosRep.MostrarImpuestos();
+                    var existImpuesto = exist.Where(i => i.NombreImpuesto == impuesto.NombreImpuesto).ToList();
+
+                    if (existImpuesto.Count > 0)
+                    {
+                        return Json(new { success = false, message = $"Ya existe un impuesto llamado {impuesto.NombreImpuesto}." });
+                    }
+                }
+
                 await _impuestosRep.ActualizarImpuesto(impuesto.IdImpuesto, impuesto.NombreImpuesto, impuesto.Tasa.Value, impuesto.Estado, impuesto.Descripcion);
                 return Json(new { success = true, message = "Impuesto actualizado correctamente." });
             }
@@ -127,7 +149,7 @@ namespace PupuseriaSalvadorena.Controllers
             }
             catch
             {
-                return Json(new { success = false, message = "Error al eliminar el impuesto, hay transaciones asociadas a este metodo de pago." });
+                return Json(new { success = false, message = "Error al eliminar el impuesto, hay transaciones asociadas a este impuesto." });
             }
         }
     }

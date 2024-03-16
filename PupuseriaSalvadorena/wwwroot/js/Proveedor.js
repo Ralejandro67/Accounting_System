@@ -112,7 +112,6 @@ document.getElementById('submitProveedor').addEventListener('click', function ()
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                $('#newProveedorModal').modal('hide');
                 Swal.fire({
                     title: '¡Éxito!',
                     text: data.message,
@@ -120,13 +119,16 @@ document.getElementById('submitProveedor').addEventListener('click', function ()
                     confirmButtonColor: '#0DBCB5'
                 }).then((result) => {
                     if (result.isConfirmed || result.isDismissed) {
+                        $('#newProveedorModal').modal('hide');
                         window.location.reload();
                     }
                 });
             } else {
                 let errorMessage = "";
-                if (data.errors && data.errors.length > 0) {
-                    errorMessage += "\n" + data.errors.join("\n");
+                if (data.message) {
+                    errorMessage = data.message;
+                } else if (data.errors && data.errors.length > 0) {
+                    errorMessage = data.errors.join("\n");
                 }
 
                 Swal.fire({
@@ -160,7 +162,7 @@ document.querySelectorAll('.edit-Proveedor').forEach(button => {
                 document.querySelector('#editProveedorModal #editProveedorForm').addEventListener('submit', function (e) {
                     e.preventDefault();
 
-                    var telefono = document.getElementById('Telefono').value;
+                    var telefono = document.getElementById('TelefonoEdit').value;
 
                     var regex = /^[0-9]{8}$/;
                     if (!regex.test(telefono)) {
@@ -184,7 +186,6 @@ document.querySelectorAll('.edit-Proveedor').forEach(button => {
                     })
                         .then(response => response.json())
                         .then(data => {
-                            $('#editProveedorModal').modal('hide');
                             if (data.success) {
                                 Swal.fire({
                                     title: '¡Éxito!',
@@ -192,12 +193,15 @@ document.querySelectorAll('.edit-Proveedor').forEach(button => {
                                     icon: 'success',
                                     confirmButtonColor: '#0DBCB5'
                                 }).then(() => {
+                                    $('#editProveedorModal').modal('hide');
                                     window.location.reload();
                                 });
                             } else {
                                 let errorMessage = "";
-                                if (data.errors && data.errors.length > 0) {
-                                    errorMessage += "\n" + data.errors.join("\n");
+                                if (data.message) {
+                                    errorMessage = data.message;
+                                } else if (data.errors && data.errors.length > 0) {
+                                    errorMessage = data.errors.join("\n");
                                 }
 
                                 Swal.fire({

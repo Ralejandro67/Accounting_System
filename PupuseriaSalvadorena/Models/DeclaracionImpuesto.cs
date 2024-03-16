@@ -9,7 +9,6 @@ namespace PupuseriaSalvadorena.Models
 
         public long CedulaJuridica { get; set; }
 
-        [Required(ErrorMessage = "La fecha de registro de la declaración es obligatorio")]
         public DateTime FechaInicio { get; set; }
 
         [Required(ErrorMessage = "El trimestre de la declaración es obligatorio")]
@@ -23,6 +22,7 @@ namespace PupuseriaSalvadorena.Models
 
         public decimal MontoTotal { get; set; }
 
+        [Required(ErrorMessage = "Es necesaria una desccripcion para la declaracion")]
         public string? Observaciones { get; set; }
     }
 }

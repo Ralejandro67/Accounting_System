@@ -24,3 +24,10 @@ function countNotificaciones() {
         })
         .catch(error => console.error('Error al cargar las notificaciones'));
 }
+
+$(document).ready(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+    $('.navbar-toggler').click(function () {
+        $('#sidebar').toggle();
+    });
+});

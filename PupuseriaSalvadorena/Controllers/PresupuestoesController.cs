@@ -12,6 +12,7 @@ using PupuseriaSalvadorena.Repositorios.Interfaces;
 using PupuseriaSalvadorena.Services;
 using System.Composition;
 using Rotativa.AspNetCore;
+using PupuseriaSalvadorena.Filtros;
 
 namespace PupuseriaSalvadorena.Controllers
 {
@@ -37,6 +38,7 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // GET: Presupuestoes
+        [FiltroAutentificacion(RolAcceso = new[] { "Administrador", "Contador" })]
         public async Task<IActionResult> Index()
         {
             var presupuestos = await _presupuestoRep.MostrarPresupuestos();
@@ -44,6 +46,7 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // GET: Presupuestoes/Details/5
+        [FiltroAutentificacion(RolAcceso = new[] { "Administrador", "Contador" })]
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
@@ -62,6 +65,11 @@ namespace PupuseriaSalvadorena.Controllers
             }
 
             decimal saldoRestante = presupuesto.SaldoPresupuesto - presupuesto.SaldoUsado;
+
+            if (saldoRestante < 0)
+            {
+                saldoRestante = 0;
+            }
 
             ViewBag.SaldoUsado = presupuesto.SaldoUsado;
             ViewBag.SaldoRestante = saldoRestante;
@@ -119,7 +127,7 @@ namespace PupuseriaSalvadorena.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _presupuestoRep.CrearPresupuesto(presupuesto.NombreP, presupuesto.FechaInicio, presupuesto.FechaFin, presupuesto.Descripcion, presupuesto.SaldoUsado, presupuesto.SaldoPresupuesto, presupuesto.Estado, presupuesto.IdCategoriaP);
+                await _presupuestoRep.CrearPresupuesto(presupuesto.NombreP, presupuesto.FechaInicio, presupuesto.FechaFin, presupuesto.Descripcion, presupuesto.SaldoUsado, presupuesto.SaldoPresupuesto, presupuesto.Estado, presupuesto.IdCategoriaP.Value);
                 return Json(new { success = true, message = "Presupuesto creado correctamente." });
             }
             else
@@ -182,7 +190,7 @@ namespace PupuseriaSalvadorena.Controllers
 
             if (ModelState.IsValid)
             {
-                await _presupuestoRep.ActualizarPresupuesto(presupuesto.IdPresupuesto, presupuesto.NombreP, presupuesto.FechaInicio, presupuesto.FechaFin, presupuesto.Descripcion, presupuesto.SaldoUsado, presupuesto.SaldoPresupuesto, presupuesto.Estado, presupuesto.IdCategoriaP);
+                await _presupuestoRep.ActualizarPresupuesto(presupuesto.IdPresupuesto, presupuesto.NombreP, presupuesto.FechaInicio, presupuesto.FechaFin, presupuesto.Descripcion, presupuesto.SaldoUsado, presupuesto.SaldoPresupuesto, presupuesto.Estado, presupuesto.IdCategoriaP.Value);
                 return Json(new { success = true, message = "Presupuesto actualizado correctamente." });
             }
             else

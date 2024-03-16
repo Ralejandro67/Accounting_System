@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PupuseriaSalvadorena.Conexion;
+using PupuseriaSalvadorena.Filtros;
 using PupuseriaSalvadorena.Models;
 using PupuseriaSalvadorena.Repositorios.Interfaces;
 
@@ -21,6 +22,7 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // GET: EnvioFacturas
+        [FiltroAutentificacion(RolAcceso = new[] { "Administrador", "Contador" })]
         public async Task<IActionResult> Index()
         {
             var envioFacturas = await _envioFacturaRep.MostrarEnvioFactura();
@@ -51,15 +53,13 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // POST: EnvioFacturas/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdEnvioFactura,FechaEnvio,IdFacturaVenta")] EnvioFactura envioFactura)
         {
             if (ModelState.IsValid)
             {
-                await _envioFacturaRep.CrearEnvioFactura(envioFactura.FechaEnvio, envioFactura.IdFacturaVenta, envioFactura.Identificacion, envioFactura.NombreCliente, envioFactura.CorreoElectronico, envioFactura.Telefono);
+                await _envioFacturaRep.CrearEnvioFactura(envioFactura.FechaEnvio, envioFactura.IdFacturaVenta, envioFactura.Identificacion.Value, envioFactura.NombreCliente, envioFactura.CorreoElectronico, envioFactura.Telefono.Value);
                 return RedirectToAction(nameof(Index));
             }
             return View(envioFactura);
@@ -82,8 +82,6 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // POST: EnvioFacturas/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("IdEnvioFactura,FechaEnvio,IdFacturaVenta")] EnvioFactura envioFactura)
@@ -95,7 +93,7 @@ namespace PupuseriaSalvadorena.Controllers
 
             if (ModelState.IsValid)
             {
-                await _envioFacturaRep.ActualizarEnvioFactura(envioFactura.IdEnvioFactura, envioFactura.FechaEnvio, envioFactura.IdFacturaVenta, envioFactura.Identificacion, envioFactura.NombreCliente, envioFactura.CorreoElectronico, envioFactura.Telefono);
+                await _envioFacturaRep.ActualizarEnvioFactura(envioFactura.IdEnvioFactura, envioFactura.FechaEnvio, envioFactura.IdFacturaVenta, envioFactura.Identificacion.Value, envioFactura.NombreCliente, envioFactura.CorreoElectronico, envioFactura.Telefono.Value);
                 return RedirectToAction(nameof(Index));
             }
             return View(envioFactura);
@@ -120,11 +118,17 @@ namespace PupuseriaSalvadorena.Controllers
 
         // POST: EnvioFacturas/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _envioFacturaRep.EliminarEnvioFactura(id);
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await _envioFacturaRep.EliminarEnvioFactura(id);
+                return Json(new { success = true, message = "Registro de envio eliminado correctamente." });
+            }
+            catch
+            {
+                return Json(new { success = false, message = "Error al eliminar el registro de envio." });
+            }
         }
     }
 }

@@ -69,5 +69,15 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
 
             return resultado.FirstOrDefault();
         }
+
+        public async Task<CorreoElectronico> ConsultarCorreoElectronico(string correo)
+        {
+            var correoParam = new SqlParameter("@Correo", correo);
+            var resultado = await _context.CorreoElectronico
+                                          .FromSqlRaw("EXEC ConsultarCorreoElectronico @Correo", correoParam)
+                                          .ToListAsync();
+
+            return resultado.FirstOrDefault();
+        }
     }
 }

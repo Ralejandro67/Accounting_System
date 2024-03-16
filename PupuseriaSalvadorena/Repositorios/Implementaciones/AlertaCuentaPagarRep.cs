@@ -33,6 +33,13 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             var LeidoParam = new SqlParameter("@Leido", Leido);
             await _context.Database.ExecuteSqlRawAsync("ActualizarAlertaCuentaPagar @IdAlerta, @Mensaje, @FechaMensaje, @IdCuentaPagar, @Leido", IdAlertaParam, MensajeParam, FechaMensajeParam, IdCuentaPagarParam, LeidoParam);
         }
+
+        public async Task ActualizarAlertaCuentaPagarID(string IdCuentaPagar, bool Leido)
+        {
+            var IdCuentaPagarParam = new SqlParameter("@IdCuentaPagar", IdCuentaPagar);
+            var LeidoParam = new SqlParameter("@Leido", Leido);
+            await _context.Database.ExecuteSqlRawAsync("ActualizarAlertaCuentaPagarID @IdCuentaPagar, @Leido", IdCuentaPagarParam, LeidoParam);
+        }
         
         public async Task EliminarAlertaCuentaPagar(int IdAlerta)
         {
@@ -58,6 +65,22 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
         {
             var alertasCuentaPagar = await _context.AlertaCuentaPagar.FromSqlRaw("MostrarAlertasNoLeidas").ToListAsync();
             return alertasCuentaPagar;
+        }
+
+        public async Task<List<AlertaCuentaPagar>> MostrarAlertasLeidas()
+        {
+            var alertasCuentaPagar = await _context.AlertaCuentaPagar.FromSqlRaw("MostrarAlertasLeidas").ToListAsync();
+            return alertasCuentaPagar;
+        }
+
+        public async Task ActualizarAlertasNoLeidas()
+        {
+            await _context.Database.ExecuteSqlRawAsync("ActualizarAlertasNoLeidas");
+        }
+
+        public async Task EliminarAlertasLeidas()
+        {
+            await _context.Database.ExecuteSqlRawAsync("EliminarAlertasLeidas");
         }
     }
 }

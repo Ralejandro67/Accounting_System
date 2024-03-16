@@ -13,6 +13,7 @@ using PupuseriaSalvadorena.Repositorios.Implementaciones;
 using PupuseriaSalvadorena.Repositorios.Interfaces;
 using PupuseriaSalvadorena.ViewModels;
 using Rotativa.AspNetCore;
+using PupuseriaSalvadorena.Filtros;
 
 namespace PupuseriaSalvadorena.Controllers
 {
@@ -46,6 +47,7 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // GET: FacturaCompras
+        [FiltroAutentificacion(RolAcceso = new[] { "Administrador", "Contador" })]
         public async Task<IActionResult> Index()
         {
             var fechaActual = DateTime.Today;
@@ -114,13 +116,13 @@ namespace PupuseriaSalvadorena.Controllers
 
                 var IdLibro = await _detallesTransacRep.ObtenerIdLibroMasReciente();
                 var Libro = await _registroLibrosRep.ConsultarRegistrosLibros(IdLibro);
-                var IdFactura = await _facturaCompraRep.CrearFacturaId(facturaCompra.FacturaCom, facturaCompra.FechaFactura, facturaCompra.TotalCompra, facturaCompra.DetallesCompra, facturaCompra.IdTipoPago, facturaCompra.IdTipoFactura, facturaCompra.IdMateriaPrima);
+                var IdFactura = await _facturaCompraRep.CrearFacturaId(facturaCompra.FacturaCom, facturaCompra.FechaFactura, facturaCompra.TotalCompra, facturaCompra.DetallesCompra, facturaCompra.IdTipoPago.Value, facturaCompra.IdTipoFactura, facturaCompra.IdMateriaPrima.Value);
 
                 decimal montoTotal = Libro.MontoTotal - facturaCompra.TotalCompra;
 
                 await _registroLibrosRep.ActualizarRegistroLibros(IdLibro, montoTotal, Libro.Descripcion, Libro.Conciliado);
                 await _detallesTransacRep.CrearDetalleTransaccion(IdLibro, $"Factura de Compra: {IdFactura}", facturaCompra.Cantidad, facturaCompra.TotalCompra, facturaCompra.FechaFactura, 1, "TAX001", false, facturaCompra.FechaFactura, "No Recurrente", false);
-                await _historialCompraRep.CrearHistorialCompra(facturaCompra.IdMateriaPrima, facturaCompra.Cantidad, facturaCompra.TotalCompra, facturaCompra.Peso, facturaCompra.FechaFactura, IdFactura);
+                await _historialCompraRep.CrearHistorialCompra(facturaCompra.IdMateriaPrima.Value, facturaCompra.Cantidad, facturaCompra.TotalCompra, facturaCompra.Peso, facturaCompra.FechaFactura, IdFactura);
 
 
                 if (facturaCompra.Activo)

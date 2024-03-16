@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using PupuseriaSalvadorena.Conexion;
 using PupuseriaSalvadorena.Models;
 using PupuseriaSalvadorena.Repositorios.Interfaces;
+using PupuseriaSalvadorena.Filtros;
 
 namespace PupuseriaSalvadorena.Controllers
 {
@@ -21,6 +22,7 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // GET: CategoriaPresupuestoes
+        [FiltroAutentificacion(RolAcceso = new[] { "Administrador", "Contador" })]
         public async Task<IActionResult> Index()
         {
             var categoriaPresupuesto = await _categoriaPresupuestoRep.MostrarCatPresupuestos();

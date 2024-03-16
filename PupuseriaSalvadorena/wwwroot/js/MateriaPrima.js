@@ -122,20 +122,23 @@ document.addEventListener('click', function (e) {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                $('#newMateriaPrimaModal').modal('hide');
                 Swal.fire({
                     title: '¡Éxito!',
                     text: data.message,
-                    icon: 'success'
+                    icon: 'success',
+                    confirmButtonColor: '#0DBCB5'
                 }).then((result) => {
                     if (result.isConfirmed || result.isDismissed) {
+                        $('#newMateriaPrimaModal').modal('hide');
                         window.location.reload();
                     }
                 });
             } else {
                 let errorMessage = "";
-                if (data.errors && data.errors.length > 0) {
-                    errorMessage += "\n" + data.errors.join("\n");
+                if (data.message) {
+                    errorMessage = data.message;
+                } else if (data.errors && data.errors.length > 0) {
+                    errorMessage = data.errors.join("\n");
                 }
 
                 Swal.fire({
@@ -150,7 +153,8 @@ document.addEventListener('click', function (e) {
             Swal.fire({
                 title: 'Error',
                 text: 'Hubo un problema con la solicitud.',
-                icon: 'error'
+                icon: 'error',
+                confirmButtonColor: '#0DBCB5'
             });
         });
     }
@@ -180,7 +184,6 @@ document.querySelectorAll('.edit-Materia').forEach(button => {
                     })
                         .then(response => response.json())
                         .then(data => {
-                            $('#editMateriaPrimaModal').modal('hide');
                             if (data.success) {
                                 Swal.fire({
                                     title: '¡Éxito!',
@@ -188,12 +191,20 @@ document.querySelectorAll('.edit-Materia').forEach(button => {
                                     icon: 'success',
                                     confirmButtonColor: '#0DBCB5'
                                 }).then(() => {
+                                    $('#editMateriaPrimaModal').modal('hide');
                                     window.location.reload();
                                 });
                             } else {
+                                let errorMessage = "";
+                                if (data.message) {
+                                    errorMessage = data.message;
+                                } else if (data.errors && data.errors.length > 0) {
+                                    errorMessage = data.errors.join("\n");
+                                }
+
                                 Swal.fire({
                                     title: 'Error',
-                                    text: data.message,
+                                    text: errorMessage,
                                     icon: 'warning',
                                     confirmButtonColor: '#0DBCB5'
                                 });
@@ -241,7 +252,7 @@ document.querySelectorAll('.delete-Materia').forEach(button => {
                         if (data.success) {
                             Swal.fire({
                                 title: '¡Eliminado!',
-                                text: 'La materia prima ha sido eliminada.',
+                                text: data.message,
                                 icon: 'success',
                                 confirmButtonColor: '#0DBCB5'
                             }).then(() => {

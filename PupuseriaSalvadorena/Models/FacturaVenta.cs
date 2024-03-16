@@ -22,11 +22,11 @@ namespace PupuseriaSalvadorena.Models
         [RegularExpression(@"^[0-9]+(\.[0-9]+)?$", ErrorMessage = "El monto total de la factura solo puede contener números")]
         public decimal TotalVenta { get; set; }
 
-        [Required(ErrorMessage = "El tipo de pago de la factura es obligatorio")]
-        public int IdTipoPago { get; set; }
+        [Required(ErrorMessage = "El tipo de pago de la factura es obligatorio.")]
+        public int? IdTipoPago { get; set; }
 
         [Required(ErrorMessage = "El tipo de factura es obligatorio")]
-        public int IdTipoFactura { get; set; }
+        public int? IdTipoFactura { get; set; }
 
         public string? NombrePago { get; set; }
 
@@ -38,17 +38,22 @@ namespace PupuseriaSalvadorena.Models
         public string? TipoId { get; set; }
 
         [NotMapped]
-        public long Identificacion { get; set; }
+        [Required(ErrorMessage = "La identificación del cliente es obligatoria.")]
+        public long? Identificacion { get; set; }
 
         [NotMapped]
+        [Required(ErrorMessage = "El nombre del cliente es obligatorio.")]
         public string? NombreCliente { get; set; }
 
         [NotMapped]
-        [EmailAddress(ErrorMessage = "El correo del receptor no es válido")]
+        [EmailAddress(ErrorMessage = "El correo no es válido")]
+        [Required(ErrorMessage = "El correo electrónico es obligatorio.")]
         public string? CorreoElectronico { get; set; }
 
         [NotMapped]
-        public int Telefono { get; set; }
+        [Required(ErrorMessage = "El teléfono es requerido.")]
+        [RegularExpression(@"^[0-9]+$", ErrorMessage = "El teléfono solo puede contener números.")]
+        public int? Telefono { get; set; }
 
         [NotMapped]
         public int[]? IdPlatillo { get; set; }
@@ -57,7 +62,8 @@ namespace PupuseriaSalvadorena.Models
         public int[]? CantVenta { get; set; }
 
         [NotMapped]
-        public int IdTipoVenta { get; set; }
+        [Required(ErrorMessage = "El tipo de venta es obligatorio.")]
+        public int? IdTipoVenta { get; set; }
 
         [NotMapped]
         public bool FacturaElectronica { get; set; }

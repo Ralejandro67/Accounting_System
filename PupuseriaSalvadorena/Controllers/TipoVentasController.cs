@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using PupuseriaSalvadorena.Conexion;
 using PupuseriaSalvadorena.Models;
 using PupuseriaSalvadorena.Repositorios.Interfaces;
+using PupuseriaSalvadorena.Filtros;
 
 namespace PupuseriaSalvadorena.Controllers
 {
@@ -21,6 +22,7 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // GET: TipoVentas
+        [FiltroAutentificacion(RolAcceso = new[] { "Administrador" })]
         public async Task<IActionResult> Index()
         {
             var tipoVentas = await _tipoVentaRep.MostrarTipoVentas();
@@ -57,8 +59,15 @@ namespace PupuseriaSalvadorena.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _tipoVentaRep.CrearTipoVenta(tipoVenta.NombreVenta, tipoVenta.Estado);
-                return Json(new { success = true, message = "Tipo de venta agregada correctamente." });
+                try
+                {
+                    await _tipoVentaRep.CrearTipoVenta(tipoVenta.NombreVenta, tipoVenta.Estado);
+                    return Json(new { success = true, message = "Tipo de venta agregada correctamente." });
+                }
+                catch
+                {
+                    return Json(new { success = false, message = $"Ya existe un tipo de venta llamada '{tipoVenta.NombreVenta}'." });
+                }
             }
             else
             {
@@ -90,6 +99,19 @@ namespace PupuseriaSalvadorena.Controllers
         {
             if (ModelState.IsValid)
             {
+                var tipo = await _tipoVentaRep.ConsultarTipoVentas(id);
+
+                if(tipo.NombreVenta != tipoVenta.NombreVenta)
+                {
+                    var exist = await _tipoVentaRep.MostrarTipoVentas();
+                    var existTipo = exist.Where(x => x.NombreVenta == tipoVenta.NombreVenta).ToList();
+
+                    if (existTipo.Count > 0)
+                    {
+                        return Json(new { success = false, message = $"Ya existe un tipo de venta llamada '{tipoVenta.NombreVenta}'." });
+                    }
+                }
+
                 await _tipoVentaRep.ActualizarTipoVentas(tipoVenta.IdTipoVenta, tipoVenta.NombreVenta, tipoVenta.Estado);
                 return Json(new { success = true, message = "Tipo de venta actualizada correctamente." });
             }

@@ -19,6 +19,7 @@ namespace PupuseriaSalvadorena.Models
         [Required(ErrorMessage = "El estado del impuesto es obligatorio")]
         public bool Estado { get; set; }
 
+        [Required(ErrorMessage = "Es necesaria una desccripcion para el impuesto")]
         public string? Descripcion { get; set; }
     }
 }

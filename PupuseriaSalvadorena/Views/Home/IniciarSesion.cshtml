@@ -1,4 +1,6 @@
-﻿@{
+﻿@model PupuseriaSalvadorena.Models.Usuario
+
+@{
     Layout = null;
 }
 
@@ -30,24 +32,28 @@
         <div class="card-body table-body-custom">
             <img src="~/images/logo3.png" alt="Logo de Pupuseria Salvadoreña" style="height: 140px;" />
             <div>
-                <form>
+                <form id="InicioSesionForm" asp-action="Login" asp-controller="Home" method="post">
                     <div class="form-group input-container">
-                        <input type="email" id="input" required="">
-                        <label for="input" class="label">Usuario</label>
+                        <input type="email" id="input" required="" asp-for="CorreoElectronico">
+                        <label for="input" class="label">Correo Electronico</label>
                         <div class="underline"></div>
                     </div>
                     <div class="form-group input-container">
-                        <input type="password" id="input" required="" >
+                        <input type="password" id="input" required="" asp-for="Contrasena">
                         <label for="input" class="label">Contraseña</label>
                         <div class="underline"></div>
                     </div>
                     <div class="form-group text-center campoBoton">
-                        <button type="submit" id="submitLogin" class="btn btn-primary agregar-boton">Iniciar Sesion</button>
+                        <button type="submit" id="submitLogin" class="btn btn-primary agregar-boton login-user">Iniciar Sesion</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+    <div class="loading" style="display: none;">
+        <div class="loader" id="loader"></div>
+    </div>
+    <script src="~/js/iniciosesion.js" asp-append-version="true"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 </body>

@@ -83,6 +83,7 @@ document.getElementById("AddTransaccion").addEventListener("click", function () 
             inicializarInputMonto();
             toggleRecurrenceFields();
             $('#newDetallesTModal').modal('show');
+            $('[data-toggle="tooltip"]').tooltip();
         },
         error: function (error) {
             console.error("Error al cargar la vista parcial", error);
@@ -101,7 +102,7 @@ document.addEventListener('click', function (e) {
             Swal.fire({
                 title: 'Error',
                 text: 'La valor de la transacción o la cantidad debe ser un número.',
-                icon: 'error',
+                icon: 'warning',
                 confirmButtonColor: '#0DBCB5'
             });
             return;
@@ -111,7 +112,7 @@ document.addEventListener('click', function (e) {
             Swal.fire({
                 title: 'Error',
                 text: 'La valor de la transacción o la cantidad debe ser mayor a 0.',
-                icon: 'error',
+                icon: 'warning',
                 confirmButtonColor: '#0DBCB5'
             });
             return;
@@ -129,7 +130,6 @@ document.addEventListener('click', function (e) {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                $('#newDetallesTModal').modal('hide');
                 Swal.fire({
                     title: '¡Éxito!',
                     text: data.message,
@@ -137,19 +137,22 @@ document.addEventListener('click', function (e) {
                     confirmButtonColor: '#0DBCB5'
                 }).then((result) => {
                     if (result.isConfirmed || result.isDismissed) {
+                        $('#newDetallesTModal').modal('hide');
                         window.location.reload();
                     }
                 });
             } else {
                 let errorMessage = "";
-                if (data.errors && data.errors.length > 0) {
-                    errorMessage += "\n" + data.errors.join("\n");
+                if (data.message) {
+                    errorMessage = data.message;
+                } else if (data.errors && data.errors.length > 0) {
+                    errorMessage = data.errors.join("\n");
                 }
 
                 Swal.fire({
                     title: 'Error',
                     text: errorMessage,
-                    icon: 'error',
+                    icon: 'warning',
                     confirmButtonColor: '#0DBCB5'
                 });
             }
@@ -219,6 +222,30 @@ document.querySelectorAll('.edit-transaccion').forEach(button => {
                 document.querySelector('#editDetallesTModal #editdetallesTForm').addEventListener('submit', function (e) {
                     e.preventDefault();
 
+                    var ValueMonto = document.getElementById('inputMontoE').value;
+                    var ValueCant = document.getElementById('CantidadEdit').value;
+
+                    var regex = /^[0-9]+(\.[0-9]+)?$/;
+                    if (!regex.test(ValueMonto) || !regex.test(ValueCant)) {
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'La valor de la transacción o la cantidad debe ser un número.',
+                            icon: 'error',
+                            confirmButtonColor: '#0DBCB5'
+                        });
+                        return;
+                    }
+
+                    if (parseFloat(ValueMonto) < 1 || parseFloat(ValueMonto) < 1) {
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'La valor de la transacción o la cantidad debe ser mayor a 0.',
+                            icon: 'error',
+                            confirmButtonColor: '#0DBCB5'
+                        });
+                        return;
+                    }
+
                     var formData = new FormData(this);
 
                     fetch(`/DetallesTransacciones/Edit/${transaccionId}`, {
@@ -230,7 +257,6 @@ document.querySelectorAll('.edit-transaccion').forEach(button => {
                     })
                     .then(response => response.json())
                     .then(data => {
-                        $('#editDetallesTModal').modal('hide');
                         if (data.success) {
                             Swal.fire({
                                 title: '¡Éxito!',
@@ -238,18 +264,21 @@ document.querySelectorAll('.edit-transaccion').forEach(button => {
                                 icon: 'success',
                                 confirmButtonColor: '#0DBCB5'
                             }).then(() => {
+                                $('#editDetallesTModal').modal('hide');
                                 window.location.reload();
                             });
                         } else {
                             let errorMessage = "";
-                            if (data.errors && data.errors.length > 0) {
-                                errorMessage += "\n" + data.errors.join("\n");
+                            if (data.message) {
+                                errorMessage = data.message;
+                            } else if (data.errors && data.errors.length > 0) {
+                                errorMessage = data.errors.join("\n");
                             }
 
                             Swal.fire({
                                 title: 'Error',
                                 text: errorMessage,
-                                icon: 'error',
+                                icon: 'warning',
                                 confirmButtonColor: '#0DBCB5'
                             });
                         }
@@ -366,7 +395,7 @@ document.querySelectorAll('.delete-transaccion').forEach(button => {
                         if (data.success) {
                             Swal.fire({
                                 title: '¡Eliminado!',
-                                text: 'La transacción ha sido eliminada.',
+                                text: data.message,
                                 icon: 'success',
                                 confirmButtonColor: '#0DBCB5'
                             }).then(() => {
@@ -375,7 +404,7 @@ document.querySelectorAll('.delete-transaccion').forEach(button => {
                         } else {
                             Swal.fire({
                                 title: 'Error',
-                                text: 'Hubo un problema al eliminar la transacción.',
+                                text: data.message,
                                 icon: 'error',
                                 confirmButtonColor: '#0DBCB5'
                             });

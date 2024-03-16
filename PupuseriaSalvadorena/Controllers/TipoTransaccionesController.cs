@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using PupuseriaSalvadorena.Conexion;
 using PupuseriaSalvadorena.Models;
 using PupuseriaSalvadorena.Repositorios.Interfaces;
+using PupuseriaSalvadorena.Filtros;
 
 namespace PupuseriaSalvadorena.Controllers
 {
@@ -25,6 +26,7 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // GET: TipoTransacciones
+        [FiltroAutentificacion(RolAcceso = new[] { "Administrador" })]
         public async Task<IActionResult> Index()
         {
             var tipoTransacciones = await _tipoTransacRep.MostrarTipoTransaccion();
@@ -67,8 +69,15 @@ namespace PupuseriaSalvadorena.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _tipoTransacRep.CrearTipoTransac(tipoTransacciones.TipoTransac, tipoTransacciones.IdMovimiento, tipoTransacciones.IdImpuesto);
-                return Json(new { success = true, message = "Tipo de transaccion agregado correctamente." });
+                try
+                {
+                    await _tipoTransacRep.CrearTipoTransac(tipoTransacciones.TipoTransac, tipoTransacciones.IdMovimiento.Value, tipoTransacciones.IdImpuesto);
+                    return Json(new { success = true, message = "Tipo de transaccion agregado correctamente." });
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { success = false, message = $"Ya existe un tipo de transaccion llamado {tipoTransacciones.TipoTransac}." });
+                }
             }
             else
             {
@@ -110,7 +119,7 @@ namespace PupuseriaSalvadorena.Controllers
 
             if (ModelState.IsValid)
             {
-                await _tipoTransacRep.ActualizarTipoTransac(tipoTransacciones.IdTipo, tipoTransacciones.TipoTransac, tipoTransacciones.IdMovimiento, tipoTransacciones.IdImpuesto);
+                await _tipoTransacRep.ActualizarTipoTransac(tipoTransacciones.IdTipo, tipoTransacciones.TipoTransac, tipoTransacciones.IdMovimiento.Value, tipoTransacciones.IdImpuesto);
                 return Json(new { success = true, message = "Tipo de transaccion actualizada correctamente." });
             }
             else
@@ -139,7 +148,7 @@ namespace PupuseriaSalvadorena.Controllers
             }
             catch
             {
-                return Json(new { success = false, message = "Error al eliminar el tipo de transaccion." });
+                return Json(new { success = false, message = "El tipo de transaccion tiene transacciones asociadas." });
             }
         }
     }

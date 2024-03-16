@@ -42,7 +42,6 @@ document.addEventListener('click', function (e) {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    $('#newPronosticoModal').modal('hide');
                     Swal.fire({
                         title: '¡Éxito!',
                         text: data.message,
@@ -50,13 +49,21 @@ document.addEventListener('click', function (e) {
                         confirmButtonColor: '#0DBCB5'
                     }).then((result) => {
                         if (result.isConfirmed || result.isDismissed) {
+                            $('#newPronosticoModal').modal('hide');
                             window.location.reload();
                         }
                     });
                 } else {
+                    let errorMessage = "";
+                    if (data.message) {
+                        errorMessage = data.message;
+                    } else if (data.errors && data.errors.length > 0) {
+                        errorMessage = data.errors.join("\n");
+                    }
+
                     Swal.fire({
                         title: 'Error',
-                        text: data.message,
+                        text: errorMessage,
                         icon: 'warning',
                         confirmButtonColor: '#0DBCB5'
                     });

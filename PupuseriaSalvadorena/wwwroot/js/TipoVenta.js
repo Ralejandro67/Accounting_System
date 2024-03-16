@@ -98,7 +98,6 @@ document.getElementById('submitTipoVForm').addEventListener('click', function ()
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                $('#newTipoVModal').modal('hide');
                 Swal.fire({
                     title: '¡Éxito!',
                     text: data.message,
@@ -106,13 +105,16 @@ document.getElementById('submitTipoVForm').addEventListener('click', function ()
                     confirmButtonColor: '#0DBCB5'
                 }).then((result) => {
                     if (result.isConfirmed || result.isDismissed) {
+                        $('#newTipoVModal').modal('hide');
                         window.location.reload();
                     }
                 });
             } else {
                 let errorMessage = "";
-                if (data.errors && data.errors.length > 0) {
-                    errorMessage += "\n" + data.errors.join("\n");
+                if (data.message) {
+                    errorMessage = data.message;
+                } else if (data.errors && data.errors.length > 0) {
+                    errorMessage = data.errors.join("\n");
                 }
 
                 Swal.fire({
@@ -157,7 +159,6 @@ document.querySelectorAll('.edit-tipov').forEach(button => {
                     })
                         .then(response => response.json())
                         .then(data => {
-                            $('#editTipoVModal').modal('hide');
                             if (data.success) {
                                 Swal.fire({
                                     title: '¡Éxito!',
@@ -165,12 +166,15 @@ document.querySelectorAll('.edit-tipov').forEach(button => {
                                     icon: 'success',
                                     confirmButtonColor: '#0DBCB5'
                                 }).then(() => {
+                                    $('#editTipoVModal').modal('hide');
                                     window.location.reload();
                                 });
                             } else {
                                 let errorMessage = "";
-                                if (data.errors && data.errors.length > 0) {
-                                    errorMessage += "\n" + data.errors.join("\n");
+                                if (data.message) {
+                                    errorMessage = data.message;
+                                } else if (data.errors && data.errors.length > 0) {
+                                    errorMessage = data.errors.join("\n");
                                 }
 
                                 Swal.fire({
@@ -223,7 +227,7 @@ document.querySelectorAll('.delete-tipov').forEach(button => {
                         if (data.success) {
                             Swal.fire({
                                 title: '¡Eliminado!',
-                                text: 'El impuesto ha sido eliminado.',
+                                text: data.message,
                                 icon: 'success',
                                 confirmButtonColor: '#0DBCB5'
                             }).then(() => {
@@ -232,7 +236,7 @@ document.querySelectorAll('.delete-tipov').forEach(button => {
                         } else {
                             Swal.fire({
                                 ttitle: 'Error',
-                                text: 'Hubo un problema al eliminar el impuesto.',
+                                text: data.message,
                                 icon: 'error',
                                 confirmButtonColor: '#0DBCB5'
                             });

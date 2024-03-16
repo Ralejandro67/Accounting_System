@@ -10,20 +10,23 @@ using PupuseriaSalvadorena.Models;
 using PupuseriaSalvadorena.ViewModels;
 using PupuseriaSalvadorena.Repositorios.Interfaces;
 using Rotativa.AspNetCore;
+using PupuseriaSalvadorena.Filtros;
 
 namespace PupuseriaSalvadorena.Controllers
 {
     public class DetalleCuentasController : Controller
     {
+        private readonly IAlertaCuentaPagarRep _alertaCuentaPagarRep;
         private readonly IDetallesCuentaRep _detallesCuentaRep;
         private readonly ICuentaPagarRep _cuentasPagarRep;
         private readonly INegociosRep _negociosRep;
 
-        public DetalleCuentasController(IDetallesCuentaRep context, ICuentaPagarRep cuentasPagarRep, INegociosRep negociosRep)
+        public DetalleCuentasController(IDetallesCuentaRep context, ICuentaPagarRep cuentasPagarRep, INegociosRep negociosRep, IAlertaCuentaPagarRep alertaCuentaPagarRep)
         {
             _detallesCuentaRep = context;
             _cuentasPagarRep = cuentasPagarRep;
             _negociosRep = negociosRep;
+            _alertaCuentaPagarRep = alertaCuentaPagarRep;
         }
 
         // GET: DetalleCuentas
@@ -34,6 +37,7 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // GET: DetalleCuentas/Details/5
+        [FiltroAutentificacion(RolAcceso = new[] { "Administrador", "Contador" })]
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
@@ -43,6 +47,8 @@ namespace PupuseriaSalvadorena.Controllers
 
             var cuentaPagar = await _cuentasPagarRep.ConsultarCuentasPagar(id);
             var detalleCuenta = await _detallesCuentaRep.ConsultarCuentaDetalles(id);
+            await _alertaCuentaPagarRep.ActualizarAlertaCuentaPagarID(id, true);
+
             decimal Pagado = detalleCuenta.Sum(x => x.Pago);
             decimal PorPagar = cuentaPagar.TotalPagado - Pagado;
 

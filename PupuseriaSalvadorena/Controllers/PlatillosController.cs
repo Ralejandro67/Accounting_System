@@ -11,6 +11,7 @@ using PupuseriaSalvadorena.Models;
 using PupuseriaSalvadorena.Repositorios.Interfaces;
 using System.Text;
 using PupuseriaSalvadorena.Repositorios.Implementaciones;
+using PupuseriaSalvadorena.Filtros;
 
 namespace PupuseriaSalvadorena.Controllers
 {
@@ -24,6 +25,7 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // GET: Platillos
+        [FiltroAutentificacion(RolAcceso = new[] { "Administrador", "Contador" })]
         public async Task<IActionResult> Index()
         {
             var platillos = await _platilloRep.MostrarPlatillos();
@@ -60,35 +62,47 @@ namespace PupuseriaSalvadorena.Controllers
         {
             if (ModelState.IsValid)
             {
-                var client = new HttpClient();
-                var request = new HttpRequestMessage
+                try
                 {
-                    Method = HttpMethod.Post,
-                    RequestUri = new Uri("https://api.alegra.com/api/v1/items"),
-                    Headers =
+                    await _platilloRep.CrearPlatillo(platillo.NombrePlatillo, platillo.CostoProduccion, platillo.PrecioVenta);
+
+                    var client = new HttpClient();
+                    var request = new HttpRequestMessage
+                    {
+                        Method = HttpMethod.Post,
+                        RequestUri = new Uri("https://api.alegra.com/api/v1/items"),
+                        Headers =
                     {
                         { "accept", "application/json" },
                         { "authorization", "Basic cmFsZWphbmRybzY3QGdtYWlsLmNvbToxOTU4ZjIwZTBhNTJjMTc1YjM3ZQ==" },
                     },
-                    Content = new StringContent($"{{\"inventory\":{{\"unit\":\"unit\"}},\"name\":\"{platillo.NombrePlatillo}\",\"price\":{platillo.PrecioVenta},\"tax\":1}}", Encoding.UTF8, "application/json")
-                    {
-                        Headers =
+                        Content = new StringContent($"{{\"inventory\":{{\"unit\":\"unit\"}},\"name\":\"{platillo.NombrePlatillo}\",\"price\":{platillo.PrecioVenta},\"tax\":1}}", Encoding.UTF8, "application/json")
+                        {
+                            Headers =
                         {
                             ContentType = new MediaTypeHeaderValue("application/json")
                         }
+                        }
+                    };
+                    using (var response = await client.SendAsync(request))
+                    {
+                        response.EnsureSuccessStatusCode();
+                        var body = await response.Content.ReadAsStringAsync();
+                        Console.WriteLine(body);
                     }
-                };
-                using (var response = await client.SendAsync(request))
-                {
-                    response.EnsureSuccessStatusCode();
-                    var body = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine(body);
-                }
 
-                await _platilloRep.CrearPlatillo(platillo.NombrePlatillo, platillo.CostoProduccion, platillo.PrecioVenta);
-                return Json(new { success = true, message = "Platillo agregado correctamente." });
+                    return Json(new { success = true, message = "Platillo agregado correctamente." });
+                }
+                catch
+                {
+                    return Json(new { success = false, message = $"Ya existe un platillo llamado '{platillo.NombrePlatillo}'." });
+                }
             }
-            return Json(new { success = false, message = "Error al agregar el platillo." });
+            else
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                return Json(new { success = false, errors = errors });
+            }
         }
 
         // GET: Platillos/Edit/5
@@ -119,10 +133,56 @@ namespace PupuseriaSalvadorena.Controllers
 
             if (ModelState.IsValid)
             {
+                var producto = await _platilloRep.ConsultarPlatillos(platillo.IdPlatillo);
+                
+                if(producto.NombrePlatillo != platillo.NombrePlatillo)
+                {
+                    var platillos = await _platilloRep.MostrarPlatillos();
+                    var existe = platillos.Where(p => p.NombrePlatillo == platillo.NombrePlatillo).ToList();
+
+                    if(existe.Count > 0)
+                    {
+                        return Json(new { success = false, message = $"Ya existe un platillo llamado '{platillo.NombrePlatillo}'." });
+                    }
+                    else
+                    {
+                        string requestUri = $"https://api.alegra.com/api/v1/items/{platillo.IdPlatillo}";
+
+                        var client = new HttpClient();
+                        var request = new HttpRequestMessage
+                        {
+                            Method = HttpMethod.Put,
+                            RequestUri = new Uri(requestUri),
+                            Headers =
+                            {
+                                { "accept", "application/json" },
+                                { "authorization", "Basic cmFsZWphbmRybzY3QGdtYWlsLmNvbToxOTU4ZjIwZTBhNTJjMTc1YjM3ZQ==" },
+                            },
+                            Content = new StringContent("{\"name\":\""+platillo.NombrePlatillo+"\"}")
+                            {
+                                Headers =
+                                {
+                                    ContentType = new MediaTypeHeaderValue("application/json")
+                                }
+                            }
+                        };
+                        using (var response = await client.SendAsync(request))
+                        {
+                            response.EnsureSuccessStatusCode();
+                            var body = await response.Content.ReadAsStringAsync();
+                            Console.WriteLine(body);
+                        }
+                    }
+                }
+
                 await _platilloRep.ActualizarPlatillo(platillo.IdPlatillo, platillo.NombrePlatillo, platillo.CostoProduccion, platillo.PrecioVenta);
                 return Json(new { success = true, message = "Platillo editado correctamente." });
             }
-            return Json(new { success = false, message = "Error al editar el platillo." });
+            else
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                return Json(new { success = false, errors = errors });
+            }
         }
 
         // GET: Platillos/Delete/5
@@ -140,11 +200,32 @@ namespace PupuseriaSalvadorena.Controllers
             try
             {
                 await _platilloRep.EliminarPlatillo(id);
+
+                string requestUri = $"https://api.alegra.com/api/v1/items/{id}";
+
+                var client = new HttpClient();
+                var request = new HttpRequestMessage
+                {
+                    Method = HttpMethod.Delete,
+                    RequestUri = new Uri(requestUri),
+                    Headers =
+                    {
+                        { "accept", "application/json" },
+                        { "authorization", "Basic cmFsZWphbmRybzY3QGdtYWlsLmNvbToxOTU4ZjIwZTBhNTJjMTc1YjM3ZQ==" },
+                    },
+                };
+                using (var response = await client.SendAsync(request))
+                {
+                    response.EnsureSuccessStatusCode();
+                    var body = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine(body);
+                }
+
                 return Json(new { success = true, message = "Platillo eliminado correctamente." });
             }
-            catch (Exception ex)
+            catch
             {
-                return Json(new { success = false, message = "Error al eliminar el platillo." });
+                return Json(new { success = false, message = "Error al eliminar el platillo hay facturas asociadas a el platillo." });
             }
         }
     }

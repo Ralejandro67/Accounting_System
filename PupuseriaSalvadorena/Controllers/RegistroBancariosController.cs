@@ -68,7 +68,6 @@ namespace PupuseriaSalvadorena.Controllers
             else
             {
                 var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
-
                 return Json(new { success = false, errors = errors });
             }
         }
@@ -132,7 +131,7 @@ namespace PupuseriaSalvadorena.Controllers
             }
             catch
             {
-                return Json(new { success = false, message = "No se puede eliminar la cuenta bancaria." });
+                return Json(new { success = false, message = "No se puede eliminar la cuenta bancaria, esta asociada a una conciliacion bancaria." });
             }
         }
     }

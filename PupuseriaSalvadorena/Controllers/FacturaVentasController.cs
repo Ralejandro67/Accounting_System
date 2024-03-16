@@ -24,6 +24,7 @@ using System.Globalization;
 using Rotativa.AspNetCore;
 using ClosedXML.Excel;
 using DocumentFormat.OpenXml.Wordprocessing;
+using PupuseriaSalvadorena.Filtros;
 
 namespace PupuseriaSalvadorena.Controllers
 {
@@ -58,6 +59,7 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // GET: FacturaVentas
+        [FiltroAutentificacion(RolAcceso = new[] { "Administrador", "Contador" })]
         public async Task<IActionResult> Index()
         {
             CultureInfo cultura = new CultureInfo("es-ES");
@@ -85,20 +87,41 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // GET: FacturaVentas/Details/5
+        [FiltroAutentificacion(RolAcceso = new[] { "Administrador", "Contador" })]
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+            var negocio = await _negociosRep.MostrarNegocio();
+            var detallesEnvio = await _envioFacturaRep.ConsultarEnvioFacturasPorID(id.Value);
+            var facturaVenta = await _facturaVentaRep.ConsultarFacturasVentas(id.Value);
+            var detallesFactura = await _historialVentaRep.ConsultarDetallesVentas(id.Value);
+
+            ViewBag.Impuesto = facturaVenta.TotalVenta - facturaVenta.SubTotal;
+
+            if (detallesEnvio == null)
             {
-                return NotFound();
+                detallesEnvio = new EnvioFactura 
+                {
+                    Identificacion = null,
+                    NombreCliente = "Cliente al contado",
+                    CorreoElectronico = " ",
+                    Telefono = null
+                };
             }
 
-            var facturaVenta = await _facturaVentaRep.ConsultarFacturasVentas(id.Value);
             if (facturaVenta == null)
             {
                 return NotFound();
             }
 
-            return View(facturaVenta);
+            var detalles = new DetalleFactura
+            {
+                Negocio = negocio,
+                FacturaVenta = facturaVenta,
+                EnvioFactura = detallesEnvio,
+                DetallesF = detallesFactura
+            };
+
+            return View(detalles);
         }
 
         // GET: FacturaVentas/Create
@@ -135,9 +158,9 @@ namespace PupuseriaSalvadorena.Controllers
                 var IdLibro = await _detallesTransacRep.ObtenerIdLibroMasReciente();
                 var Libro = await _registroLibrosRep.ConsultarRegistrosLibros(IdLibro);
                 var empresa = await _negociosRep.ConsultarNegocio();
-                var Pago = MetodosPago(facturaVenta.IdTipoPago);
+                var Pago = MetodosPago(facturaVenta.IdTipoPago.Value);
 
-                int ContactoFactura = await CrearContacto(facturaVenta.TipoId, facturaVenta.Identificacion, facturaVenta.NombreCliente, facturaVenta.CorreoElectronico, facturaVenta.Telefono);
+                int ContactoFactura = await CrearContacto(facturaVenta.TipoId, facturaVenta.Identificacion.Value, facturaVenta.NombreCliente, facturaVenta.CorreoElectronico, facturaVenta.Telefono.Value);
 
                 dynamic[] items = await ListaPlatillos(idPlatillos, cantidades);
 
@@ -169,7 +192,7 @@ namespace PupuseriaSalvadorena.Controllers
                             facturaVenta.Consecutivo = (decimal)jsonObject["numberTemplate"]["fullNumber"];
                             int idfactura = (int)jsonObject["id"];
 
-                            var facturaId = await _facturaVentaRep.CrearFacturaVenta(empresa, facturaVenta.Consecutivo, facturaVenta.FechaFactura, facturaVenta.SubTotal, facturaVenta.TotalVenta, facturaVenta.IdTipoPago, facturaVenta.IdTipoFactura, facturaVenta.Estado);
+                            var facturaId = await _facturaVentaRep.CrearFacturaVenta(empresa, facturaVenta.Consecutivo, facturaVenta.FechaFactura, facturaVenta.SubTotal, facturaVenta.TotalVenta, facturaVenta.IdTipoPago.Value, facturaVenta.IdTipoFactura.Value, facturaVenta.Estado);
 
                             int cantTotal = 0;
                             decimal montoTotal = Libro.MontoTotal + facturaVenta.TotalVenta;
@@ -178,7 +201,7 @@ namespace PupuseriaSalvadorena.Controllers
                             for (int i = 0; i < idPlatillos.Length; i++)
                             {
                                 cantTotal += cantidades[i];
-                                await _historialVentaRep.CrearHistorialVenta(idfactura, cantidades[i], facturaVenta.FechaFactura, idPlatillos[i], facturaId, facturaVenta.IdTipoVenta);
+                                await _historialVentaRep.CrearHistorialVenta(idfactura, cantidades[i], facturaVenta.FechaFactura, idPlatillos[i], facturaId, facturaVenta.IdTipoVenta.Value);
                             }
 
                             await _detallesTransacRep.CrearDetalleTransaccion(IdLibro, $"Factura de Venta: {facturaVenta.Consecutivo}", cantTotal, facturaVenta.TotalVenta, facturaVenta.FechaFactura, 2, "TAX002", false, facturaVenta.FechaFactura, "No Recurrente", false);
@@ -189,7 +212,7 @@ namespace PupuseriaSalvadorena.Controllers
 
                                 if (envio)
                                 {
-                                    await _envioFacturaRep.CrearEnvioFactura(facturaVenta.FechaFactura, facturaId, facturaVenta.Identificacion, facturaVenta.NombreCliente, facturaVenta.CorreoElectronico, facturaVenta.Telefono);
+                                    await _envioFacturaRep.CrearEnvioFactura(facturaVenta.FechaFactura, facturaId, facturaVenta.Identificacion.Value, facturaVenta.NombreCliente, facturaVenta.CorreoElectronico, facturaVenta.Telefono.Value);
                                     return Json(new { success = true, message = "Factura generada y enviada correctamente." });
                                 }
                             }

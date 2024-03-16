@@ -1,41 +1,92 @@
 ﻿@model IEnumerable<PupuseriaSalvadorena.Models.EnvioFactura>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Historial de Envios";
 }
 
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.FechaEnvio)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdFacturaVenta)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.FechaEnvio)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdFacturaVenta)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.IdEnvioFactura">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.IdEnvioFactura">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.IdEnvioFactura">Delete</a>
-            </td>
-        </tr>
+@section Scripts {
+    <script src="~/js/enviofacturas.js" asp-append-version="true"></script>
 }
-    </tbody>
-</table>
+
+<div class="card-body table-body-custom pb-4">
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1 class="mb-0">
+                <img src="~/images/envio.png" alt="Icono de Envios" style="height: 60px;" />
+                Historial de Facturas Electrónicas
+            </h1>
+        </div>
+    </div>
+    <div class="container mt-4">
+        Historial de envios de comprabantes de facturas electronicas.
+    </div>
+</div>
+<div class="card-body table-body-custom">
+    <div class="d-flex justify-content-between align-items-center mt-4">
+        <h4>Facturas Enviadas:</h4>
+        <input type="text" class="form-control" id="busqueda" placeholder="Filtrar" />
+    </div>
+    <table class="table table-hover mt-4 table-sm" id="tablaEnvios">
+        <thead>
+            <tr>
+                <th>
+                    Numero
+                </th>
+                <th id="Fecha">
+                    Fecha
+                </th>
+                <th>
+                    Cliente
+                </th>
+                <th>
+                    Correo
+                </th>
+                <th>
+                    Telefono
+                </th>
+                <th id="acciones">
+                    Acciones
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model) {
+                <tr>
+                    <td>
+                        @Convert.ToInt32(Math.Floor(item.Consecutivo))
+                    </td>
+                    <td>
+                        @item.FechaEnvio.ToString("dd/MM/yyyy")
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NombreCliente)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CorreoElectronico)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Telefono)
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-primary print-FacturaVenta nav-link-btn-icons" id="BtnImprimir" data-id="@item.IdFacturaVenta" title="Imprimir" data-toggle="tooltip">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-printer-fill" viewBox="0 0 16 16">
+                                <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2zm6 8H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1" />
+                                <path d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1" />
+                            </svg>
+                        </button>
+                        <button type="button" class="btn btn-primary delete-EnvioFactura nav-link-btn-icons" id="BtnEliminar" data-id="@item.IdEnvioFactura" title="Eliminar" data-toggle="tooltip">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+                                <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
+                            </svg>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div id="pagination" class="pagination justify-content-center align-content-end pb-4">
+        <button class="btn btn-primary anterior" onclick="changePage(-1)"><i class="fas fa-angle-left"></i></button>
+        <span id="pageIndicator">1</span>
+        <button class="btn btn-primary siguiente" onclick="changePage(1)"><i class="fas fa-angle-right"></i></button>
+    </div>
+</div>

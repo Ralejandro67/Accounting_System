@@ -5,7 +5,7 @@
     <input type="hidden" asp-for="Monto" class="form-control" id="MontoTotalE" />
     <input type="hidden" asp-for="IdTransaccion" class="form-control" />
     <input type="hidden" asp-for="Conciliado" class="form-control" value="false">
-    <input asp-for="Frecuencia" class="form-control" />
+    <input type="hidden" asp-for="Frecuencia" class="form-control" />
     <div class="card-body card-body-custom">
         <div class="row no-gutters">
             <div class="col text-center item">
@@ -41,7 +41,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label asp-for="Cantidad" class="control-label"></label>
-                <input asp-for="Cantidad" class="form-control" min="1" />
+                <input asp-for="Cantidad" class="form-control" min="1" id="CantidadEdit" />
                 <span asp-validation-for="Cantidad" class="text-danger"></span>
             </div>
         </div>

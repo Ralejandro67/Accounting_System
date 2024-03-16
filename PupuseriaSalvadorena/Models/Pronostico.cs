@@ -7,7 +7,8 @@ namespace PupuseriaSalvadorena.Models
         [Key]
         public int IdPronostico { get; set; }
 
-        public int IdPlatillo { get; set; }
+        [Required(ErrorMessage = "Debes seleccionar un platillo para el pronostico.")]
+        public int? IdPlatillo { get; set; }
 
         public string? NombrePlatillo { get; set; }
 

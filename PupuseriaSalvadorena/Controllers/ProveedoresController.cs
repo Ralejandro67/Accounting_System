@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using PupuseriaSalvadorena.Conexion;
+using PupuseriaSalvadorena.Filtros;
 using PupuseriaSalvadorena.Models;
 using PupuseriaSalvadorena.Repositorios.Implementaciones;
 using PupuseriaSalvadorena.Repositorios.Interfaces;
@@ -31,6 +32,7 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // GET: Proveedores
+        [FiltroAutentificacion(RolAcceso = new[] { "Administrador", "Contador" })]
         public async Task<IActionResult> Index()
         {
             var proveedores = await _proveedorRep.MostrarProveedores();
@@ -38,6 +40,7 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // GET: Proveedores/Details/5
+        [FiltroAutentificacion(RolAcceso = new[] { "Administrador", "Contador" })]
         public async Task<IActionResult> Details(string id)
         {
             CultureInfo cultura = new CultureInfo("es-ES");
@@ -105,7 +108,7 @@ namespace PupuseriaSalvadorena.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _proveedorRep.CrearProveedor(proveedor.NombreProveedor, proveedor.ApellidoProveedor, proveedor.Telefono);
+                await _proveedorRep.CrearProveedor(proveedor.NombreProveedor, proveedor.ApellidoProveedor, proveedor.Telefono.Value);
                 return Json(new { success = true, message = "Proveedor agregado correctamente." });
             }
             else
@@ -145,7 +148,7 @@ namespace PupuseriaSalvadorena.Controllers
 
             if (ModelState.IsValid)
             {
-                await _proveedorRep.ActualizarProveedor(proveedor.IdProveedor, proveedor.NombreProveedor, proveedor.ApellidoProveedor, proveedor.Telefono);
+                await _proveedorRep.ActualizarProveedor(proveedor.IdProveedor, proveedor.NombreProveedor, proveedor.ApellidoProveedor, proveedor.Telefono.Value);
                 return Json(new { success = true, message = "Proveedor actualizado correctamente." });
             }
             else
@@ -174,7 +177,7 @@ namespace PupuseriaSalvadorena.Controllers
             }
             catch (Exception)
             {
-                return Json(new { success = false, message = "Error al eliminar el proveedor." });
+                return Json(new { success = false, message = "No se puede eliminar el proveedor ya que hay facturas asociadas." });
             }
         }
     }
