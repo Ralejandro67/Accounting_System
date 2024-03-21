@@ -9,9 +9,9 @@ namespace PupuseriaSalvadorena.Services
     {
         public List<PronosticoDiario> CalcularPronosticoHoltWinters(HistorialVenta[] ventasHistoricas)
         {
-            double alpha = 0.5;
-            double beta = 0.5;
-            double gamma = 0.5;
+            double alpha = 0.8;
+            double beta = 0.6;
+            double gamma = 0.7;
             int estacionalidad = 7;
 
             var ventasPorDia = ventasHistoricas

@@ -58,14 +58,6 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             await _context.Database.ExecuteSqlRawAsync("EliminarPersona @IdPersona", IdPersonaParam);
         }
 
-        public async Task<List<Persona>> MostrarPersonas()
-        {
-            var personas = await _context.Persona
-                                        .FromSqlRaw("EXEC MostrarPersonas")
-                                        .ToListAsync();
-            return personas;
-        }
-
         public async Task<Persona> ConsultarPersonas(string IdPersona)
         {
             try

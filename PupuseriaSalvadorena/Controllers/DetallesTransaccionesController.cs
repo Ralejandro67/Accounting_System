@@ -85,23 +85,6 @@ namespace PupuseriaSalvadorena.Controllers
             return View(transacciones);
         }
 
-        // GET: DetallesTransacciones/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var detalleTransaccion = await _detallesTransacRep.ConsultarDetallesTransacciones(id.Value);
-            if (detalleTransaccion == null)
-            {
-                return NotFound();
-            }
-
-            return View(detalleTransaccion);
-        }
-
         // GET: DetallesTransacciones/GetDetalleTransaccionPartial
         [HttpGet]
         public async Task<IActionResult> GetDetalleTransaccionPartial()
@@ -119,9 +102,15 @@ namespace PupuseriaSalvadorena.Controllers
             if (ModelState.IsValid)
             {
                 var IdLibro = await _detallesTransacRep.ObtenerIdLibroMasReciente();
+                var registroLibro = await _registroLibrosRep.ConsultarRegistrosLibros(IdLibro);
+
+                if (registroLibro.Conciliado)
+                {
+                    return Json(new { success = false, message = "El libro ya se encuentra conciliado, no se pueden realizar transacciones" });
+                }
+
                 var idTransaccion = await _detallesTransacRep.CrearTransaccionRecurrente(IdLibro, detalleTransaccion.DescripcionTransaccion, detalleTransaccion.Cantidad, detalleTransaccion.Monto, detalleTransaccion.FechaTrans, detalleTransaccion.IdTipo.Value, detalleTransaccion.IdImpuesto, detalleTransaccion.Recurrencia, detalleTransaccion.FechaRecurrencia, detalleTransaccion.Frecuencia, false);
                 var transaccion = await _detallesTransacRep.ConsultarDetallesTransacciones(idTransaccion);
-                var registroLibro = await _registroLibrosRep.ConsultarRegistrosLibros(IdLibro);
 
                 decimal MontoLibro = 0;
 
@@ -196,6 +185,12 @@ namespace PupuseriaSalvadorena.Controllers
             {
                 var IdLibro = await _detallesTransacRep.ObtenerIdLibroMasReciente();
                 var libro = await _registroLibrosRep.ConsultarRegistrosLibros(IdLibro);
+
+                if (libro.Conciliado)
+                {
+                    return Json(new { success = false, message = "El libro ya se encuentra conciliado, no se puede realizar cambios en la transaccion" });
+                }
+
                 var transaccion = await _detallesTransacRep.ConsultarDetallesTransacciones(detalleTransaccion.IdTransaccion);
                 decimal MontoLibro;
 
@@ -238,6 +233,11 @@ namespace PupuseriaSalvadorena.Controllers
 
                 var detalleTransaccion = await _detallesTransacRep.ConsultarDetallesTransacciones(id);
                 var Libro = await _registroLibrosRep.ConsultarRegistrosLibros(detalleTransaccion.IdRegistroLibros);
+
+                if (Libro.Conciliado)
+                {
+                    return Json(new { success = false, message = "El libro ya se encuentra conciliado, no se puede eliminar la transaccion" });
+                }
 
                 decimal MontoLibro;
 

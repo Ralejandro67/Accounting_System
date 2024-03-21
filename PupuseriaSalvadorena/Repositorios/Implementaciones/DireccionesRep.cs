@@ -61,23 +61,5 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             var idDireccionParam = new SqlParameter("@IdDireccion", IdDireccion);
             await _context.Database.ExecuteSqlRawAsync("EliminarDireccion @IdDireccion", idDireccionParam);
         }
-
-        public async Task<List<Direccion>> MostrarDirecciones()
-        {
-            var direcciones = await _context.Direccion
-                                        .FromSqlRaw("EXEC MostrarDirecciones")
-                                        .ToListAsync();
-            return direcciones;
-        }
-
-        public async Task<Direccion> ConsultarDirecciones(int IdDireccion)
-        {
-            var idDireccionParam = new SqlParameter("@IdDireccion", IdDireccion);
-            var resultado = await _context.Direccion
-                                          .FromSqlRaw("EXEC ConsultarDirecciones @IdDireccion", idDireccionParam)
-                                          .ToListAsync();
-
-            return resultado.FirstOrDefault();
-        }
     }
 }

@@ -57,29 +57,5 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
 
             return resultado.FirstOrDefault();
         }
-
-        public async Task<int> CrearLibroRecurrente(DateTime FechaRegistro, decimal MontoTotal, string Descripcion)
-        {
-            using (var command = _context.Database.GetDbConnection().CreateCommand())
-            {
-                command.CommandText = "CrearLibroRecurrente";
-                command.CommandType = CommandType.StoredProcedure;
-
-                command.Parameters.Add(new SqlParameter("@FechaRegistro", FechaRegistro));
-                command.Parameters.Add(new SqlParameter("@MontoTotal", MontoTotal));
-                command.Parameters.Add(new SqlParameter("@Descripcion", Descripcion));
-
-                var IdLibro = new SqlParameter("@IdLibro", SqlDbType.Int)
-                {
-                    Direction = ParameterDirection.Output
-                };
-                command.Parameters.Add(IdLibro);
-
-                await _context.Database.OpenConnectionAsync();
-                await command.ExecuteNonQueryAsync();
-
-                return (int)IdLibro.Value;
-            }
-        }
     }
 }

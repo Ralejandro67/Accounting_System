@@ -29,23 +29,6 @@ namespace PupuseriaSalvadorena.Controllers
             return View(registroBancario);
         }
 
-        // GET: RegistroBancarios/Details/5
-        public async Task<IActionResult> Details(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var registroBancario = await _registrosBancariosRep.ConsultarRegistrosBancarios(id);    
-            if (registroBancario == null)
-            {
-                return NotFound();
-            }
-
-            return View(registroBancario);
-        }
-
         // GET: RegistroBancarios/Create
         public async Task<IActionResult> Create()
         {

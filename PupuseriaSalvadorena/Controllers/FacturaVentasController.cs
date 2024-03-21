@@ -14,12 +14,6 @@ using PupuseriaSalvadorena.Repositorios.Interfaces;
 using PupuseriaSalvadorena.ViewModels;
 using System.Text;
 using System.Collections.Immutable;
-using System.Runtime.CompilerServices;
-using System.ComponentModel;
-using System.Diagnostics;
-using Microsoft.AspNetCore.Routing.Constraints;
-using Microsoft.VisualBasic;
-using PupuseriaSalvadorena.Repositorios.Implementaciones;
 using System.Globalization;
 using Rotativa.AspNetCore;
 using ClosedXML.Excel;
@@ -68,10 +62,11 @@ namespace PupuseriaSalvadorena.Controllers
             var facturaVentas = await _facturaVentaRep.MostrarFacturasVentas();
             var facturasMesActual = facturaVentas.Where(f => f.FechaFactura.Month == fecha.Month && f.FechaFactura.Year == fecha.Year).ToList();
 
-            var facturasPorMes = facturaVentas.GroupBy(f => new { Año = f.FechaFactura.Year, Mes = f.FechaFactura.Month })
-                                               .Select(group => new { Año = group.Key.Año, Mes = group.Key.Mes, Cantidad = group.Count(), TotalVentasMes = group.Sum(f => f.TotalVenta) })
-                                               .OrderByDescending(x => x.Año).ThenByDescending(x => x.Mes)
-                                               .ToList();
+            var facturasPorMes = facturaVentas.Where(f => f.Estado == true)
+                                              .GroupBy(f => new { Año = f.FechaFactura.Year, Mes = f.FechaFactura.Month })
+                                              .Select(group => new { Año = group.Key.Año, Mes = group.Key.Mes, Cantidad = group.Count(), TotalVentasMes = group.Sum(f => f.TotalVenta) })
+                                              .OrderByDescending(x => x.Año).ThenByDescending(x => x.Mes)
+                                              .ToList();
 
             var facturasInvertidas = facturasPorMes.AsEnumerable().Reverse().ToList();
             ViewBag.Meses = facturasInvertidas.Select(x => new DateTime(x.Año, x.Mes, 1).ToString("MMM yyyy", cultura)).ToList();
@@ -157,6 +152,12 @@ namespace PupuseriaSalvadorena.Controllers
 
                 var IdLibro = await _detallesTransacRep.ObtenerIdLibroMasReciente();
                 var Libro = await _registroLibrosRep.ConsultarRegistrosLibros(IdLibro);
+
+                if (Libro.Conciliado)
+                {
+                    return Json(new { success = false, message = "No se puede realizar la venta, el libro actual ya fue conciliado" });
+                }
+
                 var empresa = await _negociosRep.ConsultarNegocio();
                 var Pago = MetodosPago(facturaVenta.IdTipoPago.Value);
 
@@ -217,7 +218,7 @@ namespace PupuseriaSalvadorena.Controllers
                                 }
                             }
 
-                            return Json(new { success = true, message = "Factura generada correctamente." });
+                            return Json(new { success = true, message = $"Factura: {facturaVenta.Consecutivo} generada correctamente." });
                         }
                         else
                         {
@@ -275,7 +276,6 @@ namespace PupuseriaSalvadorena.Controllers
 
         // POST: FacturaVentas/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             try

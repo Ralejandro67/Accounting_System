@@ -29,13 +29,6 @@ namespace PupuseriaSalvadorena.Controllers
             _alertaCuentaPagarRep = alertaCuentaPagarRep;
         }
 
-        // GET: DetalleCuentas
-        public async Task<IActionResult> Index()
-        {
-            var detalleCuentas = await _detallesCuentaRep.MostrarDetallesCuenta();
-            return View(detalleCuentas);
-        }
-
         // GET: DetalleCuentas/Details/5
         [FiltroAutentificacion(RolAcceso = new[] { "Administrador", "Contador" })]
         public async Task<IActionResult> Details(string id)

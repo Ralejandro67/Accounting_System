@@ -26,9 +26,11 @@
         </div>
     </div>
     <div class="container mt-2">
-        @Model.ConciliacionBancaria.Observaciones
-        <br />
-        Numero de Cuenta: @Model.ConciliacionBancaria.NumeroCuenta
+        <p class="mb-0">@Model.ConciliacionBancaria.Observaciones</p>
+        <br style="display:none;" />
+        <p class="mb-0">Numero de Cuenta: @Model.ConciliacionBancaria.NumeroCuenta</p>
+        <br style="display:none;"/>
+        <p class="mb-0">Libro Contable: @Model.RegistroLibro.Descripcion</p>
     </div>
     <hr/>
     <div class="container mt-2">

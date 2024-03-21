@@ -39,13 +39,6 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             }   
         }
 
-        public async Task ActualizarCorreo(int id, string correo)
-        {
-            var idCorreoParam = new SqlParameter("@IdCorreoElectronico", id);
-            var correoParam = new SqlParameter("@Correo", correo);
-            await _context.Database.ExecuteSqlRawAsync("ActualizarCorreo @IdCorreoElectronico, @Correo", idCorreoParam, correoParam);
-        }
-
         public async Task EliminarCorreo(int id)
         {
             var idCorreoParam = new SqlParameter("@IdCorreoElectronico", id);
@@ -58,26 +51,6 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
                                         .FromSqlRaw("EXEC MostrarCorreos")
                                         .ToListAsync();
             return correos;
-        }
-
-        public async Task<CorreoElectronico> ConsultarCorreos(int id)
-        {
-            var idCorreoParam = new SqlParameter("@IdCorreoElectronico", id);
-            var resultado = await _context.CorreoElectronico
-                                          .FromSqlRaw("EXEC ConsultarCorreos @IdCorreoElectronico", idCorreoParam)
-                                          .ToListAsync();
-
-            return resultado.FirstOrDefault();
-        }
-
-        public async Task<CorreoElectronico> ConsultarCorreoElectronico(string correo)
-        {
-            var correoParam = new SqlParameter("@Correo", correo);
-            var resultado = await _context.CorreoElectronico
-                                          .FromSqlRaw("EXEC ConsultarCorreoElectronico @Correo", correoParam)
-                                          .ToListAsync();
-
-            return resultado.FirstOrDefault();
         }
     }
 }

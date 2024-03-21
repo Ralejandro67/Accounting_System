@@ -1,4 +1,8 @@
-﻿/*Loader*/
+﻿.button-text-small {
+    display: none;
+}
+
+/*Loader*/
 /*----------------------------*/
 .loading {
     position: fixed;
@@ -209,6 +213,41 @@ th {
         width: 13px;
         height: 13px;
     }
+
+    .button-text {
+        display: none;
+    }
+
+    .campos-btn .nav-link-icon svg {
+        margin-right: 0;
+    }
+
+    #ImagenFactura {
+        height: 70px !important;
+    }
+}
+
+@media (max-width: 1080px) {
+    #DoughnutChart {
+        max-width: 170px !important;
+        max-height: 190px !important;
+        aspect-ratio: 1 / 1 !important;
+    }
+}
+
+@media (min-width: 1081px) {
+    #DoughnutChart {
+        max-width: 230px !important;
+        max-height: 210px !important;
+        aspect-ratio: 1 / 1 !important;
+    }
+}
+
+@media (max-width: 970px) {
+    #PrepsupuestoFields {
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+    }
 }
 
 @media (max-width: 920px) {
@@ -248,6 +287,24 @@ th {
     table th, table td {
         padding: 0.5rem !important;
     }
+
+    #ImagenFactura {
+        height: 50px;
+    }
+
+    #DoughnutChart {
+        max-width: 160px !important;
+        max-height: 190px !important;
+        aspect-ratio: 1 / 1 !important;
+    }
+}
+
+@media (min-width: 921px) {
+    #DoughnutChart {
+        max-width: 170px !important;
+        max-height: 190px !important;
+        aspect-ratio: 1 / 1 !important;
+    }
 }
 
 @media (max-width: 768px) {
@@ -257,6 +314,31 @@ th {
 
     #Graphs {
         margin-top: 2.3rem !important;
+    }
+
+    #EmpresaDetalles{
+        text-align: left !important;
+        width: 50% !important;
+    }
+
+    #FacturaDetalles {
+        width: 50% !important;
+    }
+
+    #ImagenFactura {
+        display: none;
+    }
+
+    #campoTitulo {
+        width: 50% !important;
+    }
+
+    .campos-btn {
+        width: 50% !important;
+    }
+
+    .button-text-small{
+        display: inline;
     }
 }
 
@@ -280,6 +362,42 @@ th {
     table svg {
         width: 12px;
         height: 12px;
+    }
+
+    #DoughnutChart {
+        max-width: 120px !important;
+        max-height: 120px !important;
+        aspect-ratio: 1 / 1 !important;
+    }
+
+    #DisplayPresupuestos {
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+    }
+
+    #PresupuestosDisplay {
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+        margin-left: 0.75rem !important;
+    }
+}
+
+@media (min-width: 551px) {
+    #DoughnutChart {
+        max-width: 170px !important;
+        max-height: 190px !important;
+        aspect-ratio: 1 / 1 !important;
+    }
+}
+
+@media (max-width: 640px) {
+    #DisplayInfo .card-body {
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+    }
+
+    #DisplayCampo {
+        padding: 0 !important;
     }
 }
 
@@ -1125,8 +1243,9 @@ input[type="checkbox"]:checked + label:hover span:after {
 /* Graficos */
 
 #DoughnutChart {
-    max-height: 210px;
-    aspect-ratio: 1 / 1;
+    max-width: 210px !important;
+    max-height: 210px !important;
+    aspect-ratio: 1 / 1 !important;
 }
 
 #PVentasChart {

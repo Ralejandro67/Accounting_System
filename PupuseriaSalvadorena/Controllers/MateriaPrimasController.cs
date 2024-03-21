@@ -31,23 +31,6 @@ namespace PupuseriaSalvadorena.Controllers
             return View(materiaPrimas); 
         }
 
-        // GET: MateriaPrimas/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var materiaPrima = await _materiaPrimaRep.ConsultarMateriasPrimas(id.Value);
-            if (materiaPrima == null)
-            {
-                return NotFound();
-            }
-
-            return View(materiaPrima);
-        }
-
         // GET: MateriaPrimas/Create
         public async Task<IActionResult> Create()
         {

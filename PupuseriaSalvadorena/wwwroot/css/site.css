@@ -280,6 +280,10 @@ header .navbar {
         top: 56px;
         background-color: white;
     }
+
+    #ImagenFactura {
+        height: 70px !important;
+    }
 }
 
 @media (min-width: 831px) {

@@ -27,16 +27,6 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             await _context.Database.ExecuteSqlRawAsync("CrearConciliacion @FechaConciliacion, @SaldoBancario, @SaldoLibro, @Diferencia, @Observaciones, @IdRegistro, @IdRegistroLibros", FechaConciliacionParam, SaldoBancarioParam, SaldoLibroParam, DiferenciaParam, ObservacionesParam, IdRegistroParam, IdRegistroLibrosParam);
         }
 
-        public async Task ActualizarConciliacion(string IdConciliacion, decimal SaldoBancario, decimal SaldoLibro, decimal Diferencia, string Observaciones)
-        {
-            var IdConciliacionParam = new SqlParameter("@IdConciliacion", IdConciliacion);
-            var SaldoBancarioParam = new SqlParameter("@SaldoBancario", SaldoBancario);
-            var SaldoLibroParam = new SqlParameter("@SaldoLibro", SaldoLibro);
-            var DiferenciaParam = new SqlParameter("@Diferencia", Diferencia);
-            var ObservacionesParam = new SqlParameter("@Observaciones", Observaciones);
-            await _context.Database.ExecuteSqlRawAsync("ActualizarConciliacion @IdConciliacion, @SaldoBancario, @SaldoLibro, @Diferencia, @Observaciones", IdConciliacionParam, SaldoBancarioParam, SaldoLibroParam, DiferenciaParam, ObservacionesParam);
-        }
-
         public async Task EliminarConciliacion(string IdConciliacion)
         {
             var IdConciliacionParam = new SqlParameter("@IdConciliacion", IdConciliacion);

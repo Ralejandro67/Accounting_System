@@ -9,6 +9,5 @@ namespace PupuseriaSalvadorena.Repositorios.Interfaces
         Task EliminarRegistroLibros(string IdRegistroLibros);
         Task<List<RegistroLibro>> MostrarRegistrosLibros();
         Task<RegistroLibro> ConsultarRegistrosLibros(string IdRegistroLibros);
-        Task<int> CrearLibroRecurrente(DateTime FechaRegistro, decimal MontoTotal, string Descripcion);
     }
 }

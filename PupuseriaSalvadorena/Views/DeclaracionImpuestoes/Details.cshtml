@@ -44,8 +44,8 @@
         <div id="Titulo">
             <h4 class="mt-1 mb-3">Resumen Declaracion de Impuestos</h4>
         </div>
-        <div class="card-body table-body-custom" style="height: auto; margin-top: 0 !important; margin-bottom: 0 !important">
-            <div class="d-flex justify-content-between align-items-center" style="text-align:center">
+        <div class="card-body table-body-custom" id="DisplayCampo" style="height: auto; margin-top: 0 !important; margin-bottom: 0 !important">
+            <div class="d-flex justify-content-between align-items-center" id="DisplayInfo" style="text-align:center">
                 <div class="card-body justify-content-center item">
                     <strong>Total de Compras</strong>
                     <p class="mt-2 mb-0">@Model.DeclaracionImpuesto.MontoTotal.ToString("C", new CultureInfo("es-CR"))</p>

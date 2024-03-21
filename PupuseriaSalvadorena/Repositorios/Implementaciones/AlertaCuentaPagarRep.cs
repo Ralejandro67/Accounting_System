@@ -24,16 +24,6 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             await _context.Database.ExecuteSqlRawAsync("CrearAlertaCuentaPagar @Mensaje, @FechaMensaje, @IdCuentaPagar, @Leido", MensajeParam, FechaMensajeParam, IdCuentaPagarParam, LeidoParam);
         }
         
-        public async Task ActualizarAlertaCuentaPagar(int IdAlerta, string Mensaje, DateTime FechaMensaje, string IdCuentaPagar, bool Leido)
-        {
-            var IdAlertaParam = new SqlParameter("@IdAlerta", IdAlerta);
-            var MensajeParam = new SqlParameter("@Mensaje", Mensaje);
-            var FechaMensajeParam = new SqlParameter("@FechaMensaje", FechaMensaje);
-            var IdCuentaPagarParam = new SqlParameter("@IdCuentaPagar", IdCuentaPagar);
-            var LeidoParam = new SqlParameter("@Leido", Leido);
-            await _context.Database.ExecuteSqlRawAsync("ActualizarAlertaCuentaPagar @IdAlerta, @Mensaje, @FechaMensaje, @IdCuentaPagar, @Leido", IdAlertaParam, MensajeParam, FechaMensajeParam, IdCuentaPagarParam, LeidoParam);
-        }
-
         public async Task ActualizarAlertaCuentaPagarID(string IdCuentaPagar, bool Leido)
         {
             var IdCuentaPagarParam = new SqlParameter("@IdCuentaPagar", IdCuentaPagar);

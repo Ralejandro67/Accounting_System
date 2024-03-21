@@ -33,23 +33,6 @@ namespace PupuseriaSalvadorena.Controllers
             return View(tipoTransacciones);
         }
 
-        // GET: TipoTransacciones/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var tipoTransacciones = await _tipoTransacRep.ConsultarTipoTransaccion(id.Value);
-            if (tipoTransacciones == null)
-            {
-                return NotFound();
-            }
-
-            return View(tipoTransacciones);
-        }
-
         // GET: TipoTransacciones/Create
         public async Task<IActionResult> Create()
         {

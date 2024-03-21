@@ -37,14 +37,6 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             await _context.Database.ExecuteSqlRawAsync("EliminarDetallesCuenta @IdDetallesCuenta", IdDetallesCuentaParam);
         }
 
-        public async Task<List<DetalleCuenta>> MostrarDetallesCuenta()
-        {
-            var detallesCuenta = await _context.DetalleCuenta
-                                        .FromSqlRaw("EXEC MostrarDetallesCuentas")
-                                        .ToListAsync();
-            return detallesCuenta;
-        }
-
         public async Task<DetalleCuenta> ConsultarDetallesCuentas(string IdDetallesCuenta)
         {
             var IdDetallesCuentaParam = new SqlParameter("@IdDetallesCuenta", IdDetallesCuenta);

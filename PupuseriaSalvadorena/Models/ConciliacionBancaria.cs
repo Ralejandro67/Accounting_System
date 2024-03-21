@@ -19,6 +19,7 @@ namespace PupuseriaSalvadorena.Models
         [RegularExpression(@"^[0-9]+(\.[0-9]+)?$", ErrorMessage = "La diferencia entre saldos solo puede contener números")]
         public decimal Diferencia { get; set; }
 
+        [Required(ErrorMessage = "Es necesaria una desccripcion para la conciliacion")]
         public string? Observaciones { get; set; }
 
         [Required(ErrorMessage = "La cuenta bancaria es obligatoria.")]
@@ -29,7 +30,6 @@ namespace PupuseriaSalvadorena.Models
         [Required(ErrorMessage = "El libro contable es obligatorio.")]
         public string? IdRegistroLibros { get; set; }
 
-        [Required(ErrorMessage = "Es necesaria una desccripcion para la conciliacion")]
         public string? Descripcion { get; set; }
     }
 }

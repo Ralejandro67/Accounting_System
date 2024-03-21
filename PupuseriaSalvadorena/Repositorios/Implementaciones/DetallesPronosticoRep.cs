@@ -24,29 +24,10 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             await _context.Database.ExecuteSqlRawAsync("CrearDetallesPronostico @IdPronostico, @FechaPronostico, @PCantVenta, @PValorVenta", IdPronosticoParam, FechaPronosticoParam, PCantVentaParam, PValorVentaParam);
         }
 
-        public async Task EliminarDetallesPronostico(int IdDetallePronostico)
+        public async Task EliminarDetallesPronostico(int IdPronostico)
         {
-            var IdDetallePronosticoParam = new SqlParameter("@IdDetallePronostico", IdDetallePronostico);
-            await _context.Database.ExecuteSqlRawAsync("EliminarDetallesPronostico @IdDetallePronostico", IdDetallePronosticoParam);
-        }
-
-        public async Task<List<DetallesPronostico>> MostrarDetallesPronosticos()
-        {
-            var detallesPronosticos = await _context.DetallesPronostico
-                                            .FromSqlRaw("EXEC MostrarDetallesPronosticos")
-                                            .ToListAsync();
-
-            return detallesPronosticos;
-        }
-
-        public async Task<DetallesPronostico> ConsultarDetallesPronosticos(int IdDetallePronostico)
-        {
-            var IdDetallePronosticoParam = new SqlParameter("@IdDetallePronostico", IdDetallePronostico);
-            var resultado = await _context.DetallesPronostico
-                                          .FromSqlRaw("EXEC ConsultarDetallesPronosticos @IdDetallePronostico", IdDetallePronosticoParam)
-                                          .ToListAsync();
-
-            return resultado.FirstOrDefault();
+            var IdPronosticoParam = new SqlParameter("@IdPronostico", IdPronostico);
+            await _context.Database.ExecuteSqlRawAsync("EliminarDetallesPronostico @IdPronostico", IdPronosticoParam);
         }
 
         public async Task<List<DetallesPronostico>> ConsultarDetallesPorPronosticos(int IdPronostico)

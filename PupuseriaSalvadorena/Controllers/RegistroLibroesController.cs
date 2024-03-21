@@ -83,7 +83,7 @@ namespace PupuseriaSalvadorena.Controllers
         // POST: RegistroLibroes/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdRegistroLibros,FechaRegistro,MontoTotal,Descripcion")] RegistroLibro registroLibro)
+        public async Task<IActionResult> Create([Bind("IdRegistroLibros,FechaRegistro,MontoTotal,Descripcion,Conciliado")] RegistroLibro registroLibro)
         {
             if (ModelState.IsValid)
             {
@@ -117,7 +117,7 @@ namespace PupuseriaSalvadorena.Controllers
         // POST: RegistroLibroes/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("IdRegistroLibros,FechaRegistro,MontoTotal,Descripcion")] RegistroLibro registroLibro)
+        public async Task<IActionResult> Edit(string id, [Bind("IdRegistroLibros,FechaRegistro,MontoTotal,Descripcion,Conciliado")] RegistroLibro registroLibro)
         {
             if (id != registroLibro.IdRegistroLibros)
             {
@@ -151,6 +151,13 @@ namespace PupuseriaSalvadorena.Controllers
         {
             try
             {
+                var registroLibro = await _registroLibroRep.ConsultarRegistrosLibros(id);
+
+                if (registroLibro.Conciliado)
+                {
+                    return Json(new { success = false, message = "El libro ya fue conciliado, no se puede eliminar." });
+                }
+
                 await _registroLibroRep.EliminarRegistroLibros(id);
                 return Json(new { success = true, message = "Libro eliminado correctamente." });
             }

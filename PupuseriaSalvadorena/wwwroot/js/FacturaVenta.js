@@ -264,7 +264,6 @@ document.addEventListener('click', function (e) {
         })
         .then(response => response.json())
         .then(data => {
-
             $('.loading').hide();
             $('button').prop('disabled', false);
 
@@ -344,7 +343,7 @@ document.querySelectorAll('.print-FacturaVenta').forEach(button => {
     });
 });
 
-// anular factura
+// Anular factura
 document.querySelectorAll('.delete-FacturaVenta').forEach(button => {
     button.addEventListener('click', function () {
         var Id = this.getAttribute('data-id');
@@ -363,10 +362,7 @@ document.querySelectorAll('.delete-FacturaVenta').forEach(button => {
                 $('.loading').show();
                 $('button').prop('disabled', true);
                 fetch(`/FacturaVentas/Delete/${Id}`, {
-                    method: 'POST',
-                    headers: {
-                        'RequestVerificationToken': document.getElementsByName('__RequestVerificationToken')[0].value
-                    }
+                    method: 'POST'
                 })
                     .then(response => response.json())
                     .then(data => {

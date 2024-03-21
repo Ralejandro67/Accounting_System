@@ -7,7 +7,6 @@ namespace PupuseriaSalvadorena.Repositorios.Interfaces
         Task CrearDetallesCuenta(decimal Pago, DateTime FechaIngreso, string IdCuentaPagar);
         Task ActualizarDetallesCuentas(string IdDetallesCuenta, decimal Pago, DateTime FechaIngreso);
         Task EliminarDetallesCuenta(string IdDetallesCuenta);
-        Task<List<DetalleCuenta>> MostrarDetallesCuenta();
         Task<DetalleCuenta> ConsultarDetallesCuentas(string IdDetallesCuenta);
         Task<List<DetalleCuenta>> ConsultarCuentaDetalles(string IdCuentaPagar);
     }

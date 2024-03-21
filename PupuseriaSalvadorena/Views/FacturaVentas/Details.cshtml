@@ -6,13 +6,47 @@
     ViewData["Title"] = $"{Model.FacturaVenta.Consecutivo}";
 }
 
+@section Scripts {
+    <script src="~/js/detallesventa.js" asp-append-version="true"></script>
+}
+
+<div class="card-body table-body-custom pb-4">
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-6" id="campoTitulo">
+                <h4>Factura @Model.FacturaVenta.Consecutivo</h4>
+            </div>
+            <div class="col-md-6 text-right campos-btn">
+                <button type="button" class="btn btn-primary nav-link-icon" id="AddFacturaVenta" onclick="history.back();">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left-circle-fill" viewBox="0 0 16 16">
+                        <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z" />
+                    </svg> 
+                    <span class="button-text">Volver</span>
+                </button>
+                <button type="button" class="btn btn-primary print-FacturaVenta nav-link-icon" id="AddFacturaVenta" data-id="@Model.FacturaVenta.IdFacturaVenta">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-printer-fill" viewBox="0 0 16 16">
+                        <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2zm6 8H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1" />
+                        <path d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1" />
+                    </svg> 
+                    <span class="button-text">Imprimir</span>
+                </button>
+                <button type="button" class="btn btn-primary delete-FacturaVenta nav-link-icon" id="AddFacturaVenta" data-id="@Model.FacturaVenta.IdFacturaVenta">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash-circle-fill" viewBox="0 0 16 16">
+                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M4.5 7.5a.5.5 0 0 0 0 1h7a.5.5 0 0 0 0-1z" />
+                    </svg> 
+                    <span class="button-text">Anular</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="card-body table-body-custom pb-4">
     <div class="container mt-4">
         <div class="row mb-5">
             <div class="col-md-4">
-                <img src="~/images/logo2.png" alt="Icono Logo" style="height: 90px;" />
+                <img src="~/images/logo2.png" alt="Icono Logo" style="height: 90px;" id="ImagenFactura"/>
             </div>
-            <div class="col-md-4 text-center">
+            <div class="col-md-4 text-center" id="EmpresaDetalles">
                 <strong>@Model.Negocio.NombreEmpresa</strong>
                 <br style="display: none;" />
                 <p class="mb-0">@Model.Negocio.CedulaJuridica</p>
@@ -21,7 +55,7 @@
                 <br style="display: none;" />
                 <p class="mb-0">@Model.Negocio.Telefono</p>
             </div>
-            <div class="col-md-4 text-right">
+            <div class="col-md-4 text-right" id="FacturaDetalles">
                 <strong>Factura de Venta</strong>
                 <br style="display: none;" />
                 <p class="mb-0">No. @Model.FacturaVenta.Consecutivo</p>

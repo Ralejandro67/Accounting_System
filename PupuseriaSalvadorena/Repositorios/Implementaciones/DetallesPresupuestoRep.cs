@@ -25,28 +25,11 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             await _context.Database.ExecuteSqlRawAsync("CrearDetallesPresupuesto @IdPresupuesto, @IdRegistroLibros, @IdTransaccion, @FechaIngreso, @Observaciones", IdPresupuestoParam, IdRegistroLibrosParam, IdTransaccionParam, FechaIngresoParam, ObservacionesParam);
         }
 
-        public async Task ActualizarDetallesPresupuesto(string IdPresupuesto, int IdTransaccion, DateTime FechaIngreso, string Observaciones)
-        {
-            var IdPresupuestoParam = new SqlParameter("@IdPresupuesto", IdPresupuesto);
-            var IdTransaccionParam = new SqlParameter("@IdTransaccion", IdTransaccion);
-            var FechaIngresoParam = new SqlParameter("@FechaIngreso", FechaIngreso);
-            var ObservacionesParam = new SqlParameter("@Observaciones", Observaciones);
-            await _context.Database.ExecuteSqlRawAsync("ActualizarDetallesPresupuesto @IdPresupuesto, @IdTransaccion, @FechaIngreso, @Observaciones", IdPresupuestoParam, IdTransaccionParam, FechaIngresoParam, ObservacionesParam);
-        }
-
         public async Task EliminarDetallesPresupuesto(string IdPresupuesto, int IdTransaccion)
         {
             var IdPresupuestoParam = new SqlParameter("@IdPresupuesto", IdPresupuesto);
             var IdTransaccionParam = new SqlParameter("@IdTransaccion", IdTransaccion);
             await _context.Database.ExecuteSqlRawAsync("EliminarDetallesPresupuesto @IdPresupuesto, @IdTransaccion", IdPresupuestoParam, IdTransaccionParam);
-        }
-
-        public async Task<List<DetallePresupuesto>> MostrarDetallesPresupuesto()
-        {
-            var detallesPresupuesto = await _context.DetallePresupuesto
-                                                    .FromSqlRaw("EXEC MostrarDetallesPresupuesto")
-                                                    .ToListAsync();
-            return detallesPresupuesto;
         }
 
         public async Task<DetallePresupuesto> ConsultarDetallesPresupuestos(string IdPresupuesto, int IdTransaccion)

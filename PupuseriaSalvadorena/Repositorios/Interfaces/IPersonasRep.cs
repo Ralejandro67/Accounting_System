@@ -7,7 +7,6 @@ namespace PupuseriaSalvadorena.Repositorios.Interfaces
         Task<string> CrearPersona(long Cedula, string Nombre, string Apellido, DateTime FechaNac, int Correo, int IdDireccion, int IdTelefono);
         Task ActualizarPersona(string IdPersona, string Nombre, string Apellido);
         Task EliminarPersona(string IdPersona);
-        Task<List<Persona>> MostrarPersonas();
         Task<Persona> ConsultarPersonas(string IdPersona);
     }
 }

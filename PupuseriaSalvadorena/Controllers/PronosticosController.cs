@@ -156,6 +156,7 @@ namespace PupuseriaSalvadorena.Controllers
         {
             try
             {
+                await _detallesPronosticoRep.EliminarDetallesPronostico(id);
                 await _pronosticoRep.EliminarPronostico(id);
                 return Json(new { success = true, message = "Pronostico eliminado correctamente." });
             }

@@ -110,31 +110,5 @@ namespace PupuseriaSalvadorena.Controllers
                 return Json(new { success = false, errors = errors });
             }
         }
-
-        // GET: Negocios/Delete/5
-        public async Task<IActionResult> Delete(long? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var negocio = await _negociosRep.ConsultarNegocio(id.Value);
-            if (negocio == null)
-            {
-                return NotFound();
-            }
-
-            return View(negocio);
-        }
-
-        // POST: Negocios/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            await _negociosRep.EliminarNegocio(id);
-            return RedirectToAction(nameof(Index));
-        }
     }
 }

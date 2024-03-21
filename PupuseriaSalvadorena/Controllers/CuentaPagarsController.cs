@@ -39,47 +39,6 @@ namespace PupuseriaSalvadorena.Controllers
             return View(cuentaPagars);  
         }
 
-        // GET: CuentaPagars/Details/5
-        public async Task<IActionResult> Details(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var cuentaPagar = await _cuentaPagarRep.ConsultarCuentasPagar(id);
-            if (cuentaPagar == null)
-            {
-                return NotFound();
-            }
-
-            return View(cuentaPagar);
-        }
-
-        // GET: CuentaPagars/Create
-        public async Task<IActionResult> Create()
-        {
-            var proveedores = await _proveedorRep.MostrarProveedores();
-            var facturaCompras = await _facturaCompraRep.MostrarFacturasCompras();
-
-            ViewBag.Proveedores = new SelectList(proveedores, "IdProveedor", "ProveedorCompleto");
-            ViewBag.FacturaCompras = new SelectList(facturaCompras, "IdFacturaCompra", "IdFacturaCompra");
-            return PartialView("_newCuentaPagarPartial", new CuentaPagar());
-        }
-
-        // POST: CuentaPagars/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdCuentaPagar,FechaCreacion,FechaVencimiento,TotalPagado,IdFacturaCompra,IdProveedor,Estado")] CuentaPagar cuentaPagar)
-        {
-            if (ModelState.IsValid)
-            {
-                await _cuentaPagarRep.CrearCuentaPagar(cuentaPagar.FechaCreacion, cuentaPagar.FechaVencimiento, cuentaPagar.TotalPagado, cuentaPagar.IdFacturaCompra, cuentaPagar.IdProveedor, cuentaPagar.Estado);
-                return Json(new { success = true, message = "Cuenta por pagar agregada correctamente." });
-            }
-            return Json(new { success = false, message = "Error al agregar la cuenta por pagar." });
-        }
-
         // GET: CuentaPagars/Edit/5
         public async Task<IActionResult> Edit(string id)
         {

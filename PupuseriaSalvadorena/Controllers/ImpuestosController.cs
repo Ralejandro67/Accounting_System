@@ -31,23 +31,6 @@ namespace PupuseriaSalvadorena.Controllers
             return View(impuestos);
         }
 
-        // GET: Impuestos/Details/5
-        public async Task<IActionResult> Details(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var impuesto = await _impuestosRep.ConsultarImpuestos(id);
-            if (impuesto == null)
-            {
-                return NotFound();
-            }
-
-            return View(impuesto);
-        }
-
         // GET: Impuestos/Create
         public async Task<IActionResult> Create()
         {

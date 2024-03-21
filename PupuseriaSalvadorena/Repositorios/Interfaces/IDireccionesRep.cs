@@ -7,7 +7,5 @@ namespace PupuseriaSalvadorena.Repositorios.Interfaces
         Task<int> CrearDireccion(bool Estado, string Detalles, int IdDistrito);
         Task ActualizarDireccion(int IdDireccion, bool Estado, string Detalles, int IdDistrito);
         Task EliminarDireccion(int IdDireccion);
-        Task<List<Direccion>> MostrarDirecciones();
-        Task<Direccion> ConsultarDirecciones(int IdDireccion);
     }
 }

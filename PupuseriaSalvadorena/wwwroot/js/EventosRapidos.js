@@ -55,7 +55,7 @@ $(document).on('change', '#IdImpuesto', function () {
         success: function (data) {
             var tipotransaccionSelect = $('#IdTipo');
             tipotransaccionSelect.empty();
-            tipotransaccionSelect.append($('<option></option>').val('').text('Seleccione un tipo de transacción'));
+            tipotransaccionSelect.append($('<option></option>').val('').text('Tipo de transacción'));
             $.each(data, function (index, item) {
                 tipotransaccionSelect.append($('<option></option>').val(item.value).text(item.text));
             });
@@ -87,6 +87,35 @@ $(document).on('change', '#IdImpuesto', function () {
 
 document.addEventListener('click', function (e) {
     if (e.target && e.target.id === 'submitDetallesForm') {
+        e.preventDefault();
+
+        $('.loading').show();
+        $('button').prop('disabled', true);
+
+        var ValueMonto = document.getElementById('inputMonto').value;
+        var ValueCant = document.getElementById('Cantidad').value;
+
+        var regex = /^[0-9]+(\.[0-9]+)?$/;
+        if (!regex.test(ValueMonto) || !regex.test(ValueCant)) {
+            Swal.fire({
+                title: 'Error',
+                text: 'La valor de la transacción o la cantidad debe ser un número.',
+                icon: 'warning',
+                confirmButtonColor: '#0DBCB5'
+            });
+            return;
+        }
+
+        if (parseFloat(ValueMonto) < 1 || parseFloat(ValueMonto) < 1) {
+            Swal.fire({
+                title: 'Error',
+                text: 'La valor de la transacción o la cantidad debe ser mayor a 0.',
+                icon: 'warning',
+                confirmButtonColor: '#0DBCB5'
+            });
+            return;
+        }
+
         var formData = new FormData(document.getElementById('detallesTForm'));
 
         fetch('/DetallesTransacciones/Create', {
@@ -98,8 +127,10 @@ document.addEventListener('click', function (e) {
         })
             .then(response => response.json())
             .then(data => {
+                $('.loading').hide();
+                $('button').prop('disabled', false);
+
                 if (data.success) {
-                    $('#newDetallesTModal').modal('hide');
                     Swal.fire({
                         title: '¡Éxito!',
                         text: data.message,
@@ -107,13 +138,16 @@ document.addEventListener('click', function (e) {
                         confirmButtonColor: '#0DBCB5'
                     }).then((result) => {
                         if (result.isConfirmed || result.isDismissed) {
+                            $('#newDetallesTModal').modal('hide');
                             window.location.reload();
                         }
                     });
                 } else {
                     let errorMessage = "";
-                    if (data.errors && data.errors.length > 0) {
-                        errorMessage += "\n" + data.errors.join("\n");
+                    if (data.message) {
+                        errorMessage = data.message;
+                    } else if (data.errors && data.errors.length > 0) {
+                        errorMessage = data.errors.join("\n");
                     }
 
                     Swal.fire({
@@ -168,6 +202,10 @@ function toggleCamposActivos() {
 
 document.addEventListener('click', function (e) {
     if (e.target && e.target.id === 'submitFacturaC') {
+        e.preventDefault();
+
+        $('.loading').show();
+        $('button').prop('disabled', true);
 
         var ValueCant = document.getElementById('Cant').value;
         var ValueTotal = document.getElementById('TotalCompra').value;
@@ -205,8 +243,10 @@ document.addEventListener('click', function (e) {
         })
             .then(response => response.json())
             .then(data => {
+                $('.loading').hide();
+                $('button').prop('disabled', false);
+
                 if (data.success) {
-                    $('#newFacturaCModal').modal('hide');
                     Swal.fire({
                         title: '¡Éxito!',
                         text: data.message,
@@ -214,13 +254,16 @@ document.addEventListener('click', function (e) {
                         confirmButtonColor: '#0DBCB5'
                     }).then((result) => {
                         if (result.isConfirmed || result.isDismissed) {
+                            $('#newFacturaCModal').modal('hide');
                             window.location.reload();
                         }
                     });
                 } else {
                     let errorMessage = "";
-                    if (data.errors && data.errors.length > 0) {
-                        errorMessage += "\n" + data.errors.join("\n");
+                    if (data.message) {
+                        errorMessage = data.message;
+                    } else if (data.errors && data.errors.length > 0) {
+                        errorMessage = data.errors.join("\n");
                     }
 
                     Swal.fire({
@@ -308,6 +351,18 @@ function actualizarEstadoFacturaE() {
     var isElectronicaSelected = $('#FacturaElectronica').is(':checked');
     $('#CamposFacturasE').toggle(isElectronicaSelected);
     $('#FacturaE').val(isElectronicaSelected ? 'true' : 'false');
+
+    if (isElectronicaSelected) {
+        $('#Identificacion').val('');
+        $('#Telefono').val('');
+        $('#Cliente').val('');
+        $('#Correo').val('');
+    } else {
+        $('#Identificacion').val('0');
+        $('#Telefono').val('00000000');
+        $('#Cliente').val('Consumidor final');
+        $('#Correo').val('example@gmail.com');
+    }
 }
 
 function agregarNuevoPlatillo() {
@@ -322,13 +377,13 @@ function agregarNuevoPlatillo() {
 
     var nuevoPlatilloHtml = `
         <div class="row platilloRow">
-            <div class="col-md-5">
+            <div class="col-md-6">
                 <div class="form-group">
                     <label>Platillo</label>
                     ${selectHtml}
                 </div>
             </div>
-            <div class="col-md-5">
+            <div class="col-md-4">
                 <div class="form-group">
                     <label>Cantidad</label>
                     <input type="number" class="form-control" name="CantVenta[]" min="1" value="1"/>
@@ -382,6 +437,36 @@ function actualizarOpcionesPlatillos() {
 
 document.addEventListener('click', function (e) {
     if (e.target && e.target.id === 'submitFacturaVentaForm') {
+        e.preventDefault();
+
+        $('.loading').show();
+        $('button').prop('disabled', true);
+
+        var platillos = document.getElementById('platillosContenedor').querySelectorAll('.platilloRow');
+        var telefono = document.getElementById('Telefono').value;
+
+        var regexTel = /^[0-9]{8}$/;
+
+        if (!regexTel.test(telefono)) {
+            Swal.fire({
+                title: 'Error',
+                text: 'El número de teléfono debe contener 8 dígitos.',
+                icon: 'warning',
+                confirmButtonColor: '#0DBCB5'
+            })
+            return;
+        }
+
+        if (platillos.length === 0) {
+            Swal.fire({
+                title: '¡Error!',
+                text: 'Debe agregar al menos un platillo a la factura',
+                icon: 'warning',
+                confirmButtonColor: '#0DBCB5'
+            });
+            return;
+        }
+
         var formData = new FormData(document.getElementById('FacturaVentaForm'));
 
         fetch('/FacturaVentas/Create', {
@@ -393,21 +478,28 @@ document.addEventListener('click', function (e) {
         })
             .then(response => response.json())
             .then(data => {
+
+                $('.loading').hide();
+                $('button').prop('disabled', false);
+
                 if (data.success) {
-                    $('#newFacturaVentaModal').modal('hide');
                     Swal.fire({
                         title: '¡Éxito!',
                         text: data.message,
-                        icon: 'success'
+                        icon: 'success',
+                        confirmButtonColor: '#0DBCB5'
                     }).then((result) => {
                         if (result.isConfirmed || result.isDismissed) {
+                            $('#newFacturaVentaModal').modal('hide');
                             window.location.reload();
                         }
                     });
                 } else {
                     let errorMessage = "";
-                    if (data.errors && data.errors.length > 0) {
-                        errorMessage += "\n" + data.errors.join("\n");
+                    if (data.message) {
+                        errorMessage = data.message;
+                    } else if (data.errors && data.errors.length > 0) {
+                        errorMessage = data.errors.join("\n");
                     }
 
                     Swal.fire({
@@ -422,7 +514,8 @@ document.addEventListener('click', function (e) {
                 Swal.fire({
                     title: 'Error',
                     text: 'Hubo un problema con la solicitud.',
-                    icon: 'error'
+                    icon: 'error',
+                    confirmButtonColor: '#0DBCB5'
                 });
             });
     }

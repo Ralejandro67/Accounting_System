@@ -51,7 +51,7 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             var FechaFinalParam = new SqlParameter("@FechaFinal", FechaFinal);
             var CantTotalProdParam = new SqlParameter("@CantTotalProd", CantTotalProd);
             var TotalVentaParam = new SqlParameter("@TotalVenta", TotalVenta);
-            await _context.Database.ExecuteSqlRawAsync("ActualizarPronosticos @IdPronostico, @IdPlatillo, @FechaInicio, @FechaFinal, @CantTotalProd, @TotalVenta, @PronosticoDoc", IdPronosticoParam, IdPlatilloParam, FechaInicioParam, FechaFinalParam, CantTotalProdParam, TotalVentaParam);
+            await _context.Database.ExecuteSqlRawAsync("ActualizarPronosticos @IdPronostico, @IdPlatillo, @FechaInicio, @FechaFinal, @CantTotalProd, @TotalVenta", IdPronosticoParam, IdPlatilloParam, FechaInicioParam, FechaFinalParam, CantTotalProdParam, TotalVentaParam);
         }
 
         public async Task EliminarPronostico(int IdPronostico)

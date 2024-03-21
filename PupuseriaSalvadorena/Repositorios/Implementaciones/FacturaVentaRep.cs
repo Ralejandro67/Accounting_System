@@ -52,11 +52,6 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
             await _context.Database.ExecuteSqlRawAsync("ActualizarFacturaVenta @IdFacturaVenta, @Estado", IdFacturaVentaParam, EstadoParam);
         }
 
-        public async Task EliminarFacturaVenta(int IdFacturaVenta)
-        {
-            var IdFacturaVentaParam = new SqlParameter("@IdFacturaVenta", IdFacturaVenta);
-            await _context.Database.ExecuteSqlRawAsync("EliminarFacturaVenta @IdFacturaVenta", IdFacturaVentaParam);
-        }
         public async Task<List<FacturaVenta>> MostrarFacturasVentas()
         {
             var FacturasVentas = await _context.FacturaVenta

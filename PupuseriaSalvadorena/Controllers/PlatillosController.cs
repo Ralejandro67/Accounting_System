@@ -32,23 +32,6 @@ namespace PupuseriaSalvadorena.Controllers
             return View(platillos);
         }
 
-        // GET: Platillos/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var platillo = await _platilloRep.ConsultarPlatillos(id.Value);
-            if (platillo == null)
-            {
-                return NotFound();
-            }
-
-            return View(platillo);
-        }
-
         // GET: Platillos/Create
         public IActionResult Create()
         {

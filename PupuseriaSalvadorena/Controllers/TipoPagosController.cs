@@ -29,23 +29,6 @@ namespace PupuseriaSalvadorena.Controllers
             return View(tipoPagos); 
         }
 
-        // GET: TipoPagos/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var tipoPago = await _tipoPagoRep.ConsultarTipoPagos(id.Value);
-            if (tipoPago == null)
-            {
-                return NotFound();
-            }
-
-            return View(tipoPago);
-        }
-
         // GET: TipoPagos/Create
         public IActionResult Create()
         {

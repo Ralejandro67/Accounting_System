@@ -116,6 +116,12 @@ namespace PupuseriaSalvadorena.Controllers
 
                 var IdLibro = await _detallesTransacRep.ObtenerIdLibroMasReciente();
                 var Libro = await _registroLibrosRep.ConsultarRegistrosLibros(IdLibro);
+
+                if (Libro.Conciliado)
+                {
+                    return Json(new { success = false, message = "No se puede registrar la factura de compra, el libro actual esta conciliado." });
+                }
+
                 var IdFactura = await _facturaCompraRep.CrearFacturaId(facturaCompra.FacturaCom, facturaCompra.FechaFactura, facturaCompra.TotalCompra, facturaCompra.DetallesCompra, facturaCompra.IdTipoPago.Value, facturaCompra.IdTipoFactura, facturaCompra.IdMateriaPrima.Value);
 
                 decimal montoTotal = Libro.MontoTotal - facturaCompra.TotalCompra;
@@ -163,6 +169,12 @@ namespace PupuseriaSalvadorena.Controllers
             {
                 var IdLibro = await _detallesTransacRep.ObtenerIdLibroMasReciente();
                 var Libro = await _registroLibrosRep.ConsultarRegistrosLibros(IdLibro);
+
+                if (Libro.Conciliado)
+                {
+                    return Json(new { success = false, message = "No se puede eliminar la factura de compra, el libro actual esta conciliado." });
+                }
+
                 var facturaCompra = await _facturaCompraRep.ConsultarFacturasCompras(id);
                 var cuentapagar = await _cuentaPagarRep.ConsultarCuentasPagarporFactura(id);
                 var transaccion = await _detallesTransacRep.ConsultarTransaccionesDetalles($"Factura de Compra: {facturaCompra.IdFacturaCompra}");
