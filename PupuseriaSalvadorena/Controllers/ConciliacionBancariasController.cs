@@ -124,13 +124,13 @@ namespace PupuseriaSalvadorena.Controllers
                 }
                 else
                 {
-                    return Json(new { success = false, errors = "La diferencia no es 0, por favor verifica el saldo de la cuenta y el libro contable." });
+                    return Json(new { success = false, message = "La diferencia no es 0, por favor verifica el saldo de la cuenta y el libro contable." });
                 }
             }
             else
             {
                 var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
-                return Json(new { success = false, errors = errors });
+                return Json(new { success = false, message = errors });
             }
         }
 

@@ -49,6 +49,7 @@ namespace PupuseriaSalvadorena.Controllers
             var facturasCompras = await _facturaCompraRep.MostrarFacturasCompras();
             var historialVentas = await _historialVentaRep.MostrarHistorialVenta();
             var IdPronostico = await _pronosticoRep.ObtenerIdPronostico();
+            var pronostico = await _pronosticoRep.ConsultarPronosticos(IdPronostico);
             var detallesPronostico = await _detallesPronosticoRep.ConsultarDetallesPorPronosticos(IdPronostico);
 
             // Grafico Ingresos vs Egresos
@@ -102,6 +103,7 @@ namespace PupuseriaSalvadorena.Controllers
             ViewBag.Ventas = JsonConvert.SerializeObject(resultadoVentas);
             ViewBag.Compras = JsonConvert.SerializeObject(resultadoCompras);
             ViewBag.Pronosticos = JsonConvert.SerializeObject(pronosticos);
+            ViewBag.PlatilloPronostico = pronostico.NombrePlatillo;
 
             return View();
         }

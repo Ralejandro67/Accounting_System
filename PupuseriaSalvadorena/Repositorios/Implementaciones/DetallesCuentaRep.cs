@@ -56,5 +56,11 @@ namespace PupuseriaSalvadorena.Repositorios.Implementaciones
 
             return resultado;
         }
+
+        public async Task EliminarDetallesCuentaporPagar(string IdCuentaPagar)
+        {
+            var IdCuentaPagarParam = new SqlParameter("@IdCuentaPagar", IdCuentaPagar);
+            await _context.Database.ExecuteSqlRawAsync("EliminarDetallesCuentaporPagar @IdCuentaPagar", IdCuentaPagarParam);
+        }
     }
 }

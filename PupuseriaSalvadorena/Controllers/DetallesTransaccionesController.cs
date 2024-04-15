@@ -125,7 +125,7 @@ namespace PupuseriaSalvadorena.Controllers
 
                 if (detalleTransaccion.Recurrencia)
                 {
-                    var cronExpression = FrecuenciaACron(detalleTransaccion.Frecuencia);
+                    var cronExpression = FrecuenciaACron(detalleTransaccion.Frecuencia, detalleTransaccion.FechaRecurrencia);
 
                     RecurringJob.AddOrUpdate($"{idTransaccion}",
                                  () => TransaccionRecurrente(idTransaccion), 
@@ -262,18 +262,28 @@ namespace PupuseriaSalvadorena.Controllers
         }
 
         // FrecuenciaACron convierte una frecuencia en una expresión cron.
-        private string FrecuenciaACron(string frecuencia)
+        private string FrecuenciaACron(string frecuencia, DateTime Fecha)
         {
+            int dia = Fecha.Day;
+            int mes = Fecha.Month;
+            string hora = "19";
+            string minuto = "00";
+
+            if (dia > 28)
+            {
+                dia = 28;
+            }
+
             switch (frecuencia)
             {
                 case "Semanal":
-                    return Cron.Weekly();
+                    return $"{minuto} {hora} * * 1";
 
                 case "Mensual":
-                    return Cron.Monthly();
+                    return $"{minuto} {hora} {dia} * *";
 
                 case "Anual":
-                    return Cron.Yearly();
+                    return $"{minuto} {hora} {dia} {mes} *";
 
                 default:
                     throw new ArgumentException("Frecuencia no válida");

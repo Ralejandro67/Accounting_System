@@ -101,6 +101,10 @@ namespace PupuseriaSalvadorena.Controllers
 
                 if (cuenta.TotalPagado == PorPagar || PorPagar == 0)
                 {
+                    if (detalleCuenta.Count > 0) {
+                        await _detallesCuentaRep.EliminarDetallesCuentaporPagar(cuenta.IdCuentaPagar);
+                    }
+
                     await _cuentaPagarRep.EliminarCuentaPagar(id);
                     return Json(new { success = true, message = "Cuenta por pagar eliminada correctamente." });
                 }

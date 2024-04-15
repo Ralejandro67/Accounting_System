@@ -353,11 +353,13 @@ function actualizarEstadoFacturaE() {
     $('#FacturaE').val(isElectronicaSelected ? 'true' : 'false');
 
     if (isElectronicaSelected) {
+        $('#idCedula').val('CF');
         $('#Identificacion').val('');
         $('#Telefono').val('');
         $('#Cliente').val('');
         $('#Correo').val('');
     } else {
+        $('#idCedula').val('');
         $('#Identificacion').val('0');
         $('#Telefono').val('00000000');
         $('#Cliente').val('Consumidor final');
@@ -443,9 +445,46 @@ document.addEventListener('click', function (e) {
         $('button').prop('disabled', true);
 
         var platillos = document.getElementById('platillosContenedor').querySelectorAll('.platilloRow');
+        var tipoCedula = document.getElementById('idCedula').value;
+        var cedula = document.getElementById('Identificacion').value;
         var telefono = document.getElementById('Telefono').value;
 
+        var regexCedulaCF = /^[0-9]{9}$/;
+        var regexCedulaDIMEX = /^[1-9]{12}$/;
+        var regexCedulaNITE = /^[1-9]{10}$/;
         var regexTel = /^[0-9]{8}$/;
+
+        if (tipoCedula === 'CF') {
+            if (!regexCedulaCF.test(cedula)) {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'La identificacion debe contener 9 dígitos.',
+                    icon: 'warning',
+                    confirmButtonColor: '#0DBCB5'
+                })
+                return;
+            }
+        } else if (tipoCedula === 'DIMEX') {
+            if (!regexCedulaDIMEX.test(cedula)) {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'La identificacion debe contener 12 dígitos.',
+                    icon: 'warning',
+                    confirmButtonColor: '#0DBCB5'
+                })
+                return;
+            }
+        } else if (tipoCedula === 'NITE' || tipoCedula === 'CJ') {
+            if (!regexCedulaNITE.test(cedula)) {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'La identificacion debe contener 10 dígitos.',
+                    icon: 'warning',
+                    confirmButtonColor: '#0DBCB5'
+                })
+                return;
+            }
+        }
 
         if (!regexTel.test(telefono)) {
             Swal.fire({

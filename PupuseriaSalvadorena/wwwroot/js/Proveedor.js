@@ -254,7 +254,7 @@ document.querySelectorAll('.delete-Proveedor').forEach(button => {
                         if (data.success) {
                             Swal.fire({
                                 title: '¡Eliminado!',
-                                text: 'El impuesto ha sido eliminado.',
+                                text: data.message,
                                 icon: 'success',
                                 confirmButtonColor: '#0DBCB5'
                             }).then(() => {
@@ -263,7 +263,7 @@ document.querySelectorAll('.delete-Proveedor').forEach(button => {
                         } else {
                             Swal.fire({
                                 title: 'Error',
-                                text: 'Hubo un problema al eliminar el impuesto.',
+                                text: data.message,
                                 icon: 'error',
                                 confirmButtonColor: '#0DBCB5'
                             });

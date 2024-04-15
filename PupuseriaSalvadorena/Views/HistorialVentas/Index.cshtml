@@ -62,7 +62,7 @@
             @foreach (var item in Model) {
                 <tr>
                     <td>
-                        @Convert.ToInt32(Math.Floor(item.Consecutivo))
+                        @Convert.ToInt64(Math.Floor(item.Consecutivo))
                     </td>
                     <td>
                         @item.FechaFactura.ToString("dd/MM/yyyy")

@@ -24,7 +24,7 @@
                     Facturas de Venta
                 </h1>
                 <br />
-                <p>Realiza tu facturacion de ventas de forma sencilla y rapida. Puedes ver el detalle de tus facturas, editarlas, imprimirlas y realizar el envio de las mismas a tus clientes.</p>
+                <p>Realiza tu facturacion de ventas de forma sencilla y rapida. Puedes ver el detalle de tus facturas, anularlas, imprimirlas y realizar el envio de las mismas a tus clientes.</p>
             </div>
             <div class="text-right" style="width: 40%;">
                 <button type="button" class="btn btn-primary nav-link-icon" id="AddFacturaVenta" >
@@ -114,7 +114,7 @@
             @foreach (var item in Model) {
                 <tr>
                     <td>
-                        @Convert.ToInt32(Math.Floor(item.Consecutivo))
+                        @Convert.ToInt64(Math.Floor(item.Consecutivo))
                     </td>
                     <td>
                         @item.FechaFactura.ToString("dd/MM/yyyy")

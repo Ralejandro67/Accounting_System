@@ -114,7 +114,7 @@ namespace PupuseriaSalvadorena.Controllers
                 decimal totalVentas = 0;
                 int cantTotal = 0;
 
-                var idPronostico = await _pronosticoRep.CrearPronostico(pronostico.IdPlatillo.Value, pronostico.FechaInicio, pronostico.FechaFinal, pronostico.CantTotalProd, pronostico.TotalVentas);
+                var idPronostico = await _pronosticoRep.CrearPronostico(pronostico.IdPlatillo.Value, fechaNext, pronostico.FechaFinal, pronostico.CantTotalProd, pronostico.TotalVentas);
 
                 foreach (var pronosticoDiario in pronosticos)
                 {

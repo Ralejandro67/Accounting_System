@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 y: {
                     beginAtZero: true,
                     ticks: {
-                        stepSize: 25000
+                        stepSize: 500000
                     }
                 }
             },
@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function () {
         data: {
             labels: fechasPronosticos,
             datasets: [{
-                label: 'Pronosticos',
+                label: 'Ventas',
                 data: cantPVentas,
                 backgroundColor: 'rgba(95, 189, 255, 1)',
                 borderWidth: 1

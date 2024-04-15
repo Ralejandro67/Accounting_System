@@ -72,11 +72,11 @@ namespace PupuseriaSalvadorena.Controllers
             ViewBag.Meses = facturasInvertidas.Select(x => new DateTime(x.Año, x.Mes, 1).ToString("MMM yyyy", cultura)).ToList();
             ViewBag.ventasPorMes = facturasInvertidas.Select(x => x.TotalVentasMes).ToList();
 
-            ViewBag.totalVentas = facturaVentas.Sum(f => f.TotalVenta);
+            ViewBag.totalVentas = facturaVentas.Where(f => f.Estado == true).Sum(f => f.TotalVenta);
             ViewBag.totalVentasMes = facturasPorMes.FirstOrDefault()?.TotalVentasMes ?? 0;
             ViewBag.facturasMes = facturasPorMes.FirstOrDefault()?.Cantidad ?? 0;
             ViewBag.mesActual = cultura.DateTimeFormat.GetMonthName(fecha.Month);
-            ViewBag.facturas = facturaVentas.Count();
+            ViewBag.facturas = facturaVentas.Where(f => f.Estado == true).Count();
 
             return View(facturasMesActual); 
         }
@@ -214,7 +214,7 @@ namespace PupuseriaSalvadorena.Controllers
                                 if (envio)
                                 {
                                     await _envioFacturaRep.CrearEnvioFactura(facturaVenta.FechaFactura, facturaId, facturaVenta.Identificacion.Value, facturaVenta.NombreCliente, facturaVenta.CorreoElectronico, facturaVenta.Telefono.Value);
-                                    return Json(new { success = true, message = "Factura generada y enviada correctamente." });
+                                    return Json(new { success = true, message = $"Factura: {facturaVenta.Consecutivo} generada y enviada correctamente." });
                                 }
                             }
 

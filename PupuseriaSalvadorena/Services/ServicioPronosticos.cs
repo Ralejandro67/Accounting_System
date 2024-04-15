@@ -9,9 +9,10 @@ namespace PupuseriaSalvadorena.Services
     {
         public List<PronosticoDiario> CalcularPronosticoHoltWinters(HistorialVenta[] ventasHistoricas)
         {
-            double alpha = 0.8;
-            double beta = 0.6;
-            double gamma = 0.7;
+            DateTime fechaInicio = DateTime.Now.AddDays(1);
+            double alpha = 0.9;
+            double beta = 0.3;
+            double gamma = 0.9;
             int estacionalidad = 7;
 
             var ventasPorDia = ventasHistoricas
@@ -36,20 +37,27 @@ namespace PupuseriaSalvadorena.Services
                 estacionalidades[i] = ventasPorDia[i].TotalVentas / nivel;
             }
 
+            DayOfWeek startDayOfWeek = fechaInicio.DayOfWeek;
+            DayOfWeek firstDataDayOfWeek = ventasPorDia[0].Fecha.DayOfWeek;
+            int desplazamientoInicio = (int)(startDayOfWeek - firstDataDayOfWeek + 7) % 7;
+
             for (int i = estacionalidad; i < ventasPorDia.Count; i++)
             {
                 var ventaActual = ventasPorDia[i].TotalVentas;
 
-                double valorDesestacionalizado = ventaActual / estacionalidades[i % estacionalidad];
+                double valorDesestacionalizado = ventaActual / estacionalidades[(i + desplazamientoInicio) % estacionalidad];
                 double nivelAnterior = nivel;
 
                 nivel = alpha * valorDesestacionalizado + (1 - alpha) * (nivel + tendencia);
                 tendencia = beta * (nivel - nivelAnterior) + (1 - beta) * tendencia;
-                estacionalidades[i % estacionalidad] = gamma * (ventaActual / nivel) + (1 - gamma) * estacionalidades[i % estacionalidad];
-                
-                double pronostico = (nivel + tendencia) * estacionalidades[i % estacionalidad];
+                estacionalidades[(i + desplazamientoInicio) % estacionalidad] = gamma * (ventaActual / nivel) + (1 - gamma) * estacionalidades[(i + desplazamientoInicio) % estacionalidad];
+
+                double pronostico = (nivel + tendencia) * estacionalidades[(i + desplazamientoInicio) % estacionalidad];
                 pronosticosDiarios.Add(new PronosticoDiario { CantVenta = (int)Math.Round(pronostico) });
             }
+
+            int DiaInicio = (int)fechaInicio.DayOfWeek;
+            pronosticosDiarios.RemoveRange(0, DiaInicio);
 
             return pronosticosDiarios;
         }
