@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using ClosedXML.Excel;
@@ -205,6 +206,13 @@ namespace PupuseriaSalvadorena.Controllers
                 var worksheet = workbook.Worksheets.Add("Declaracion");
                 var currentRow = 1;
 
+                CultureInfo ci = new CultureInfo("es-CR");
+
+                worksheet.Range("A1:D2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                worksheet.Range("A1:D2").Style.Border.SetOutsideBorder(XLBorderStyleValues.Thin);
+                worksheet.Range("A1:D2").Style.Border.SetInsideBorder(XLBorderStyleValues.Thin);
+                worksheet.Range("A1:D1").Style.Font.Bold = true;
+
                 worksheet.Cell(currentRow, 1).Value = "Valor Total";
                 worksheet.Cell(currentRow, 2).Value = "Impuestos de Renta (2%)";
                 worksheet.Cell(currentRow, 3).Value = "Impuestos IVA (4%)";
@@ -215,14 +223,19 @@ namespace PupuseriaSalvadorena.Controllers
                 worksheet.Cell(currentRow, 2).Value = declaracionImpuesto.MontoRenta;
                 worksheet.Cell(currentRow, 3).Value = declaracionImpuesto.MontoIVA;
                 worksheet.Cell(currentRow, 4).Value = declaracionImpuesto.MontoTotalImpuestos;
+                worksheet.Range("A2:D2").Style.NumberFormat.Format = ci.NumberFormat.CurrencySymbol + " #,##0.00";
 
                 currentRow += 2;
-                worksheet.Cell(currentRow, 1).Value = "ID Factura";
+                worksheet.Cell(currentRow, 1).Value = "ID";
                 worksheet.Cell(currentRow, 2).Value = "Fecha";
                 worksheet.Cell(currentRow, 3).Value = "Descripcion";
                 worksheet.Cell(currentRow, 4).Value = "Cantidad";
-                worksheet.Cell(currentRow, 5).Value = "Debito";
-                worksheet.Cell(currentRow, 6).Value = "Tipo de Transaccion";
+                worksheet.Cell(currentRow, 5).Value = "Monto Transaccion";
+                worksheet.Cell(currentRow, 6).Value = "Tipo";
+
+                worksheet.Range("A4:F4").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                worksheet.Range("A4:F4").Style.Border.SetOutsideBorder(XLBorderStyleValues.Thin);
+                worksheet.Range("A4:F4").Style.Font.Bold = true;
 
                 foreach (var transaccionesImpuestos in transacciones)
                 {
@@ -231,9 +244,15 @@ namespace PupuseriaSalvadorena.Controllers
                     worksheet.Cell(currentRow, 2).Value = transaccionesImpuestos.FechaTrans.ToString("dd/MM/yyyy");
                     worksheet.Cell(currentRow, 3).Value = transaccionesImpuestos.DescripcionTransaccion;
                     worksheet.Cell(currentRow, 4).Value = transaccionesImpuestos.Cantidad;
+                    worksheet.Cell(currentRow, 5).Style.NumberFormat.Format = ci.NumberFormat.CurrencySymbol + " #,##0.00";
                     worksheet.Cell(currentRow, 5).Value = transaccionesImpuestos.Monto;
                     worksheet.Cell(currentRow, 6).Value = transaccionesImpuestos.TipoTransac;
                 }
+
+                worksheet.Range("A5:F" + currentRow).Style.Border.SetOutsideBorder(XLBorderStyleValues.Thin);
+                worksheet.Range("A5:F" + currentRow).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                worksheet.Range("A4:F4").SetAutoFilter();
+                worksheet.Columns().AdjustToContents();
 
                 using (var stream = new MemoryStream())
                 {

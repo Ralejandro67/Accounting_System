@@ -504,7 +504,7 @@ namespace PupuseriaSalvadorena.Controllers
             }
         }
 
-        // Reporte Facturas
+        // Reporte Facturas Excel o Pdf
         public async Task<IActionResult> ReporteFacturas(FacturaVenta facturaVenta)
         {
             var facturas = await _facturaVentaRep.MostrarFacturasVentas();
@@ -543,35 +543,57 @@ namespace PupuseriaSalvadorena.Controllers
                 {
                     using (var workbook = new XLWorkbook())
                     {
-                        var worksheet = workbook.Worksheets.Add("Reporte de Ventas");
+                        CultureInfo ci = new CultureInfo("es-CR");
+
+                        var worksheet = workbook.Worksheets.Add("Ventas");
                         var currentRow = 1;
-                        worksheet.Cell(currentRow, 1).Value = "ID Factura";
+
+                        worksheet.Cell(currentRow, 1).Value = "ID";
                         worksheet.Cell(currentRow, 2).Value = "Consecutivo";
                         worksheet.Cell(currentRow, 3).Value = "Fecha";
                         worksheet.Cell(currentRow, 4).Value = "Tipo de Pago";
                         worksheet.Cell(currentRow, 5).Value = "SubTotal Venta";
                         worksheet.Cell(currentRow, 6).Value = "Total Venta";
 
+                        worksheet.Range("A1:F1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                        worksheet.Range("A1:F1").Style.Border.SetOutsideBorder(XLBorderStyleValues.Thin);
+                        worksheet.Range("A1:F1").Style.Font.Bold = true;
+
                         foreach (var factura in viewModel.Facturas)
                         {
                             currentRow++;
                             worksheet.Cell(currentRow, 1).Value = factura.IdFacturaVenta;
+                            worksheet.Cell(currentRow, 2).Style.NumberFormat.Format = " ###0";
                             worksheet.Cell(currentRow, 2).Value = factura.Consecutivo;
                             worksheet.Cell(currentRow, 3).Value = factura.FechaFactura.ToString("dd/MM/yyyy");
                             worksheet.Cell(currentRow, 4).Value = factura.NombrePago;
+                            worksheet.Cell(currentRow, 5).Style.NumberFormat.Format = ci.NumberFormat.CurrencySymbol + " #,##0.00";
                             worksheet.Cell(currentRow, 5).Value = factura.SubTotal;
+                            worksheet.Cell(currentRow, 6).Style.NumberFormat.Format = ci.NumberFormat.CurrencySymbol + " #,##0.00";
                             worksheet.Cell(currentRow, 6).Value = factura.TotalVenta;
                         }
 
+                        worksheet.Range("A2:F" + currentRow).Style.Border.SetOutsideBorder(XLBorderStyleValues.Thin);
+                        worksheet.Range("A2:F" + currentRow).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                        worksheet.Range("A1:F" + currentRow).SetAutoFilter();
+
                         currentRow++;
-                        worksheet.Cell(currentRow, 5).Value = "Total Ventas";
+                        worksheet.Cell(currentRow, 1).Value = "Total Ventas";
                         worksheet.Cell(currentRow, 6).Value = viewModel.TotalVentas;
+                        worksheet.Cell(currentRow, 6).Style.NumberFormat.Format = ci.NumberFormat.CurrencySymbol + " #,##0.00";
+                        worksheet.Range("A" + currentRow + ":" + "F" + currentRow).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                        worksheet.Range("A" + currentRow + ":" + "F" + currentRow).Style.Font.Bold = true;
+                        worksheet.Range("A" + currentRow + ":" + "E" + currentRow).Style.Border.SetOutsideBorder(XLBorderStyleValues.Thin);
+                        worksheet.Cell(currentRow, 6).Style.Border.SetOutsideBorder(XLBorderStyleValues.Thin);
+                        worksheet.Range("A" + currentRow + ":" + "E" + currentRow).Merge();
+
+                        worksheet.Columns().AdjustToContents();
 
                         using (var stream = new MemoryStream())
                         {
                             workbook.SaveAs(stream);
                             var content = stream.ToArray();
-                            return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"ReporteVentas_{mes}.xlsx");
+                            return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"Reporte Ventas {mes}.xlsx");
                         }
                     }
                 }

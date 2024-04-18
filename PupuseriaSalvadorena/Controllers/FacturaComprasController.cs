@@ -14,6 +14,7 @@ using PupuseriaSalvadorena.Repositorios.Interfaces;
 using PupuseriaSalvadorena.ViewModels;
 using Rotativa.AspNetCore;
 using PupuseriaSalvadorena.Filtros;
+using System.Text.RegularExpressions;
 
 namespace PupuseriaSalvadorena.Controllers
 {
@@ -209,6 +210,7 @@ namespace PupuseriaSalvadorena.Controllers
             }
         }
 
+        // Descargar Factura
         [HttpGet("FacturaCompras/DescargarFactura/{IdFactura}")]
         public async Task<IActionResult> DescargarFactura(string IdFactura)
         {
@@ -238,6 +240,7 @@ namespace PupuseriaSalvadorena.Controllers
             return Json(new SelectList(materiasPrimas, "IdMateriaPrima", "NombreMateriaPrima"));
         }
 
+        // Reporte de Facturas Excel o Pdf
         public async Task<IActionResult> ReporteFacturas(FacturaCompra facturaCompra)
         {
             var facturas = await _facturaCompraRep.MostrarFacturasCompras();
@@ -264,7 +267,7 @@ namespace PupuseriaSalvadorena.Controllers
             {
                 return new ViewAsPdf("DescargarFacturaCompras", viewModel)
                 {
-                    FileName = $"Reporte_Compras_{mes}.pdf",
+                    FileName = $"Reporte Compras {mes}.pdf",
                     PageSize = Rotativa.AspNetCore.Options.Size.Letter,
                     PageMargins = new Rotativa.AspNetCore.Options.Margins(15, 12, 12, 12)
                 };
@@ -275,14 +278,21 @@ namespace PupuseriaSalvadorena.Controllers
                 {
                     using (var workbook = new XLWorkbook())
                     {
-                        var worksheet = workbook.Worksheets.Add("Reporte de Compras");
+                        var worksheet = workbook.Worksheets.Add("Compras");
                         var currentRow = 1;
+
+                        CultureInfo ci = new CultureInfo("es-CR");
+
                         worksheet.Cell(currentRow, 1).Value = "ID";
                         worksheet.Cell(currentRow, 2).Value = "Producto";
                         worksheet.Cell(currentRow, 3).Value = "Fecha";
                         worksheet.Cell(currentRow, 4).Value = "Pago";
-                        worksheet.Cell(currentRow, 5).Value = "Total Compra";
+                        worksheet.Cell(currentRow, 5).Value = "Monto Compra";
                         worksheet.Cell(currentRow, 6).Value = "Detalles";
+
+                        worksheet.Range("A1:F1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                        worksheet.Range("A1:F1").Style.Border.SetOutsideBorder(XLBorderStyleValues.Thin);
+                        worksheet.Range("A1:F1").Style.Font.Bold = true;
 
                         foreach (var factura in viewModel.Facturas)
                         {
@@ -291,19 +301,33 @@ namespace PupuseriaSalvadorena.Controllers
                             worksheet.Cell(currentRow, 2).Value = factura.NombreMateriaPrima;
                             worksheet.Cell(currentRow, 3).Value = factura.FechaFactura.ToString("dd/MM/yyyy");
                             worksheet.Cell(currentRow, 4).Value = factura.NombrePago;
+                            worksheet.Cell(currentRow, 5).Style.NumberFormat.Format = ci.NumberFormat.CurrencySymbol + " #,##0.00";
                             worksheet.Cell(currentRow, 5).Value = factura.TotalCompra;
                             worksheet.Cell(currentRow, 6).Value = factura.DetallesCompra;
                         }
 
+                        worksheet.Range("A2:F" + currentRow).Style.Border.SetOutsideBorder(XLBorderStyleValues.Thin);
+                        worksheet.Range("A2:F" + currentRow).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                        worksheet.Range("A1:F" + currentRow).SetAutoFilter();
+
                         currentRow++;
-                        worksheet.Cell(currentRow, 4).Value = "Total Ventas";
-                        worksheet.Cell(currentRow, 5).Value = viewModel.TotalVentas;
+                        worksheet.Cell(currentRow, 1).Value = "Total Compras";
+                        worksheet.Cell(currentRow, 4).Value = viewModel.TotalVentas;
+                        worksheet.Cell(currentRow, 4).Style.NumberFormat.Format = ci.NumberFormat.CurrencySymbol + " #,##0.00";
+                        worksheet.Range("A" + currentRow + ":" + "C" + currentRow).Style.Border.SetOutsideBorder(XLBorderStyleValues.Thin);
+                        worksheet.Range("D" + currentRow + ":" + "F" + currentRow).Style.Border.SetOutsideBorder(XLBorderStyleValues.Thin);
+                        worksheet.Range("A" + currentRow + ":" + "F" + currentRow).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                        worksheet.Range("A" + currentRow + ":" + "F" + currentRow).Style.Font.Bold = true;
+                        worksheet.Range("A" + currentRow + ":" + "C" + currentRow).Merge();
+                        worksheet.Range("D" + currentRow + ":" + "F" + currentRow).Merge();
+
+                        worksheet.Columns().AdjustToContents();
 
                         using (var stream = new MemoryStream())
                         {
                             workbook.SaveAs(stream);
                             var content = stream.ToArray();
-                            return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"Reporte_Compras_{mes}.xlsx");
+                            return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"Reporte Compras {mes}.xlsx");
                         }
                     }
                 }

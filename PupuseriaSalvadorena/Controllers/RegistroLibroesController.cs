@@ -196,6 +196,8 @@ namespace PupuseriaSalvadorena.Controllers
                 var worksheet = workbook.Worksheets.Add("Libro Contable");
                 var currentRow = 3;
 
+                CultureInfo ci = new CultureInfo("es-CR");
+
                 worksheet.Cell("A1").Value = "Ingresos";
                 worksheet.Cell("A1").Style.Font.Bold = true;
                 worksheet.Range("A1:B1").Merge();
@@ -205,6 +207,7 @@ namespace PupuseriaSalvadorena.Controllers
                 worksheet.Cell("B2").Value = "Valor";
                 worksheet.Cell("B2").Style.Font.Bold = true;
                 worksheet.Cell(currentRow, 1).Value = cantIngresos;
+                worksheet.Cell(currentRow, 2).Style.NumberFormat.Format = ci.NumberFormat.CurrencySymbol + " #,##0.00";
                 worksheet.Cell(currentRow, 2).Value = Ingresos;
 
                 worksheet.Cell("C1").Value = "Egresos";
@@ -216,6 +219,7 @@ namespace PupuseriaSalvadorena.Controllers
                 worksheet.Cell("D2").Value = "Valor";
                 worksheet.Cell("D2").Style.Font.Bold = true;
                 worksheet.Cell(currentRow, 3).Value = cantEgresos;
+                worksheet.Cell(currentRow, 4).Style.NumberFormat.Format = ci.NumberFormat.CurrencySymbol + " #,##0.00";
                 worksheet.Cell(currentRow, 4).Value = Egresos;
 
                 worksheet.Cell("E1").Value = "Saldo";
@@ -227,19 +231,22 @@ namespace PupuseriaSalvadorena.Controllers
                 worksheet.Cell("F2").Value = "Valor";
                 worksheet.Cell("F2").Style.Font.Bold = true;
                 worksheet.Cell(currentRow, 5).Value = totales;
+                worksheet.Cell(currentRow, 6).Style.NumberFormat.Format = ci.NumberFormat.CurrencySymbol + " #,##0.00";
                 worksheet.Cell(currentRow, 6).Value = registroLibro.MontoTotal;
 
-                worksheet.Range("A1:F2").Style.Border.SetOutsideBorder(XLBorderStyleValues.Thick);
+                worksheet.Range("A1:F3").Style.Border.SetOutsideBorder(XLBorderStyleValues.Thin);
+                worksheet.Range("A1:F3").Style.Border.SetInsideBorder(XLBorderStyleValues.Thin);
 
                 currentRow += 2;
-                worksheet.Cell(currentRow, 1).Value = "ID Factura";
+                worksheet.Cell(currentRow, 1).Value = "ID";
                 worksheet.Cell(currentRow, 2).Value = "Fecha";
                 worksheet.Cell(currentRow, 3).Value = "Descripcion";
                 worksheet.Cell(currentRow, 4).Value = "Cantidad";
-                worksheet.Cell(currentRow, 5).Value = "Debito";
-                worksheet.Cell(currentRow, 6).Value = "Tipo de Transaccion";
-                worksheet.Range("A5:F5").Style.Font.Bold = true;
-                worksheet.Range("A5:F5").Style.Border.SetOutsideBorder(XLBorderStyleValues.Thick);
+                worksheet.Cell(currentRow, 5).Value = "Monto Transaccion";
+                worksheet.Cell(currentRow, 6).Value = "Categoria";
+                worksheet.Cell(currentRow, 7).Value = "Tipo";
+                worksheet.Range("A5:G5").Style.Font.Bold = true;
+                worksheet.Range("A5:G5").Style.Border.SetOutsideBorder(XLBorderStyleValues.Thin);
 
                 foreach (var transaccionesLibro in transacciones)
                 {
@@ -248,9 +255,17 @@ namespace PupuseriaSalvadorena.Controllers
                     worksheet.Cell(currentRow, 2).Value = transaccionesLibro.FechaTrans.ToString("dd/MM/yyyy");
                     worksheet.Cell(currentRow, 3).Value = transaccionesLibro.DescripcionTransaccion;
                     worksheet.Cell(currentRow, 4).Value = transaccionesLibro.Cantidad;
+                    worksheet.Cell(currentRow, 5).Style.NumberFormat.Format = ci.NumberFormat.CurrencySymbol + " #,##0.00";
                     worksheet.Cell(currentRow, 5).Value = transaccionesLibro.Monto;
                     worksheet.Cell(currentRow, 6).Value = transaccionesLibro.TipoTransac;
+                    worksheet.Cell(currentRow, 7).Value = transaccionesLibro.NombreMov;
                 }
+
+                worksheet.Range("A5:G5").SetAutoFilter();
+                worksheet.Columns().AdjustToContents();
+                worksheet.Range("A1:G5").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                worksheet.Range("A6:G" + currentRow).Style.Border.SetOutsideBorder(XLBorderStyleValues.Thin);
+                worksheet.Range("A6:G" + currentRow).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
                 using (var stream = new MemoryStream())
                 {
