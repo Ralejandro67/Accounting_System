@@ -1,17 +1,17 @@
-name: Build and deploy .NET Core application to Web App PupuseriaSalvadorena20240418004530
+name: Build and deploy .NET Core application to Web App PupuseriaSalvadorena
 on:
   push:
     branches:
     - master
 env:
-  AZURE_WEBAPP_NAME: PupuseriaSalvadorena20240418004530
-  AZURE_WEBAPP_PACKAGE_PATH: ./published
+  AZURE_WEBAPP_NAME: PupuseriaSalvadorena
+  AZURE_WEBAPP_PACKAGE_PATH: .\published
   CONFIGURATION: Release
   DOTNET_CORE_VERSION: 7.0.x
   WORKING_DIRECTORY: .
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v3
     - name: Setup .NET SDK
@@ -32,7 +32,7 @@ jobs:
         name: webapp
         path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     needs: build
     steps:
     - name: Download artifact from build job
@@ -44,5 +44,5 @@ jobs:
       uses: azure/webapps-deploy@v2
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
-        publish-profile: ${{ secrets.PupuseriaSalvadorena20240418004530_97A0 }}
+        publish-profile: ${{ secrets.PupuseriaSalvadorena_3158 }}
         package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
