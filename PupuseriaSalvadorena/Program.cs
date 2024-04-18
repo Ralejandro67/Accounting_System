@@ -68,7 +68,7 @@ builder.Services.AddSession(options =>
 
 var app = builder.Build();
 
-RotativaConfiguration.Setup(Path.Combine("D:\\home\\site\\wwwroot", "Rotativa", "Windows"));
+RotativaConfiguration.Setup(Path.Combine("C:\\home\\site\\wwwroot", "Rotativa", "Windows"));
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
