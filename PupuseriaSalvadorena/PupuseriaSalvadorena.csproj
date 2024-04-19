@@ -16,8 +16,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Remove="wwwroot\Rotativa\Windows\wkhtmltoimage.exe" />
-    <Content Remove="wwwroot\Rotativa\Windows\wkhtmltopdf.exe" />
+    <Content Include="wwwroot\Rotativa\Windows\wkhtmltoimage.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="wwwroot\Rotativa\Windows\wkhtmltopdf.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -47,11 +53,6 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\Images\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="wwwroot\Rotativa\Windows\wkhtmltoimage.exe" />
-    <None Include="wwwroot\Rotativa\Windows\wkhtmltopdf.exe" />
   </ItemGroup>
 
 </Project>
