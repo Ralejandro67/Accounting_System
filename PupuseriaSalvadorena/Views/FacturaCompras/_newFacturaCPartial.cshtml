@@ -43,7 +43,7 @@
     <fieldset id="CamposProducto">
         <legend id="productoCampos">Producto</legend>
         <div class="row">
-            <div class="col-md-5">
+            <div class="col-md-6">
                 <div class="form-group" id="campoProveedor">
                     <label class="control-label">Proveedor</label>
                     <select asp-for="IdProveedor" asp-items="@ViewBag.Proveedores" class="form-control">
@@ -52,7 +52,7 @@
                     <span asp-validation-for="IdProveedor" class="text-danger"></span>
                 </div>
             </div>
-            <div class="col-md-5">
+            <div class="col-md-6">
                 <div class="form-group">
                     <label class="control-label">Materia Prima</label>
                     <select asp-for="IdMateriaPrima" class="form-control" id="IdMateriaPrima">
@@ -61,16 +61,9 @@
                     <span asp-validation-for="IdMateriaPrima" class="text-danger"></span>
                 </div>
             </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label class="control-label">Cant.</label>
-                    <input asp-for="Cantidad" class="form-control" min="1" id="Cant"/>
-                    <span asp-validation-for="Cantidad" class="text-danger"></span>
-                </div>
-            </div>
         </div>
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-5">
                 <div class="form-group">
                     <label class="control-label">Monto de la Compra</label>
                     <div class="input-group">
@@ -80,7 +73,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <div class="form-group">
                     <label class="control-label">Peso</label>
                     <div class="input-group">
@@ -88,6 +81,13 @@
                         <input id="Peso" name="Peso" class="form-control" placeholder="0.00" />
                         <span asp-validation-for="Peso" class="text-danger"></span>
                     </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="control-label">Cant.</label>
+                    <input asp-for="Cantidad" class="form-control" min="1" id="Cant" />
+                    <span asp-validation-for="Cantidad" class="text-danger"></span>
                 </div>
             </div>
         </div>
