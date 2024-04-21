@@ -7,6 +7,7 @@ $(document).ready(function () {
             success: function (result) {
                 $('#newDetallesTModal .modal-body').html(result);
                 $('#newDetallesTModal').modal('show');
+                $('[data-toggle="tooltip"]').tooltip();
                 inicializarInputMonto();
                 toggleRecurrenceFields();
             },

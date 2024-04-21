@@ -39,8 +39,8 @@ namespace PupuseriaSalvadorena.Controllers
         public async Task<IActionResult> Index()
         {
             var cultura = new CultureInfo("es-ES");
-            var ultimos3Meses = DateTime.Today.AddMonths(-3);
-            var ultimas4Semenas = DateTime.Today.AddDays(-28);
+            var ultimos3Meses = DateTime.Today.AddMonths(-4);
+            var ultimas4Semenas = DateTime.Today.AddDays(-21);
             var fechaActual = DateTime.Today;
             var añoActual = fechaActual.Year;
             var mesActual = fechaActual.Month;
