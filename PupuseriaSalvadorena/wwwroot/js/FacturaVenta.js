@@ -17,10 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
         options: {
             scales: {
                 y: {
-                    beginAtZero: true,
-                    ticks: {
-                        stepSize: 500000 
-                    }
+                    beginAtZero: true
                 }
             },
             responsive: true,
