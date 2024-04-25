@@ -20,7 +20,9 @@
     <header>
         <nav id="topbar" class="navbar navbar-expand-lg">
             <div class="container-fluid d-flex justify-content-between" id="topbarMenu">
-                <img src="~/Images/Logo.png" alt="Logo de Pupuseria Salvadoreña" style="height: 45px;" id="iconEmpresa"/>
+                <a asp-area="" asp-controller="Home" asp-action="Index">
+                    <img src="~/Images/Logo.png" alt="Logo de Pupuseria Salvadoreña" style="height: 45px;" id="iconEmpresa"/>
+                </a>
                 <div style="display: flex;">
                     <button type="button" class="btn btn-primary nav-link-icon2 dropdown-toggle" id="dropdownNotificaciones" data-bs-toggle="dropdown" aria-expanded="false">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bell-fill" viewBox="0 0 16 16" id="iconSesion">
@@ -71,6 +73,7 @@
                                                 <ul class="list-unstyled">
                                                     <li><a class="dropdown-item" asp-area="" asp-controller="Impuestos" asp-action="Index">Impuestos</a></li>
                                                     <li><a class="dropdown-item" asp-area="" asp-controller="DeclaracionImpuestoes" asp-action="Index">Declaraciones</a></li>
+                                                    <li><a class="dropdown-item" asp-area="" asp-controller="TipoTransacciones" asp-action="Index">Tipos de Transacciones</a></li>
                                                 </ul>
                                             </div>
                                         </div>
@@ -203,7 +206,6 @@
                                                         <li><a class="dropdown-item" asp-area="" asp-controller="Usuarios" asp-action="Index">Usuarios</a></li>
                                                         <li><a class="dropdown-item" asp-area="" asp-controller="TipoPagos" asp-action="Index">Tipos de Pago</a></li>
                                                         <li><a class="dropdown-item" asp-area="" asp-controller="TipoVentas" asp-action="Index">Tipos de Ventas</a></li>
-                                                        <li><a class="dropdown-item" asp-area="" asp-controller="TipoTransacciones" asp-action="Index">Tipos de Transacciones</a></li>
                                                     </ul>
                                                 </div>
                                             </div>
@@ -243,6 +245,7 @@
                                         <ul class="list-unstyled">
                                             <li><a class="dropdown-item" asp-area="" asp-controller="Impuestos" asp-action="Index">Impuestos</a></li>
                                             <li><a class="dropdown-item" asp-area="" asp-controller="DeclaracionImpuestoes" asp-action="Index">Declaraciones</a></li>
+                                            <li><a class="dropdown-item" asp-area="" asp-controller="TipoTransacciones" asp-action="Index">Tipos de Transacciones</a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -375,7 +378,6 @@
                                                 <li><a class="dropdown-item" asp-area="" asp-controller="Usuarios" asp-action="Index">Usuarios</a></li>
                                                 <li><a class="dropdown-item" asp-area="" asp-controller="TipoPagos" asp-action="Index">Tipos de Pago</a></li>
                                                 <li><a class="dropdown-item" asp-area="" asp-controller="TipoVentas" asp-action="Index">Tipos de Ventas</a></li>
-                                                <li><a class="dropdown-item" asp-area="" asp-controller="TipoTransacciones" asp-action="Index">Tipos de Transacciones</a></li>
                                             </ul>
                                         </div>
                                     </div>
