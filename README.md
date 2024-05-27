@@ -1,2 +1,9 @@
-# Sistema Contable
-Prueba
+# Sistema Contable / Accounting System
+## Descripcion / Description
+¡Bienvenido al codigo fuente de mi sitema contable! La solución que desarrollado esta centrada en poder simplificar y optimizar procesos contables, como el gestionamiento de impuestos, conciliacion bancaria, facturacion, cuentas por pagar, presupuestos y generacion de pronosticos sobre ventas. Este proyecto fue originalmente desarrollado para un restaurante, por lo tanto, los distintos procesos que realiza el sistema van dirigidos hacia la empresa, brindándoles las herramientas necesarias para manejar sus finanzas con precisión y eficiencia.
+
+El repositorio que se esta presentando es una copia del repositorio original, en donde, por motivos de seguridad, se han omitido y eliminado ciertos documentos y campos dentro del codigo con el fin de proteger la aplicacion original, por lo tanto si deseas clonar el repositorio ten presente que este no funcionaria debido a la omision de ciertos documentos.
+
+Welcome to the source code of my accounting system! The solution I have developed focuses on simplifying and optimizing accounting processes, such as tax management, bank reconciliation, invoicing, accounts payable, budgeting, and generating sales forecasts. This project was originally developed for a restaurant, therefore, the various processes carried out by the system are aimed at the company, providing them with the necessary tools to manage their finances with precision and efficiency.
+
+The repository presented here is a copy of the original repository, where, for security reasons, certain documents and fields within the code have been omitted and removed to protect the original application. Therefore, if you wish to clone the repository, please note that it will not function due to the omission of certain documents.
