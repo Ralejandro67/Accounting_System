@@ -1,11 +1,7 @@
 # Sistema Contable / Accounting System
 
-## Tabla de Contenidos
-
-- [Descripción](#descripción)
-- [Características / Characteristics](#características--characteristics)
-
 ## Descripción / Description
+
 ### Español
 ¡Bienvenido al codigo fuente de mi sistema contable! 
 
