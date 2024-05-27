@@ -178,11 +178,11 @@ namespace PupuseriaSalvadorena.Controllers
 
                 using (var client = new HttpClient())
                 {
-                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", "cmFsZWphbmRybzY3QGdtYWlsLmNvbToxOTU4ZjIwZTBhNTJjMTc1YjM3ZQ==");
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue();
                     try
                     {
-                        var content = new StringContent(JsonConvert.SerializeObject(factura), Encoding.UTF8, "application/json");
-                        var response = await client.PostAsync("https://api.alegra.com/api/v1/invoices", content);
+                        var content = new StringContent();
+                        var response = await client.PostAsync();
 
                         if (response.IsSuccessStatusCode)
                         {
@@ -318,7 +318,7 @@ namespace PupuseriaSalvadorena.Controllers
         // Anular Factura
         private async Task<bool> AnularFactura(int idFactura)
         {
-            string requestUri = "https://api.alegra.com/api/v1/invoices/" + idFactura + "/void";
+            string requestUri = 
 
             using (var client = new HttpClient())
             {
@@ -328,8 +328,8 @@ namespace PupuseriaSalvadorena.Controllers
                     RequestUri = new Uri(requestUri),
                     Headers =
                     {
-                        { "accept", "application/json" },
-                        { "authorization", "Basic cmFsZWphbmRybzY3QGdtYWlsLmNvbToxOTU4ZjIwZTBhNTJjMTc1YjM3ZQ==" },
+                        { },
+                        { },
                     },
                 };
 
@@ -352,7 +352,7 @@ namespace PupuseriaSalvadorena.Controllers
         // Enviar Factura
         private async Task<string> FacturaImprimir(int idFactura)
         {
-            string requestUri = "https://api.alegra.com/api/v1/invoices/" + idFactura + "?fields=pdf";
+            string requestUri = 
 
             using (var client = new HttpClient())
             {
@@ -362,8 +362,8 @@ namespace PupuseriaSalvadorena.Controllers
                     RequestUri = new Uri(requestUri),
                     Headers =
                     {
-                        { "accept", "application/json" },
-                        { "authorization", "Basic cmFsZWphbmRybzY3QGdtYWlsLmNvbToxOTU4ZjIwZTBhNTJjMTc1YjM3ZQ==" },
+                        {  },
+                        {  },
                     },
                 };
 
@@ -394,13 +394,13 @@ namespace PupuseriaSalvadorena.Controllers
                 var request = new HttpRequestMessage
                 {
                     Method = HttpMethod.Post,
-                    RequestUri = new Uri("https://api.alegra.com/api/v1/contacts"),
+                    RequestUri = new Uri(),
                     Headers =
                     {
-                        { "accept", "application/json" },
-                        { "authorization", "Basic cmFsZWphbmRybzY3QGdtYWlsLmNvbToxOTU4ZjIwZTBhNTJjMTc1YjM3ZQ==" },
+                        {  },
+                        {  },
                     },
-                    Content = new StringContent("{\"identificationObject\":{\"type\":\"" + tipoId + "\",\"number\":\"" + id + "\"},\"name\":\"" + nombre + "\",\"phonePrimary\":\"" + telefono + "\",\"type\":\"client\",\"status\":\"active\",\"email\":\"" + correo + "\"}")
+                    Content = new StringContent()
                     {
                         Headers = { ContentType = new MediaTypeHeaderValue("application/json") }
                     }
@@ -421,7 +421,7 @@ namespace PupuseriaSalvadorena.Controllers
         // Envio Facura Electronica
         private async Task<bool> EnvioFactura(int idFactura, string CorreoElectronico)
         {
-            string requestUri = "https://api.alegra.com/api/v1/invoices/" + idFactura + "/email";
+            string requestUri = ;
 
             using (var client = new HttpClient())
             {
@@ -431,10 +431,10 @@ namespace PupuseriaSalvadorena.Controllers
                     RequestUri = new Uri(requestUri),
                     Headers =
                     {
-                        { "accept", "application/json" },
-                        { "authorization", "Basic cmFsZWphbmRybzY3QGdtYWlsLmNvbToxOTU4ZjIwZTBhNTJjMTc1YjM3ZQ==" },
+                        {  },
+                        {  },
                     },
-                    Content = new StringContent($"{{\"emails\":[\"{CorreoElectronico}\"]}}", Encoding.UTF8, "application/json")
+                    Content = new StringContent()
                     {
                         Headers =
                 {
