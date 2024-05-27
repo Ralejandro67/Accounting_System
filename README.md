@@ -2,8 +2,8 @@
 
 ## Tabla de Contenidos
 
-- [Descripción](#Descripción/Description)
-- [Caracteristicas](#Caracteristicas/Characteristics)
+- [Descripción](#descripción)
+- [Caracteristicas](##caracteristicas)
 
 ## Descripción / Description
 ### Español
