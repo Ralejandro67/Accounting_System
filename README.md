@@ -3,7 +3,7 @@
 ## Tabla de Contenidos
 
 - [Descripción](#descripción)
-- [Caracteristicas](##caracteristicas)
+- [Características / Characteristics](#características--characteristics)
 
 ## Descripción / Description
 ### Español
