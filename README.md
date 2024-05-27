@@ -16,7 +16,7 @@ The solution I have developed focuses on simplifying and optimizing accounting p
 
 The repository presented here is a copy of the original repository, where, for security reasons, certain documents and fields within the code have been omitted and removed to protect the original application. Therefore, if you wish to clone the repository, please note that it will not function due to the omission of certain documents.
 
-## Caracteristicas / Characteristics
+## Características / Characteristics
 ### Español
 El sistema contable desarrollado esta segementado en 7 modulos:
 - Impuestos: El modulos de impuestos se encarga del gestionamiento de los impuestos aplicables a las transacciones dentro del sistema, en donde, el sistema podra uilizar las tasas porcentuales de los impuestos registrados para hacer los calculos requeridos para obtener el valor del impuesto asociado a cada transaccion. De igual forma, el modulo ofrece la capacidad de realizar declaraciones de impuestos en base regimen de tributacion por el cual se rige el restuarante.
