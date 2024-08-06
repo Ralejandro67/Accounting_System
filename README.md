@@ -7,14 +7,10 @@
 
 La solución que desarrollado esta centrada en poder simplificar y optimizar procesos contables, como el gestionamiento de impuestos, conciliacion bancaria, facturacion, cuentas por pagar, planificacion financiera y generacion de pronosticos sobre ventas. Este proyecto fue originalmente desarrollado para un restaurante, por lo tanto, el sistema y los distintos procesos de estan personalizados hacia las necesidades del restaurante, brindándoles las herramientas necesarias para manejar sus finanzas con precisión y eficiencia. Este fue desarrollado a traves del lenguaje de programacion C# junto al framework .NET 7.0, para la base de datos y el despliegue de la aplicacion, se utilizo una base de datos en la nube a traves de Azure y los servicos de App Services de Azure.
 
-El repositorio que se esta presentando es una copia del repositorio original, en donde, por motivos de seguridad, se han omitido y eliminado ciertos documentos y campos dentro del codigo con el fin de proteger la aplicacion original, por lo tanto si deseas clonar el repositorio ten presente que este no funcionaria debido a la omision de ciertos documentos.
-
 ### English
 Welcome to the source code of my accounting system! 
 
 The solution I have developed focuses on simplifying and optimizing accounting processes, such as tax management, bank reconciliation, invoicing, accounts payable, financial planning, and generating sales forecasts. This project was originally developed for a restaurant, therefore, the system and its various processes are customized to the needs of the restaurant, providing them with the necessary tools to manage their finances with precision and efficiency. This project was developed using the C# programming language along with the .NET 7.0 framework, the data base and deployment of the application was made through Azure.
-
-The repository presented here is a copy of the original repository, where, for security reasons, certain documents and fields within the code have been omitted and removed to protect the original application. Therefore, if you wish to clone the repository, please note that it will not function due to the omission of certain documents.
 
 ## Características / Features
 ### Español
