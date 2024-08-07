@@ -5,12 +5,12 @@
 ### Español
 ¡Bienvenido al codigo fuente de mi sistema contable! 
 
-La solución que desarrollado esta centrada en poder simplificar y optimizar procesos contables, como el gestionamiento de impuestos, conciliacion bancaria, facturacion, cuentas por pagar, planificacion financiera y generacion de pronosticos sobre ventas. Este proyecto fue originalmente desarrollado para un restaurante, por lo tanto, el sistema y los distintos procesos de estan personalizados hacia las necesidades del restaurante, brindándoles las herramientas necesarias para manejar sus finanzas con precisión y eficiencia. Este fue desarrollado a traves del lenguaje de programacion C# junto al framework .NET 7.0, para la base de datos y el despliegue de la aplicacion, se utilizo una base de datos en la nube a traves de Azure y los servicos de App Services de Azure.
+La solución que desarrollado esta centrada en poder simplificar y optimizar procesos contables, como el gestionamiento de impuestos, conciliacion bancaria, facturacion, cuentas por pagar, planificacion financiera y generacion de pronosticos sobre ventas. Este proyecto fue originalmente desarrollado para pequeñas empresas que se rigen bajo el regimen de tributacion simplificado en Costa Rica, brindándoles las herramientas necesarias para manejar sus finanzas con precisión y eficiencia. Este fue desarrollado a traves del lenguaje de programacion C# junto al framework .NET 7.0, para la base de datos y el despliegue de la aplicacion, se utilizo una base de datos en la nube a traves de Azure y los servicos de App Services de Azure.
 
 ### English
 Welcome to the source code of my accounting system! 
 
-The solution I have developed focuses on simplifying and optimizing accounting processes, such as tax management, bank reconciliation, invoicing, accounts payable, financial planning, and generating sales forecasts. This project was originally developed for a restaurant, therefore, the system and its various processes are customized to the needs of the restaurant, providing them with the necessary tools to manage their finances with precision and efficiency. This project was developed using the C# programming language along with the .NET 7.0 framework, the data base and deployment of the application was made through Azure.
+The solution I have developed focuses on simplifying and optimizing accounting processes, such as tax management, bank reconciliation, invoicing, accounts payable, financial planning, and generating sales forecasts. This project was originally developed for small business under the simplified tax regime in Costa Rica, providing them with the necessary tools to manage their finances with precision and efficiency. This project was developed using the C# programming language along with the .NET 7.0 framework, the data base and deployment of the application was made through Azure.
 
 ## Características / Features
 ### Español
